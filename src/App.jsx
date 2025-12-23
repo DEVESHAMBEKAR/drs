@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import CartDrawer from './components/CartDrawer';
 import HomePage from './pages/HomePage';
+import ShopPage from './pages/ShopPage';
 
 function App() {
     return (
@@ -15,12 +16,8 @@ function App() {
                     {/* Home Page */}
                     <Route path="/" element={<HomePage />} />
 
-                    {/* Shop Page - Placeholder */}
-                    <Route path="/shop" element={
-                        <div className="flex min-h-screen items-center justify-center bg-deep-charcoal">
-                            <h1 className="font-heading text-4xl text-mist">Shop Page</h1>
-                        </div>
-                    } />
+                    {/* Shop Page */}
+                    <Route path="/shop" element={<ShopPage />} />
 
                     {/* Product Details Page - Placeholder */}
                     <Route path="/product/:id" element={
