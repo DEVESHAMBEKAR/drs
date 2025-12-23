@@ -7,23 +7,21 @@ const Header = () => {
 
     return (
         <header className="fixed left-0 right-0 top-0 z-30 bg-deep-charcoal/95 backdrop-blur-md">
-            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+            <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:py-6">
                 {/* Logo */}
-                <motion.div
+                <motion.a
+                    href="/"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="flex items-center gap-3"
+                    className="flex items-center"
                 >
                     <img
                         src="/logo.png"
                         alt="Deep Root Studios"
-                        className="h-10 w-auto"
+                        className="h-16 w-auto sm:h-20"
                     />
-                    <h1 className="hidden font-heading text-xl tracking-wide text-mist sm:block">
-                        Deep Root Studios
-                    </h1>
-                </motion.div>
+                </motion.a>
 
                 {/* Navigation */}
                 <motion.nav
