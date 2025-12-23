@@ -3,6 +3,7 @@ import Header from './components/Header';
 import CartDrawer from './components/CartDrawer';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
+import ProductDetailsPage from './pages/ProductDetailsPage';
 
 function App() {
     return (
@@ -19,12 +20,8 @@ function App() {
                     {/* Shop Page */}
                     <Route path="/shop" element={<ShopPage />} />
 
-                    {/* Product Details Page - Placeholder */}
-                    <Route path="/product/:id" element={
-                        <div className="flex min-h-screen items-center justify-center bg-deep-charcoal">
-                            <h1 className="font-heading text-4xl text-mist">Product Details</h1>
-                        </div>
-                    } />
+                    {/* Product Details Page */}
+                    <Route path="/product/:id" element={<ProductDetailsPage />} />
                 </Routes>
 
                 {/* Global Cart Drawer - Show on every page */}
