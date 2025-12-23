@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useShopify } from '../context/ShopifyContext';
 
 const Header = () => {
@@ -9,19 +10,20 @@ const Header = () => {
         <header className="fixed left-0 right-0 top-0 z-30 bg-deep-charcoal/95 backdrop-blur-md">
             <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:py-6">
                 {/* Logo */}
-                <motion.a
-                    href="/"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="flex items-center"
-                >
-                    <img
-                        src="/logo.png"
-                        alt="Deep Root Studios"
-                        className="h-16 w-auto sm:h-20"
-                    />
-                </motion.a>
+                <Link to="/">
+                    <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="flex items-center"
+                    >
+                        <img
+                            src="/logo.png"
+                            alt="Deep Root Studios"
+                            className="h-16 w-auto sm:h-20"
+                        />
+                    </motion.div>
+                </Link>
 
                 {/* Navigation */}
                 <motion.nav
@@ -30,24 +32,30 @@ const Header = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    <a
-                        href="#collection"
+                    <Link
+                        to="/"
                         className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
                     >
-                        COLLECTION
-                    </a>
-                    <a
-                        href="#about"
+                        HOME
+                    </Link>
+                    <Link
+                        to="/shop"
+                        className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
+                    >
+                        SHOP
+                    </Link>
+                    <Link
+                        to="/about"
                         className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
                     >
                         ABOUT
-                    </a>
-                    <a
-                        href="#contact"
+                    </Link>
+                    <Link
+                        to="/contact"
                         className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
                     >
                         CONTACT
-                    </a>
+                    </Link>
                 </motion.nav>
 
                 {/* Cart Button */}
