@@ -1,0 +1,109 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    /* Global body styles */
+    body {
+        @apply bg-deep-charcoal text-mist font-body;
+        scroll-behavior: smooth;
+    }
+
+    /* Custom text selection */
+    ::selection {
+        @apply bg-antique-brass text-black;
+    }
+
+    ::-moz-selection {
+        @apply bg-antique-brass text-black;
+    }
+
+    /* Smooth scrolling for all elements */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Headings default to Playfair Display */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-heading;
+    }
+}
+
+@layer components {
+    /* Optional: Add reusable component classes here */
+}
+
+@layer utilities {
+
+    /* Bento Box Grid Layout - Uneven Tile Sizes */
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 300px);
+        gap: 1.5rem;
+    }
+
+    /* Large Tile - Featured Product (Spans 2x2) */
+    .product-card.large {
+        grid-column: span 2;
+        grid-row: span 2;
+    }
+
+    /* Medium Tile (Spans 2x1) */
+    .product-card.medium {
+        grid-column: span 2;
+        grid-row: span 1;
+    }
+
+    /* Small Tiles (1x1) */
+    .product-card.small {
+        grid-column: span 1;
+        grid-row: span 1;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .bento-grid {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: auto;
+        }
+
+        .product-card.large {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .product-card.medium {
+            grid-column: span 2;
+            grid-row: span 1;
+        }
+
+        .product-card.small {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .bento-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .product-card.large,
+        .product-card.medium,
+        .product-card.small {
+            grid-column: span 1;
+            grid-row: span 1;
+        }
+    }
+}
