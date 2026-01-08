@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import SpotlightCard from './SpotlightCard';
 
 const CollectionGrid = () => {
     const products = [
@@ -78,38 +79,40 @@ const CollectionGrid = () => {
                 {products.map((product) => (
                     <motion.div
                         key={product.id}
-                        className={`product-card ${product.size} group relative overflow-hidden bg-soft-black`}
+                        className={`product-card ${product.size}`}
                         variants={cardVariants}
                         whileHover={{ y: -8 }}
                         transition={{ duration: 0.3 }}
                     >
-                        {/* Personalizable Badge */}
-                        <div className="absolute right-4 top-4 z-10 bg-deep-charcoal/90 px-3 py-1.5 backdrop-blur-sm">
-                            <span className="font-body text-xs tracking-widest text-antique-brass">
-                                PERSONALIZABLE
-                            </span>
-                        </div>
+                        <SpotlightCard className="group relative h-full overflow-hidden bg-soft-black">
+                            {/* Personalizable Badge */}
+                            <div className="absolute right-4 top-4 z-10 bg-deep-charcoal/90 px-3 py-1.5 backdrop-blur-sm">
+                                <span className="font-body text-xs tracking-widest text-antique-brass">
+                                    PERSONALIZABLE
+                                </span>
+                            </div>
 
-                        {/* Product Image - 80% of card */}
-                        <div className="relative h-[80%] overflow-hidden">
-                            <motion.img
-                                src={product.image}
-                                alt={product.name}
-                                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                            {/* Hover Overlay */}
-                            <div className="absolute inset-0 bg-antique-brass/0 transition-all duration-300 group-hover:bg-antique-brass/10" />
-                        </div>
+                            {/* Product Image - 80% of card */}
+                            <div className="relative h-[80%] overflow-hidden">
+                                <motion.img
+                                    src={product.image}
+                                    alt={product.name}
+                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                                {/* Hover Overlay */}
+                                <div className="absolute inset-0 bg-antique-brass/0 transition-all duration-300 group-hover:bg-antique-brass/10" />
+                            </div>
 
-                        {/* Product Info - Bottom 20% */}
-                        <div className="flex h-[20%] flex-col justify-center px-6 py-4">
-                            <h3 className="font-body text-base font-medium text-mist md:text-lg">
-                                {product.name}
-                            </h3>
-                            <p className="mt-1 font-body text-sm text-antique-brass md:text-base">
-                                {product.price}
-                            </p>
-                        </div>
+                            {/* Product Info - Bottom 20% */}
+                            <div className="flex h-[20%] flex-col justify-center px-6 py-4">
+                                <h3 className="font-body text-base font-medium text-mist md:text-lg">
+                                    {product.name}
+                                </h3>
+                                <p className="mt-1 font-body text-sm text-antique-brass md:text-base">
+                                    {product.price}
+                                </p>
+                            </div>
+                        </SpotlightCard>
                     </motion.div>
                 ))}
             </motion.div>

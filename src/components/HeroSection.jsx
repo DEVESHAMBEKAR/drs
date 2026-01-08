@@ -1,13 +1,60 @@
-import { motion } from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import MagneticButton from './MagneticButton';
 
 const HeroSection = () => {
+    const ref = useRef(null);
+
+    // Track scroll progress of the hero section
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ['start start', 'end start'],
+    });
+
+    // Parallax transforms
+    const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+    const headlineY = useTransform(scrollYProgress, [0, 1], ['0%', '-50%']);
+
+    // Split headline into letters for stagger animation
+    const headline = 'Meaning Carved in Wood.';
+    const words = headline.split(' ');
+
+    // Container animation for staggering letters
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.03,
+                delayChildren: 0.2,
+            },
+        },
+    };
+
+    // Individual letter animation
+    const letterVariants = {
+        hidden: {
+            opacity: 0,
+            y: 50,
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: 0.5,
+                ease: [0.25, 0.1, 0.25, 1],
+            },
+        },
+    };
+
     return (
-        <div className="relative h-screen w-full overflow-hidden">
-            {/* Animated Background Image with Zoom Effect - Wood Grain/Desk Setup */}
+        <div ref={ref} className="relative h-screen w-full overflow-hidden">
+            {/* Animated Background Image with Parallax - Wood Grain/Desk Setup */}
             <motion.div
                 className="absolute inset-0 bg-cover bg-center"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2940&auto=format&fit=crop')`,
+                    y: backgroundY,
                 }}
                 initial={{ scale: 1.0 }}
                 animate={{ scale: 1.1 }}
@@ -21,18 +68,33 @@ const HeroSection = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
 
             {/* Content Container */}
-            <div className="relative z-10 flex h-full flex-col items-center justify-center px-6">
-                {/* Animated Main Headline */}
+            <motion.div
+                className="relative z-10 flex h-full flex-col items-center justify-center px-6"
+                style={{ y: headlineY }}
+            >
+                {/* Animated Main Headline with Letter Stagger */}
                 <motion.h1
                     className="font-heading text-6xl tracking-wide text-mist md:text-7xl lg:text-8xl"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                        duration: 1.5,
-                        ease: [0.25, 0.1, 0.25, 1],
-                    }}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
                 >
-                    Meaning Carved in Wood.
+                    {words.map((word, wordIndex) => (
+                        <span key={wordIndex} className="inline-block">
+                            {word.split('').map((letter, letterIndex) => (
+                                <motion.span
+                                    key={`${wordIndex}-${letterIndex}`}
+                                    variants={letterVariants}
+                                    className="inline-block"
+                                >
+                                    {letter}
+                                </motion.span>
+                            ))}
+                            {wordIndex < words.length - 1 && (
+                                <span className="inline-block">&nbsp;</span>
+                            )}
+                        </span>
+                    ))}
                 </motion.h1>
 
                 {/* Animated Subheadline */}
@@ -42,7 +104,7 @@ const HeroSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
                         duration: 1.5,
-                        delay: 0.3,
+                        delay: 1.5,
                         ease: [0.25, 0.1, 0.25, 1],
                     }}
                 >
@@ -56,35 +118,25 @@ const HeroSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
                         duration: 1.5,
-                        delay: 0.6,
+                        delay: 1.8,
                         ease: [0.25, 0.1, 0.25, 1],
                     }}
                 >
-                    {/* Shop For Him - Solid Brass Button */}
-                    <motion.button
-                        className="bg-antique-brass px-10 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300"
-                        whileHover={{
-                            boxShadow: '0 0 20px rgba(192, 160, 96, 0.6)',
-                            scale: 1.05,
-                        }}
-                        whileTap={{ scale: 0.95 }}
+                    {/* Shop For Him - Solid Brass Button with Magnetic Effect */}
+                    <MagneticButton
+                        className="bg-antique-brass px-10 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:shadow-[0_0_20px_rgba(192,160,96,0.6)]"
                     >
                         SHOP FOR HIM
-                    </motion.button>
+                    </MagneticButton>
 
-                    {/* Shop For Her - Outline Style Button */}
-                    <motion.button
-                        className="border-2 border-antique-brass bg-transparent px-10 py-4 font-body text-sm tracking-widest text-antique-brass transition-all duration-300 hover:bg-antique-brass/10"
-                        whileHover={{
-                            boxShadow: '0 0 20px rgba(192, 160, 96, 0.4)',
-                            scale: 1.05,
-                        }}
-                        whileTap={{ scale: 0.95 }}
+                    {/* Shop For Her - Outline Style Button with Magnetic Effect */}
+                    <MagneticButton
+                        className="border-2 border-antique-brass bg-transparent px-10 py-4 font-body text-sm tracking-widest text-antique-brass transition-all duration-300 hover:bg-antique-brass/10 hover:shadow-[0_0_20px_rgba(192,160,96,0.4)]"
                     >
                         SHOP FOR HER
-                    </motion.button>
+                    </MagneticButton>
                 </motion.div>
-            </div>
+            </motion.div>
         </div>
     );
 };
