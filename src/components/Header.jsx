@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { useShopify } from '../context/ShopifyContext';
 import AuthModal from './AuthModal';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
     const { setIsCartOpen, getCartItemCount } = useShopify();
@@ -65,6 +66,15 @@ const Header = () => {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
+                        {/* Theme Toggle */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6, delay: 0.25 }}
+                        >
+                            <ThemeToggle />
+                        </motion.div>
+
                         {/* Login Button */}
                         <motion.button
                             onClick={() => setIsAuthModalOpen(true)}

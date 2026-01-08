@@ -14,18 +14,24 @@ const ShopPage = () => {
         const fetchProducts = async () => {
             try {
                 setIsLoading(true);
+                console.log('Fetching products from Shopify...');
+                console.log('Client:', client);
                 const fetchedProducts = await client.product.fetchAll();
+                console.log('Fetched products:', fetchedProducts);
                 setProducts(fetchedProducts);
                 setError(null);
             } catch (err) {
                 console.error('Error fetching products:', err);
-                setError('Failed to load products. Please try again later.');
+                console.error('Error details:', JSON.stringify(err, null, 2));
+                setError(`Failed to load products: ${err.message || 'Please check your Shopify configuration.'}`);
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchProducts();
+        if (client) {
+            fetchProducts();
+        }
     }, [client]);
 
     // Animation variants for staggered product entrance
@@ -51,7 +57,7 @@ const ShopPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-deep-charcoal pt-28 pb-20">
+        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-28 pb-20">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Page Header */}
                 <motion.div
@@ -60,10 +66,10 @@ const ShopPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h1 className="font-heading text-5xl text-mist md:text-6xl">
+                    <h1 className="font-heading text-5xl text-zinc-900 dark:text-mist md:text-6xl">
                         Our Collection
                     </h1>
-                    <p className="mt-4 font-body text-lg text-smoke">
+                    <p className="mt-4 font-body text-lg text-zinc-600 dark:text-smoke">
                         Handcrafted wooden pieces, personalized just for you
                     </p>
                 </motion.div>
@@ -108,9 +114,9 @@ const ShopPage = () => {
                                     className="group block"
                                 >
                                     {/* Product Card */}
-                                    <div className="overflow-hidden bg-soft-black transition-all duration-300 hover:shadow-2xl">
+                                    <div className="overflow-hidden bg-white dark:bg-soft-black transition-all duration-300 hover:shadow-2xl">
                                         {/* Product Image */}
-                                        <div className="relative aspect-square overflow-hidden bg-deep-charcoal">
+                                        <div className="relative aspect-square overflow-hidden bg-gray-200 dark:bg-deep-charcoal">
                                             {product.images && product.images.length > 0 ? (
                                                 <motion.img
                                                     src={product.images[0].src}
@@ -129,7 +135,7 @@ const ShopPage = () => {
                                             <div className="absolute inset-0 bg-antique-brass/0 transition-all duration-300 group-hover:bg-antique-brass/10" />
 
                                             {/* Personalizable Badge */}
-                                            <div className="absolute right-2 top-2 bg-deep-charcoal/90 px-2 py-1 backdrop-blur-sm">
+                                            <div className="absolute right-2 top-2 bg-white/90 dark:bg-deep-charcoal/90 px-2 py-1 backdrop-blur-sm">
                                                 <span className="font-body text-xs tracking-widest text-antique-brass">
                                                     CUSTOM
                                                 </span>
@@ -138,7 +144,7 @@ const ShopPage = () => {
 
                                         {/* Product Info */}
                                         <div className="p-4">
-                                            <h3 className="font-body text-sm font-medium text-mist line-clamp-2 md:text-base">
+                                            <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist line-clamp-2 md:text-base">
                                                 {product.title}
                                             </h3>
 
@@ -149,7 +155,7 @@ const ShopPage = () => {
                                             )}
 
                                             {/* View Details Link */}
-                                            <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-smoke transition-colors group-hover:text-antique-brass">
+                                            <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-zinc-600 dark:text-smoke transition-colors group-hover:text-antique-brass">
                                                 <span>VIEW DETAILS</span>
                                                 <svg
                                                     className="h-3 w-3 transition-transform group-hover:translate-x-1"
@@ -177,7 +183,7 @@ const ShopPage = () => {
                 {!isLoading && !error && products.length === 0 && (
                     <div className="flex min-h-[400px] items-center justify-center">
                         <div className="text-center">
-                            <p className="font-body text-lg text-smoke">
+                            <p className="font-body text-lg text-zinc-600 dark:text-smoke">
                                 No products available at the moment.
                             </p>
                             <Link

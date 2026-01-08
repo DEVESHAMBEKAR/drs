@@ -9,7 +9,7 @@
 
     /* Global body styles */
     body {
-        @apply bg-deep-charcoal text-mist font-body;
+        @apply bg-[#f4f4f5] text-[#18181b] dark:bg-deep-charcoal dark:text-mist font-body transition-colors duration-300;
         scroll-behavior: smooth;
     }
 

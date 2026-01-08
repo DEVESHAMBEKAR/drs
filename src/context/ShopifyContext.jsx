@@ -7,8 +7,8 @@ const ShopifyContext = createContext();
 // Shopify Client Configuration
 // TODO: Replace with your actual Shopify store credentials
 const client = Client.buildClient({
-    domain: 'your-store.myshopify.com', // Replace with your store domain
-    storefrontAccessToken: 'your-storefront-access-token', // Replace with your token
+    domain: 'deep-root-studios.myshopify.com',
+    storefrontAccessToken: '4dae98198cc50eb2b64ab901e7910625',
 });
 
 export const ShopifyProvider = ({ children }) => {

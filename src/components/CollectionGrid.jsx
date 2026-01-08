@@ -57,13 +57,13 @@ const CollectionGrid = () => {
     };
 
     return (
-        <section className="bg-deep-charcoal px-6 py-20 md:px-12 lg:px-20">
+        <section className="bg-[#f4f4f5] dark:bg-deep-charcoal px-6 py-20 md:px-12 lg:px-20">
             {/* Section Header */}
             <div className="mb-12 text-center">
-                <h2 className="font-heading text-4xl text-mist md:text-5xl lg:text-6xl">
+                <h2 className="font-heading text-4xl text-zinc-900 dark:text-mist md:text-5xl lg:text-6xl">
                     Featured Collection
                 </h2>
-                <p className="mt-4 font-body text-lg text-smoke">
+                <p className="mt-4 font-body text-lg text-zinc-600 dark:text-smoke">
                     Handcrafted pieces that tell your story
                 </p>
             </div>
@@ -84,9 +84,9 @@ const CollectionGrid = () => {
                         whileHover={{ y: -8 }}
                         transition={{ duration: 0.3 }}
                     >
-                        <SpotlightCard className="group relative h-full overflow-hidden bg-soft-black">
+                        <SpotlightCard className="group relative h-full overflow-hidden bg-white dark:bg-soft-black">
                             {/* Personalizable Badge */}
-                            <div className="absolute right-4 top-4 z-10 bg-deep-charcoal/90 px-3 py-1.5 backdrop-blur-sm">
+                            <div className="absolute right-4 top-4 z-10 bg-white/90 dark:bg-deep-charcoal/90 px-3 py-1.5 backdrop-blur-sm">
                                 <span className="font-body text-xs tracking-widest text-antique-brass">
                                     PERSONALIZABLE
                                 </span>
@@ -105,7 +105,7 @@ const CollectionGrid = () => {
 
                             {/* Product Info - Bottom 20% */}
                             <div className="flex h-[20%] flex-col justify-center px-6 py-4">
-                                <h3 className="font-body text-base font-medium text-mist md:text-lg">
+                                <h3 className="font-body text-base font-medium text-zinc-900 dark:text-mist md:text-lg">
                                     {product.name}
                                 </h3>
                                 <p className="mt-1 font-body text-sm text-antique-brass md:text-base">

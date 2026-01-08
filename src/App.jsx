@@ -5,6 +5,8 @@ import CartDrawer from './components/CartDrawer';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 
 function App() {
     return (
@@ -24,6 +26,12 @@ function App() {
 
                         {/* Product Details Page */}
                         <Route path="/product/:id" element={<ProductDetailsPage />} />
+
+                        {/* About Page */}
+                        <Route path="/about" element={<AboutPage />} />
+
+                        {/* Contact Page */}
+                        <Route path="/contact" element={<ContactPage />} />
                     </Routes>
                 </main>
 

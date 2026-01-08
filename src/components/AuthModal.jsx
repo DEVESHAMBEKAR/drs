@@ -36,13 +36,13 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
     const handleLogin = async () => {
         // For now, we'll redirect to Shopify's customer login
         // In production, you would use Shopify's Customer Account API
-        const shopDomain = 'your-store.myshopify.com'; // TODO: Replace with your actual domain
+        const shopDomain = 'deep-root-studios.myshopify.com';
         window.location.href = `https://${shopDomain}/account/login`;
     };
 
     const handleSignup = async () => {
         // Redirect to Shopify's customer registration
-        const shopDomain = 'your-store.myshopify.com'; // TODO: Replace with your actual domain
+        const shopDomain = 'deep-root-studios.myshopify.com';
         window.location.href = `https://${shopDomain}/account/register`;
     };
 
@@ -229,7 +229,7 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
                             {isLoginMode && (
                                 <div className="mt-4 text-center">
                                     <a
-                                        href={`https://your-store.myshopify.com/account/login#recover`}
+                                        href={`https://deep-root-studios.myshopify.com/account/login#recover`}
                                         className="text-sm text-[#a3a3a3] transition-colors hover:text-[#c0a060]"
                                     >
                                         Forgot your password?

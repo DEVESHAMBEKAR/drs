@@ -64,7 +64,7 @@ const ProductPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-deep-charcoal">
+        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal">
             {/* Product Container - Split Screen Layout */}
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-20 lg:grid-cols-2 lg:gap-16">
 
@@ -76,7 +76,7 @@ const ProductPage = () => {
                     transition={{ duration: 0.8 }}
                 >
                     {/* Main Image */}
-                    <div className="relative aspect-square overflow-hidden bg-soft-black">
+                    <div className="relative aspect-square overflow-hidden bg-white dark:bg-soft-black">
                         <motion.img
                             key={activeImage}
                             src={productImages[activeImage]}
@@ -118,11 +118,11 @@ const ProductPage = () => {
                 >
                     {/* Product Header */}
                     <div>
-                        <h1 className="font-heading text-4xl text-mist md:text-5xl">
+                        <h1 className="font-heading text-4xl text-zinc-900 dark:text-mist md:text-5xl">
                             Personalized Desk Organizer
                         </h1>
                         <p className="mt-4 font-body text-2xl text-antique-brass">$129.00</p>
-                        <p className="mt-4 font-body text-lg leading-relaxed text-smoke">
+                        <p className="mt-4 font-body text-lg leading-relaxed text-zinc-600 dark:text-smoke">
                             A handcrafted desk organizer made from premium hardwood. Keep your workspace tidy
                             while adding a personal touch with custom engraving.
                         </p>
@@ -130,7 +130,7 @@ const ProductPage = () => {
 
                     {/* Wood Selection */}
                     <div>
-                        <label className="mb-4 block font-body text-sm tracking-widest text-mist">
+                        <label className="mb-4 block font-body text-sm tracking-widest text-zinc-900 dark:text-mist">
                             SELECT WOOD TYPE
                         </label>
                         <div className="flex gap-4">
@@ -173,7 +173,7 @@ const ProductPage = () => {
                                         )}
                                     </div>
                                     <span
-                                        className={`font-body text-sm ${selectedWood === wood.id ? 'text-antique-brass' : 'text-smoke'
+                                        className={`font-body text-sm ${selectedWood === wood.id ? 'text-antique-brass' : 'text-zinc-600 dark:text-smoke'
                                             }`}
                                     >
                                         {wood.name}
@@ -187,7 +187,7 @@ const ProductPage = () => {
                     <div>
                         <label
                             htmlFor="engraving"
-                            className="mb-2 block font-body text-sm tracking-widest text-mist"
+                            className="mb-2 block font-body text-sm tracking-widest text-zinc-900 dark:text-mist"
                         >
                             ADD YOUR NAME (MAX 15 CHARS)
                         </label>
@@ -197,20 +197,20 @@ const ProductPage = () => {
                             value={customText}
                             onChange={handleTextChange}
                             placeholder="Enter your text..."
-                            className="w-full border border-smoke/30 bg-soft-black px-4 py-3 font-body text-mist placeholder-smoke/50 transition-all focus:border-antique-brass focus:outline-none"
+                            className="w-full border border-smoke/30 bg-white dark:bg-soft-black px-4 py-3 font-body text-zinc-900 dark:text-mist placeholder-smoke/50 transition-all focus:border-antique-brass focus:outline-none"
                             maxLength={15}
                         />
-                        <p className="mt-1 font-body text-xs text-smoke">
+                        <p className="mt-1 font-body text-xs text-zinc-600 dark:text-smoke">
                             {customText.length}/15 characters
                         </p>
                     </div>
 
                     {/* Preview Box */}
-                    <div className="border border-smoke/30 bg-soft-black p-6">
+                    <div className="border border-smoke/30 bg-white dark:bg-soft-black p-6">
                         <p className="mb-3 font-body text-xs tracking-widest text-smoke">
                             ENGRAVING PREVIEW
                         </p>
-                        <div className="flex min-h-[80px] items-center justify-center bg-deep-charcoal/50 p-4">
+                        <div className="flex min-h-[80px] items-center justify-center bg-gray-200 dark:bg-deep-charcoal/50 p-4">
                             {customText ? (
                                 <motion.p
                                     className="font-heading text-3xl tracking-wide text-antique-brass"
@@ -230,20 +230,20 @@ const ProductPage = () => {
 
                     {/* Quantity Selector */}
                     <div>
-                        <label className="mb-2 block font-body text-sm tracking-widest text-mist">
+                        <label className="mb-2 block font-body text-sm tracking-widest text-zinc-900 dark:text-mist">
                             QUANTITY
                         </label>
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                className="flex h-10 w-10 items-center justify-center border border-smoke/30 bg-soft-black text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
+                                className="flex h-10 w-10 items-center justify-center border border-smoke/30 bg-white dark:bg-soft-black text-zinc-900 dark:text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
                             >
                                 −
                             </button>
                             <span className="font-body text-lg text-mist">{quantity}</span>
                             <button
                                 onClick={() => setQuantity(quantity + 1)}
-                                className="flex h-10 w-10 items-center justify-center border border-smoke/30 bg-soft-black text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
+                                className="flex h-10 w-10 items-center justify-center border border-smoke/30 bg-white dark:bg-soft-black text-zinc-900 dark:text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
                             >
                                 +
                             </button>
@@ -263,10 +263,10 @@ const ProductPage = () => {
 
                     {/* Product Features */}
                     <div className="border-t border-smoke/20 pt-8">
-                        <h3 className="mb-4 font-body text-sm tracking-widest text-mist">
+                        <h3 className="mb-4 font-body text-sm tracking-widest text-zinc-900 dark:text-mist">
                             PRODUCT FEATURES
                         </h3>
-                        <ul className="space-y-2 font-body text-sm text-smoke">
+                        <ul className="space-y-2 font-body text-sm text-zinc-600 dark:text-smoke">
                             <li>✓ Premium hardwood construction</li>
                             <li>✓ Hand-finished with natural oil</li>
                             <li>✓ Laser-engraved personalization</li>
