@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useShopify } from '../context/ShopifyContext';
 import AccordionItem from '../components/AccordionItem';
 import RecommendedSection from '../components/RecommendedSection';
+import ReviewsSection from '../components/ReviewsSection';
 
 const ProductDetailsPage = () => {
     // Extract full product ID from URL path (handles Shopify GIDs with slashes)
@@ -495,6 +496,12 @@ const ProductDetailsPage = () => {
 
             {/* Recommended Products Section - Full Width */}
             {product && <RecommendedSection currentProductId={product.id} />}
+
+            {/* Divider */}
+            <div className="border-t border-[#333]"></div>
+
+            {/* Reviews Section - Full Width */}
+            <ReviewsSection />
         </div>
     );
 };
