@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useShopify } from '../context/ShopifyContext';
 import AccordionItem from '../components/AccordionItem';
 import RecommendedSection from '../components/RecommendedSection';
 import ReviewsSection from '../components/ReviewsSection';
+import { Truck, Wrench, Zap, Play } from 'lucide-react';
 
 const ProductDetailsPage = () => {
     // Extract full product ID from URL path (handles Shopify GIDs with slashes)
@@ -24,6 +25,10 @@ const ProductDetailsPage = () => {
     const [pincodeData, setPincodeData] = useState(null);
     const [pincodeStatus, setPincodeStatus] = useState('');
     const [isCheckingPincode, setIsCheckingPincode] = useState(false);
+    const [showStickyBar, setShowStickyBar] = useState(false);
+
+    // Ref to track the buy section
+    const buySectionRef = useRef(null);
 
     // Fetch single product by ID
     useEffect(() => {
@@ -46,15 +51,46 @@ const ProductDetailsPage = () => {
         }
     }, [id, client]);
 
+    // Scroll observer to show/hide sticky bar
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                // Show sticky bar when buy section is NOT visible
+                setShowStickyBar(!entry.isIntersecting);
+            },
+            {
+                threshold: 0,
+                rootMargin: '0px'
+            }
+        );
+
+        if (buySectionRef.current) {
+            observer.observe(buySectionRef.current);
+        }
+
+        return () => {
+            if (buySectionRef.current) {
+                observer.unobserve(buySectionRef.current);
+            }
+        };
+    }, [product]);
+
     // Handle add to cart with custom attributes
     const handleAddToCart = async () => {
         if (!product || !product.variants || product.variants.length === 0) {
+            console.error('Product or variant not available');
             alert('Product variant not available');
             return;
         }
 
         setIsAdding(true);
         const variantId = product.variants[0].id;
+
+        // Debug logging
+        console.log('Adding variant:', variantId);
+        console.log('Product:', product.title);
+        console.log('Quantity:', quantity);
+        console.log('Engraving:', engravingText);
 
         // Prepare custom attributes for Shopify
         const customAttributes = engravingText.trim()
@@ -65,7 +101,7 @@ const ProductDetailsPage = () => {
             await addItemToCart(variantId, quantity, customAttributes);
         } catch (err) {
             console.error('Error adding to cart:', err);
-            alert('Failed to add to cart. Please try again.');
+            // Error alert is now handled in context
         } finally {
             setIsAdding(false);
         }
@@ -74,12 +110,16 @@ const ProductDetailsPage = () => {
     // Handle Buy Now - add to cart and redirect to checkout
     const handleBuyNow = async () => {
         if (!product || !product.variants || product.variants.length === 0) {
+            console.error('Product or variant not available');
             alert('Product variant not available');
             return;
         }
 
         setIsAdding(true);
         const variantId = product.variants[0].id;
+
+        // Debug logging
+        console.log('Buy Now - Adding variant:', variantId);
 
         // Prepare custom attributes for Shopify
         const customAttributes = engravingText.trim()
@@ -94,7 +134,7 @@ const ProductDetailsPage = () => {
             }
         } catch (err) {
             console.error('Error processing buy now:', err);
-            alert('Failed to process. Please try again.');
+            // Error alert is now handled in context
             setIsAdding(false);
         }
     };
@@ -210,12 +250,12 @@ const ProductDetailsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-20">
+        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-28">
             {/* Back to Shop Link */}
             <div className="mx-auto max-w-7xl px-6 py-6">
                 <Link
                     to="/shop"
-                    className="inline-flex items-center gap-2 font-body text-sm tracking-widest text-zinc-600 dark:text-smoke transition-colors hover:text-antique-brass"
+                    className="inline-flex items-center gap-2 font-body text-sm tracking-widest text-zinc-900 dark:text-mist transition-colors hover:text-antique-brass dark:hover:text-antique-brass"
                 >
                     <svg
                         className="h-4 w-4"
@@ -277,7 +317,8 @@ const ProductDetailsPage = () => {
                                 >
                                     <img
                                         src={image.src}
-                                        alt={`View ${index + 1}`}
+                                        alt={`${product.title} - View ${index + 1}`}
+                                        loading="lazy"
                                         className="h-full w-full object-cover"
                                     />
                                 </button>
@@ -300,9 +341,27 @@ const ProductDetailsPage = () => {
                         </h1>
 
                         {product.variants && product.variants.length > 0 && (
-                            <p className="mt-4 font-body text-3xl text-zinc-900 dark:text-mist">
-                                ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
-                            </p>
+                            <>
+                                <p className="mt-4 font-body text-3xl text-zinc-900 dark:text-mist">
+                                    ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
+                                </p>
+
+                                {/* Delivery Estimate */}
+                                <div className="mt-3 flex items-center gap-2">
+                                    <Truck className="w-4 h-4 text-green-600 dark:text-green-500" />
+                                    <p className="font-body text-sm text-green-600 dark:text-green-500">
+                                        Order now to get it by {(() => {
+                                            const deliveryDate = new Date();
+                                            deliveryDate.setDate(deliveryDate.getDate() + 5);
+                                            return deliveryDate.toLocaleDateString('en-IN', {
+                                                weekday: 'long',
+                                                day: 'numeric',
+                                                month: 'short'
+                                            });
+                                        })()}
+                                    </p>
+                                </div>
+                            </>
                         )}
                     </div>
 
@@ -415,18 +474,18 @@ const ProductDetailsPage = () => {
                     </div>
 
                     {/* Action Buttons Row */}
-                    <div className="flex flex-col gap-4 sm:flex-row">
+                    <div ref={buySectionRef} className="flex flex-col gap-4 sm:flex-row">
                         {/* Add to Cart Button - White Outline */}
                         <motion.button
                             onClick={handleAddToCart}
-                            disabled={isLoading || isAdding}
-                            className="flex-1 flex items-center justify-center gap-2 border-2 border-white dark:border-mist bg-transparent px-8 py-4 font-body text-sm tracking-widest text-white dark:text-mist transition-all duration-300 hover:bg-white hover:text-black dark:hover:bg-mist dark:hover:text-deep-charcoal disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
+                            className="flex-1 flex items-center justify-center gap-2 border-2 border-[#c0a060] bg-transparent px-8 py-4 font-body text-sm tracking-widest text-[#c0a060] transition-all duration-300 hover:bg-[#c0a060] hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                             whileHover={!(isLoading || isAdding) ? { scale: 1.02 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
                         >
                             {isAdding ? (
                                 <>
-                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 dark:border-mist/20 border-t-white dark:border-t-mist"></div>
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#c0a060]/20 border-t-[#c0a060]"></div>
                                     ADDING...
                                 </>
                             ) : (
@@ -442,7 +501,7 @@ const ProductDetailsPage = () => {
                         {/* Buy It Now Button - Solid Gold */}
                         <motion.button
                             onClick={handleBuyNow}
-                            disabled={isLoading || isAdding}
+                            disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
                             className="flex-1 flex items-center justify-center gap-2 bg-[#c0a060] px-8 py-4 font-body text-sm tracking-widest text-black transition-all duration-300 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                             whileHover={!(isLoading || isAdding) ? { scale: 1.02 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
@@ -477,6 +536,73 @@ const ProductDetailsPage = () => {
                             )}
                         </AccordionItem>
 
+                        {/* Assembly & Specs Accordion - Conditional Content */}
+                        {(product.description?.toLowerCase().includes('flat-pack') ||
+                            product.description?.toLowerCase().includes('lamp') ||
+                            product.description?.toLowerCase().includes('light')) && (
+                                <AccordionItem title="Assembly & Specs">
+                                    <div className="space-y-4">
+                                        {/* Flat-Pack Assembly Instructions */}
+                                        {product.description?.toLowerCase().includes('flat-pack') && (
+                                            <div className="space-y-3">
+                                                {/* GIF Placeholder */}
+                                                <div className="relative aspect-video bg-[#1a1a1a] border border-[#333] rounded flex items-center justify-center group cursor-pointer hover:border-[#c0a060] transition-colors">
+                                                    <div className="text-center">
+                                                        <Play className="w-12 h-12 text-[#c0a060] mx-auto mb-2" />
+                                                        <p className="font-body text-xs text-[#a3a3a3]">Assembly Demo</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Assembly Info */}
+                                                <div className="flex items-start gap-3">
+                                                    <Wrench className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                    <div>
+                                                        <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                            Tool-Free Assembly
+                                                        </p>
+                                                        <p className="font-body text-sm text-[#a3a3a3]">
+                                                            Snaps together in seconds. No tools required.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Lamp/Light Specifications */}
+                                        {(product.description?.toLowerCase().includes('lamp') ||
+                                            product.description?.toLowerCase().includes('light')) && (
+                                                <div className="space-y-3">
+                                                    {/* Light Source */}
+                                                    <div className="flex items-start gap-3">
+                                                        <Zap className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                        <div>
+                                                            <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                                Light Source
+                                                            </p>
+                                                            <p className="font-body text-sm text-[#a3a3a3]">
+                                                                Warm White LED (3000K)
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Power */}
+                                                    <div className="flex items-start gap-3">
+                                                        <Zap className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                        <div>
+                                                            <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                                Power
+                                                            </p>
+                                                            <p className="font-body text-sm text-[#a3a3a3]">
+                                                                USB-C Rechargeable
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                    </div>
+                                </AccordionItem>
+                            )}
+
                         {/* Manufacturer Details Accordion */}
                         <AccordionItem title="Manufacturer Details">
                             <p className="font-body text-sm">
@@ -502,6 +628,37 @@ const ProductDetailsPage = () => {
 
             {/* Reviews Section - Full Width */}
             <ReviewsSection />
+
+            {/* Sticky Bottom Bar - Mobile Only */}
+            <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: showStickyBar ? '0%' : '100%' }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-[#1a1a1a] border-t border-zinc-200 dark:border-[#333] shadow-lg md:hidden"
+            >
+                <div className="flex items-center justify-between gap-4 px-4 py-3">
+                    {/* Left: Product Info */}
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist truncate">
+                            {product?.title}
+                        </h3>
+                        {product?.variants && product.variants.length > 0 && (
+                            <p className="font-body text-lg font-semibold text-zinc-900 dark:text-mist">
+                                ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Right: Compact Add to Cart Button */}
+                    <button
+                        onClick={handleAddToCart}
+                        disabled={isLoading || isAdding}
+                        className="bg-[#c0a060] hover:bg-[#b09050] px-6 py-3 font-body text-sm tracking-widest text-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                        {isAdding ? 'ADDING...' : 'ADD TO CART'}
+                    </button>
+                </div>
+            </motion.div>
         </div>
     );
 };

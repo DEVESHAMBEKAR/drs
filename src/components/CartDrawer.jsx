@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useShopify } from '../context/ShopifyContext';
+import { Lock } from 'lucide-react';
 
 const CartDrawer = () => {
     const {
@@ -24,7 +25,7 @@ const CartDrawer = () => {
     useEffect(() => {
         if (cart?.lineItems) {
             const giftWrapItem = cart.lineItems.find(
-                (item) => item.variant.id === GIFT_WRAP_VARIANT_ID
+                (item) => item?.variant?.id === GIFT_WRAP_VARIANT_ID
             );
             if (giftWrapItem) {
                 setGiftWrapEnabled(true);
@@ -50,19 +51,20 @@ const CartDrawer = () => {
     // Calculate subtotal (excluding gift wrap for display purposes)
     const getSubtotal = () => {
         if (!cart?.lineItems) return '0.00';
-        return cart.subtotalPrice || '0.00';
+        return cart.subtotalPrice?.amount || cart.subtotalPrice || '0.00';
     };
 
     // Get total including gift wrap
     const getTotal = () => {
         if (!cart?.totalPrice) return '0.00';
-        return cart.totalPrice;
+        return cart.totalPrice?.amount || cart.totalPrice || '0.00';
     };
 
     // Get cart item count (excluding gift wrap)
     const getItemCount = () => {
         if (!cart?.lineItems) return 0;
         return cart.lineItems.reduce((total, item) => {
+            if (!item?.variant?.id) return total;
             if (item.variant.id === GIFT_WRAP_VARIANT_ID) return total;
             return total + item.quantity;
         }, 0);
@@ -148,7 +150,8 @@ const CartDrawer = () => {
                                 // Cart Items List
                                 <div className="space-y-4">
                                     {cart.lineItems.map((item) => {
-                                        // Skip gift wrap in main item list
+                                        // Skip if no variant or is gift wrap
+                                        if (!item?.variant?.id) return null;
                                         if (item.variant.id === GIFT_WRAP_VARIANT_ID) return null;
 
                                         return (
@@ -185,7 +188,7 @@ const CartDrawer = () => {
                                                     )}
 
                                                     <p className="mt-2 font-body text-sm text-antique-brass">
-                                                        ₹{parseFloat(item.variant.price).toFixed(2)}
+                                                        ₹{parseFloat(item.variant.price?.amount || item.variant.price || 0).toFixed(2)}
                                                     </p>
 
                                                     {/* Quantity Controls */}
@@ -282,6 +285,25 @@ const CartDrawer = () => {
                                 >
                                     PROCEED TO CHECKOUT
                                 </motion.a>
+
+                                {/* Trust Signals */}
+                                <div className="mt-4 space-y-3 border-t border-smoke/20 pt-4">
+                                    {/* Accepted Payments */}
+                                    <div>
+                                        <p className="font-body text-xs text-smoke/70 mb-2">Accepted Payments:</p>
+                                        <p className="font-body text-xs text-smoke">
+                                            UPI • GPay • PhonePe • Cards • COD Available
+                                        </p>
+                                    </div>
+
+                                    {/* Security Badge */}
+                                    <div className="flex items-center gap-2">
+                                        <Lock className="w-3 h-3 text-green-500" />
+                                        <p className="font-body text-xs text-smoke/70">
+                                            Secure checkout encrypted by Shopify
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         )}
                     </motion.div>

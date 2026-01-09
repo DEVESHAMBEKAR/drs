@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { User } from 'lucide-react';
+import { User, Search } from 'lucide-react';
 import { useShopify } from '../context/ShopifyContext';
 import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
+import SearchOverlay from './SearchOverlay';
 
 const Header = () => {
     const { setIsCartOpen, getCartItemCount } = useShopify();
     const itemCount = getCartItemCount();
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     return (
         <>
@@ -66,6 +68,20 @@ const Header = () => {
 
                     {/* Right Side Actions */}
                     <div className="flex items-center gap-4">
+                        {/* Search Button */}
+                        <motion.button
+                            onClick={() => setIsSearchOpen(true)}
+                            className="group flex items-center gap-2 transition-colors"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            aria-label="Search products"
+                        >
+                            <Search className="h-5 w-5 text-smoke transition-colors group-hover:text-antique-brass" />
+                        </motion.button>
+
                         {/* Theme Toggle */}
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
@@ -140,6 +156,12 @@ const Header = () => {
             <AuthModal
                 isOpen={isAuthModalOpen}
                 onClose={() => setIsAuthModalOpen(false)}
+            />
+
+            {/* Search Overlay */}
+            <SearchOverlay
+                isOpen={isSearchOpen}
+                onClose={() => setIsSearchOpen(false)}
             />
         </>
     );

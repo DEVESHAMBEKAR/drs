@@ -107,37 +107,43 @@ const Footer = () => {
                         </nav>
                     </div>
 
-                    {/* Column 3: Studio/Help */}
+                    {/* Column 3: Contact Information */}
                     <div className="space-y-6">
                         <h3 className="font-serif text-lg text-[#c0a060] tracking-wide">
-                            The Studio
+                            Visit Us
                         </h3>
-                        <nav className="flex flex-col space-y-3">
-                            <Link
-                                to="/about"
-                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
-                            >
-                                About Us
-                            </Link>
-                            <Link
-                                to="/craft"
-                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
-                            >
-                                Our Craft
-                            </Link>
-                            <Link
-                                to="/shipping"
-                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
-                            >
-                                Shipping & Returns
-                            </Link>
-                            <Link
-                                to="/contact"
-                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
-                            >
-                                Contact
-                            </Link>
-                        </nav>
+                        <div className="flex flex-col space-y-4">
+                            {/* Address */}
+                            <div className="space-y-1">
+                                <p className="text-[#a3a3a3] text-sm leading-relaxed">
+                                    Deep Root Studios<br />
+                                    Pune, Maharashtra<br />
+                                    India 411041
+                                </p>
+                            </div>
+
+                            {/* Phone */}
+                            <div className="space-y-1">
+                                <p className="text-[#737373] text-xs uppercase tracking-wider">Phone</p>
+                                <a
+                                    href="tel:+919579276597"
+                                    className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300 text-sm block"
+                                >
+                                    +91 9579276597
+                                </a>
+                            </div>
+
+                            {/* Email */}
+                            <div className="space-y-1">
+                                <p className="text-[#737373] text-xs uppercase tracking-wider">Email</p>
+                                <a
+                                    href="mailto:thedeeprootstudios@gmail.com"
+                                    className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300 text-sm block break-all"
+                                >
+                                    thedeeprootstudios@gmail.com
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Column 4: Newsletter */}

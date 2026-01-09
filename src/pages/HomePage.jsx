@@ -1,5 +1,6 @@
 import HeroSection from '../components/HeroSection';
 import CollectionGrid from '../components/CollectionGrid';
+import HomeStoriesSection from '../components/HomeStoriesSection';
 import ProductPage from '../components/ProductPage';
 
 const HomePage = () => {
@@ -7,6 +8,7 @@ const HomePage = () => {
         <>
             <HeroSection />
             <CollectionGrid />
+            <HomeStoriesSection />
             <ProductPage />
         </>
     );

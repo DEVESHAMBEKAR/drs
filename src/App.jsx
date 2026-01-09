@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
+import WhatsAppWidget from './components/WhatsAppWidget';
 import HomePage from './pages/HomePage';
 import ShopPage from './pages/ShopPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
@@ -40,6 +41,9 @@ function App() {
 
                 {/* Global Cart Drawer - Show on every page */}
                 <CartDrawer />
+
+                {/* Global WhatsApp Widget - Show on every page */}
+                <WhatsAppWidget />
             </div>
         </BrowserRouter>
     );

@@ -18,33 +18,64 @@ export const ShopifyProvider = ({ children }) => {
 
     // Initialize checkout/cart on mount
     useEffect(() => {
-        initializeCheckout();
+        const checkoutId = localStorage.getItem('checkoutId');
+
+        if (checkoutId) {
+            // Try to fetch existing checkout
+            fetchCheckout(checkoutId);
+        } else {
+            // Create new checkout if none exists
+            initializeCheckout();
+        }
     }, []);
+
+    // Log cart updates for debugging
+    useEffect(() => {
+        if (cart) {
+            console.log('Cart updated:', {
+                id: cart.id,
+                itemCount: cart.lineItems?.length || 0,
+                lineItems: cart.lineItems,
+                total: cart.totalPrice
+            });
+        }
+    }, [cart]);
 
     // Create a new checkout
     const initializeCheckout = async () => {
         try {
+            console.log('Creating new checkout...');
             const newCheckout = await client.checkout.create();
             setCart(newCheckout);
             localStorage.setItem('checkoutId', newCheckout.id);
+            console.log('New checkout created:', newCheckout.id);
+            return newCheckout; // Return the checkout for immediate use
         } catch (error) {
             console.error('Error initializing checkout:', error);
+            return null;
         }
     };
 
     // Fetch existing checkout from localStorage
     const fetchCheckout = async (checkoutId) => {
         try {
+            console.log('Fetching existing checkout:', checkoutId);
             const checkout = await client.checkout.fetch(checkoutId);
-            if (!checkout.completedAt) {
+
+            if (checkout && !checkout.completedAt) {
                 setCart(checkout);
+                console.log('Existing checkout loaded:', checkout.id);
+                return checkout;
             } else {
-                // If checkout is completed, create a new one
-                initializeCheckout();
+                // If checkout is completed or null, create a new one
+                console.log('Checkout completed or invalid, creating new one...');
+                localStorage.removeItem('checkoutId');
+                return await initializeCheckout();
             }
         } catch (error) {
             console.error('Error fetching checkout:', error);
-            initializeCheckout();
+            localStorage.removeItem('checkoutId');
+            return await initializeCheckout();
         }
     };
 
@@ -59,9 +90,18 @@ export const ShopifyProvider = ({ children }) => {
         setIsLoading(true);
 
         try {
+            console.log('Adding to cart:', { variantId, quantity, customAttributes });
+
             // Ensure we have a checkout
-            if (!cart) {
-                await initializeCheckout();
+            let currentCart = cart;
+            if (!currentCart || !currentCart.id) {
+                console.log('No checkout found, creating new one...');
+                currentCart = await initializeCheckout();
+
+                // If still no cart, throw error
+                if (!currentCart || !currentCart.id) {
+                    throw new Error('Failed to create checkout');
+                }
             }
 
             // Prepare line items with custom attributes
@@ -69,28 +109,26 @@ export const ShopifyProvider = ({ children }) => {
                 {
                     variantId,
                     quantity,
-                    customAttributes, // This is the key addition for personalization!
+                    customAttributes,
                 },
             ];
 
+            console.log('Adding line items to checkout:', currentCart.id);
+
             // Add to checkout
             const updatedCheckout = await client.checkout.addLineItems(
-                cart.id,
+                currentCart.id,
                 lineItemsToAdd
             );
 
             setCart(updatedCheckout);
             setIsCartOpen(true);
 
-            console.log('Item added to cart:', {
-                variantId,
-                quantity,
-                customAttributes,
-            });
+            console.log('✅ Item successfully added to cart');
 
             return updatedCheckout;
         } catch (error) {
-            console.error('Error adding item to cart:', error);
+            console.error('❌ Error adding item to cart:', error);
             throw error;
         } finally {
             setIsLoading(false);

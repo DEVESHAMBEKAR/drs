@@ -121,6 +121,7 @@ const ShopPage = () => {
                                                 <motion.img
                                                     src={product.images[0].src}
                                                     alt={product.title}
+                                                    loading="lazy"
                                                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
                                             ) : (
