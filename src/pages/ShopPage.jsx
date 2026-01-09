@@ -110,7 +110,7 @@ const ShopPage = () => {
                         {products.map((product) => (
                             <motion.div key={product.id} variants={itemVariants}>
                                 <Link
-                                    to={`/product/${product.id}`}
+                                    to={`/product/${encodeURIComponent(product.id)}`}
                                     className="group block"
                                 >
                                     {/* Product Card */}

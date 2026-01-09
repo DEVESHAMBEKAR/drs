@@ -24,8 +24,8 @@ function App() {
                         {/* Shop Page */}
                         <Route path="/shop" element={<ShopPage />} />
 
-                        {/* Product Details Page */}
-                        <Route path="/product/:id" element={<ProductDetailsPage />} />
+                        {/* Product Details Page - Using * to capture full Shopify GID with slashes */}
+                        <Route path="/product/*" element={<ProductDetailsPage />} />
 
                         {/* About Page */}
                         <Route path="/about" element={<AboutPage />} />
