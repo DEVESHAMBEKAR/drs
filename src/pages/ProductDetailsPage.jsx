@@ -5,7 +5,7 @@ import { useShopify } from '../context/ShopifyContext';
 import AccordionItem from '../components/AccordionItem';
 import RecommendedSection from '../components/RecommendedSection';
 import ReviewsSection from '../components/ReviewsSection';
-import { Truck, Wrench, Zap, Play } from 'lucide-react';
+import { Truck, Wrench, Zap, Play, PenLine } from 'lucide-react';
 
 const ProductDetailsPage = () => {
     // Extract full product ID from URL path (handles Shopify GIDs with slashes)
@@ -18,6 +18,8 @@ const ProductDetailsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [engravingText, setEngravingText] = useState('');
+    const [isEngravingEnabled, setIsEngravingEnabled] = useState(false);
+    const [fontStyle, setFontStyle] = useState('classic');
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [isAdding, setIsAdding] = useState(false);
@@ -26,6 +28,10 @@ const ProductDetailsPage = () => {
     const [pincodeStatus, setPincodeStatus] = useState('');
     const [isCheckingPincode, setIsCheckingPincode] = useState(false);
     const [showStickyBar, setShowStickyBar] = useState(false);
+    const [isGiftWrap, setIsGiftWrap] = useState(false);
+    const [giftMessage, setGiftMessage] = useState('');
+    const [isGiftNoteEnabled, setIsGiftNoteEnabled] = useState(false);
+    const [giftNoteText, setGiftNoteText] = useState('');
 
     // Ref to track the buy section
     const buySectionRef = useRef(null);
@@ -93,9 +99,26 @@ const ProductDetailsPage = () => {
         console.log('Engraving:', engravingText);
 
         // Prepare custom attributes for Shopify
-        const customAttributes = engravingText.trim()
-            ? [{ key: 'Engraving', value: engravingText.trim() }]
-            : [];
+        const customAttributes = [];
+
+        // Add engraving attributes if enabled
+        if (isEngravingEnabled && engravingText.trim()) {
+            customAttributes.push({ key: 'Engraving_Text', value: engravingText.trim() });
+            customAttributes.push({ key: 'Font_Style', value: fontStyle === 'classic' ? 'Classic (Serif)' : 'Modern (Sans)' });
+        }
+
+        // Add gift wrap attributes if selected
+        if (isGiftWrap) {
+            customAttributes.push({ key: 'Gift_Wrap', value: 'true' });
+            if (giftMessage.trim()) {
+                customAttributes.push({ key: 'Gift_Message', value: giftMessage.trim() });
+            }
+        }
+
+        // Add gift note if enabled
+        if (isGiftNoteEnabled && giftNoteText.trim()) {
+            customAttributes.push({ key: 'Gift_Note', value: giftNoteText.trim() });
+        }
 
         try {
             await addItemToCart(variantId, quantity, customAttributes);
@@ -122,9 +145,26 @@ const ProductDetailsPage = () => {
         console.log('Buy Now - Adding variant:', variantId);
 
         // Prepare custom attributes for Shopify
-        const customAttributes = engravingText.trim()
-            ? [{ key: 'Engraving', value: engravingText.trim() }]
-            : [];
+        const customAttributes = [];
+
+        // Add engraving attributes if enabled
+        if (isEngravingEnabled && engravingText.trim()) {
+            customAttributes.push({ key: 'Engraving_Text', value: engravingText.trim() });
+            customAttributes.push({ key: 'Font_Style', value: fontStyle === 'classic' ? 'Classic (Serif)' : 'Modern (Sans)' });
+        }
+
+        // Add gift wrap attributes if selected
+        if (isGiftWrap) {
+            customAttributes.push({ key: 'Gift_Wrap', value: 'true' });
+            if (giftMessage.trim()) {
+                customAttributes.push({ key: 'Gift_Message', value: giftMessage.trim() });
+            }
+        }
+
+        // Add gift note if enabled
+        if (isGiftNoteEnabled && giftNoteText.trim()) {
+            customAttributes.push({ key: 'Gift_Note', value: giftNoteText.trim() });
+        }
 
         try {
             const checkout = await addItemToCart(variantId, quantity, customAttributes);
@@ -365,45 +405,121 @@ const ProductDetailsPage = () => {
                         )}
                     </div>
 
-                    {/* Custom Engraving Input */}
-                    <div>
-                        <label
-                            htmlFor="engraving"
-                            className="mb-2 block font-body text-sm tracking-widest text-zinc-700 dark:text-mist"
-                        >
-                            PERSONALIZE THIS (ENGRAVING)
-                        </label>
-                        <input
-                            id="engraving"
-                            type="text"
-                            value={engravingText}
-                            onChange={(e) => setEngravingText(e.target.value)}
-                            placeholder="Enter your custom text..."
-                            maxLength={50}
-                            className="w-full border-2 border-antique-brass/50 bg-white dark:bg-soft-black px-4 py-3 font-body text-zinc-900 dark:text-mist placeholder-zinc-400 dark:placeholder-smoke/50 transition-all focus:border-antique-brass focus:outline-none"
-                        />
-                        <p className="mt-1 font-body text-xs text-zinc-500 dark:text-smoke">
-                            {engravingText.length}/50 characters
-                        </p>
-                    </div>
-
-                    {/* Engraving Preview */}
-                    {engravingText && (
-                        <motion.div
-                            className="border border-antique-brass/30 bg-zinc-100 dark:bg-soft-black p-6"
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                        >
-                            <p className="mb-3 font-body text-xs tracking-widest text-zinc-500 dark:text-smoke">
-                                ENGRAVING PREVIEW
+                    {/* Personalization Station */}
+                    <div className="border border-[#c0a060] bg-[#1a1a1a] p-5 rounded-lg">
+                        {/* Header */}
+                        <div className="mb-4">
+                            <h3 className="font-heading text-xl text-[#c0a060] mb-1">
+                                Make it Theirs
+                            </h3>
+                            <p className="font-body text-sm text-smoke">
+                                Laser engrave a name or message permanently into the wood.
                             </p>
-                            <div className="flex min-h-[60px] items-center justify-center bg-zinc-200 dark:bg-deep-charcoal/50 p-4">
-                                <p className="font-heading text-2xl tracking-wide text-antique-brass">
-                                    {engravingText}
-                                </p>
+                        </div>
+
+                        {/* Checkbox Toggle */}
+                        <label className="flex items-center gap-3 cursor-pointer group mb-4">
+                            <input
+                                type="checkbox"
+                                checked={isEngravingEnabled}
+                                onChange={(e) => setIsEngravingEnabled(e.target.checked)}
+                                className="w-5 h-5 accent-[#c0a060] cursor-pointer"
+                            />
+                            <div>
+                                <span className="font-body text-sm text-mist group-hover:text-[#c0a060] transition-colors">
+                                    Add Custom Engraving
+                                </span>
+                                <span className="font-body text-sm text-[#c0a060] font-semibold ml-2">
+                                    (+₹200)
+                                </span>
                             </div>
-                        </motion.div>
-                    )}
+                        </label>
+
+                        {/* Conditional Controls */}
+                        {isEngravingEnabled && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="space-y-4"
+                            >
+                                {/* Input Field */}
+                                <div>
+                                    <label
+                                        htmlFor="engraving-text"
+                                        className="block font-body text-xs tracking-widest text-smoke mb-2"
+                                    >
+                                        ENTER NAME/MESSAGE
+                                    </label>
+                                    <input
+                                        id="engraving-text"
+                                        type="text"
+                                        value={engravingText}
+                                        onChange={(e) => setEngravingText(e.target.value)}
+                                        placeholder="e.g., 'To Dad, With Love'"
+                                        maxLength={30}
+                                        className="w-full border border-[#c0a060]/50 bg-[#0a0a0a] px-4 py-3 font-body text-sm text-mist placeholder-smoke/50 transition-all focus:border-[#c0a060] focus:outline-none rounded"
+                                    />
+                                    <p className="mt-1 font-body text-xs text-smoke text-right">
+                                        {engravingText.length}/30 characters
+                                    </p>
+                                </div>
+
+                                {/* Font Selector */}
+                                <div>
+                                    <label
+                                        htmlFor="font-style"
+                                        className="block font-body text-xs tracking-widest text-smoke mb-2"
+                                    >
+                                        SELECT FONT STYLE
+                                    </label>
+                                    <select
+                                        id="font-style"
+                                        value={fontStyle}
+                                        onChange={(e) => setFontStyle(e.target.value)}
+                                        className="w-full border border-[#c0a060]/50 bg-[#0a0a0a] px-4 py-3 font-body text-sm text-mist transition-all focus:border-[#c0a060] focus:outline-none rounded appearance-none cursor-pointer"
+                                        style={{
+                                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23c0a060'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
+                                            backgroundRepeat: 'no-repeat',
+                                            backgroundPosition: 'right 12px center',
+                                            backgroundSize: '20px'
+                                        }}
+                                    >
+                                        <option value="classic">Classic (Serif)</option>
+                                        <option value="modern">Modern (Sans)</option>
+                                    </select>
+                                </div>
+
+                                {/* Visual Preview */}
+                                <div className="border border-[#333] bg-[#0a0a0a] p-4 rounded">
+                                    <p className="font-body text-xs tracking-widest text-smoke mb-3">
+                                        PREVIEW — Your text will appear like this on the product
+                                    </p>
+                                    <div className="flex min-h-[70px] items-center justify-center bg-gradient-to-br from-[#2a2218] to-[#1a1510] rounded p-4 border border-[#3a2a1a]">
+                                        {engravingText ? (
+                                            <p
+                                                className={`text-2xl tracking-wide text-[#c0a060] ${fontStyle === 'classic'
+                                                    ? 'font-heading italic'
+                                                    : 'font-body font-light'
+                                                    }`}
+                                            >
+                                                {engravingText}
+                                            </p>
+                                        ) : (
+                                            <p className="font-body text-sm text-smoke/50 italic">
+                                                Your engraving preview will appear here...
+                                            </p>
+                                        )}
+                                    </div>
+                                    {/* Wood texture hint */}
+                                    <p className="mt-2 font-body text-xs text-smoke/60 text-center">
+                                        🪵 Engraved on premium wood surface
+                                    </p>
+                                </div>
+                            </motion.div>
+                        )}
+                    </div>
 
                     {/* Quantity Selector */}
                     <div>
@@ -470,6 +586,133 @@ const ProductDetailsPage = () => {
                             <p className="mt-2 font-body text-sm text-red-600 dark:text-red-400">
                                 Please enter a valid 6-digit pincode
                             </p>
+                        )}
+                    </div>
+
+                    {/* Gifting Upgrade Section */}
+                    <div className="border border-[#c0a060] bg-[#1a1a1a] p-4 rounded-lg">
+                        <h3 className="font-heading text-lg text-[#c0a060] mb-4 flex items-center gap-2">
+                            🎁 Is this a gift?
+                        </h3>
+
+                        <div className="flex items-start gap-4">
+                            {/* Gift Box Thumbnail */}
+                            <div className="flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border border-[#333]">
+                                <img
+                                    src="/gift_box_preview.webp"
+                                    alt="Premium wooden crate gift packaging"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                />
+                                <div className="w-full h-full bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] items-center justify-center hidden">
+                                    <span className="text-3xl">🎁</span>
+                                </div>
+                            </div>
+
+                            {/* Checkbox and Label */}
+                            <div className="flex-1">
+                                <label className="flex items-start gap-3 cursor-pointer group">
+                                    <input
+                                        type="checkbox"
+                                        checked={isGiftWrap}
+                                        onChange={(e) => setIsGiftWrap(e.target.checked)}
+                                        className="mt-1 w-5 h-5 accent-[#c0a060] cursor-pointer"
+                                    />
+                                    <div>
+                                        <span className="font-body text-sm text-mist group-hover:text-[#c0a060] transition-colors">
+                                            Add Premium Wooden Crate Packaging + Handwritten Note
+                                        </span>
+                                        <span className="font-body text-sm text-[#c0a060] font-semibold ml-2">
+                                            (+₹150)
+                                        </span>
+                                        <p className="font-body text-xs text-smoke mt-1">
+                                            Arrives gift-ready with elegant presentation
+                                        </p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* Conditional Gift Message Textarea */}
+                        {isGiftWrap && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="mt-4"
+                            >
+                                <label className="block font-body text-xs tracking-widest text-smoke mb-2">
+                                    YOUR GIFT MESSAGE
+                                </label>
+                                <textarea
+                                    value={giftMessage}
+                                    onChange={(e) => setGiftMessage(e.target.value)}
+                                    placeholder="Write your heartfelt message here... We'll handwrite it on a premium card."
+                                    maxLength={200}
+                                    rows={3}
+                                    className="w-full border border-[#c0a060]/50 bg-[#0a0a0a] px-4 py-3 font-body text-sm text-mist placeholder-smoke/50 transition-all focus:border-[#c0a060] focus:outline-none rounded resize-none"
+                                />
+                                <p className="mt-1 font-body text-xs text-smoke text-right">
+                                    {giftMessage.length}/200 characters
+                                </p>
+                            </motion.div>
+                        )}
+                    </div>
+
+                    {/* Gift Note Section */}
+                    <div className="border border-[#333] bg-[#1a1a1a] p-4 rounded-lg">
+                        {/* Toggle Header */}
+                        <label className="flex items-center gap-3 cursor-pointer group">
+                            <input
+                                type="checkbox"
+                                checked={isGiftNoteEnabled}
+                                onChange={(e) => setIsGiftNoteEnabled(e.target.checked)}
+                                className="w-5 h-5 accent-[#c0a060] cursor-pointer"
+                            />
+                            <PenLine className="w-5 h-5 text-[#c0a060]" />
+                            <div>
+                                <span className="font-body text-sm text-mist group-hover:text-[#c0a060] transition-colors">
+                                    Add a Handwritten Gift Note
+                                </span>
+                                <span className="font-body text-sm text-green-500 font-semibold ml-2">
+                                    (Free)
+                                </span>
+                            </div>
+                        </label>
+
+                        {/* Conditional Textarea */}
+                        {isGiftNoteEnabled && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.3 }}
+                                className="mt-4"
+                            >
+                                <label className="block font-body text-xs tracking-widest text-smoke mb-2">
+                                    YOUR MESSAGE
+                                </label>
+                                <textarea
+                                    value={giftNoteText}
+                                    onChange={(e) => setGiftNoteText(e.target.value)}
+                                    placeholder="Write a thoughtful message for your recipient..."
+                                    maxLength={100}
+                                    rows={3}
+                                    className="w-full border border-[#333] bg-[#0a0a0a] px-4 py-3 font-body text-sm text-mist placeholder-smoke/50 transition-all focus:border-[#c0a060] focus:outline-none rounded resize-none"
+                                />
+                                <div className="flex justify-between items-center mt-2">
+                                    <p className="font-body text-xs text-smoke/70 italic">
+                                        📜 Printed on our signature thick textured paper and placed inside the box.
+                                    </p>
+                                    <p className="font-body text-xs text-smoke">
+                                        {giftNoteText.length}/100
+                                    </p>
+                                </div>
+                            </motion.div>
                         )}
                     </div>
 

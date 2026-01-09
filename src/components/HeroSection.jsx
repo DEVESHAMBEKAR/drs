@@ -111,9 +111,9 @@ const HeroSection = () => {
                     Handcrafted organizers and decor, personalized for your story.
                 </motion.p>
 
-                {/* Dual CTA Buttons - Side by Side */}
+                {/* CTA Button */}
                 <motion.div
-                    className="mt-16 flex flex-col gap-4 sm:flex-row sm:gap-6"
+                    className="mt-16"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -122,18 +122,12 @@ const HeroSection = () => {
                         ease: [0.25, 0.1, 0.25, 1],
                     }}
                 >
-                    {/* Shop For Him - Solid Brass Button with Magnetic Effect */}
+                    {/* Explore Collection - Solid Brass Button with Magnetic Effect */}
                     <MagneticButton
-                        className="bg-antique-brass px-10 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:shadow-[0_0_20px_rgba(192,160,96,0.6)]"
+                        href="/shop"
+                        className="bg-antique-brass px-12 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:shadow-[0_0_20px_rgba(192,160,96,0.6)]"
                     >
-                        SHOP FOR HIM
-                    </MagneticButton>
-
-                    {/* Shop For Her - Outline Style Button with Magnetic Effect */}
-                    <MagneticButton
-                        className="border-2 border-antique-brass bg-transparent px-10 py-4 font-body text-sm tracking-widest text-antique-brass transition-all duration-300 hover:bg-antique-brass/10 hover:shadow-[0_0_20px_rgba(192,160,96,0.4)]"
-                    >
-                        SHOP FOR HER
+                        EXPLORE COLLECTION
                     </MagneticButton>
                 </motion.div>
             </motion.div>

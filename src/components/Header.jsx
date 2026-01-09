@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { User, Search } from 'lucide-react';
+import { User, Search, ChevronDown, Monitor, PenTool, BookOpen, Building2 } from 'lucide-react';
 import { useShopify } from '../context/ShopifyContext';
 import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
@@ -12,6 +12,7 @@ const Header = () => {
     const itemCount = getCartItemCount();
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
 
     return (
         <>
@@ -46,12 +47,112 @@ const Header = () => {
                         >
                             HOME
                         </Link>
-                        <Link
-                            to="/shop"
-                            className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
+
+                        {/* Shop Dropdown */}
+                        <div
+                            className="relative"
+                            onMouseEnter={() => setIsShopDropdownOpen(true)}
+                            onMouseLeave={() => setIsShopDropdownOpen(false)}
                         >
-                            SHOP
-                        </Link>
+                            <button
+                                className="flex items-center gap-1 font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
+                                onClick={() => setIsShopDropdownOpen(!isShopDropdownOpen)}
+                            >
+                                SHOP
+                                <ChevronDown
+                                    className={`h-4 w-4 transition-transform duration-200 ${isShopDropdownOpen ? 'rotate-180' : ''}`}
+                                />
+                            </button>
+
+                            <AnimatePresence>
+                                {isShopDropdownOpen && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: 10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="absolute left-0 top-full mt-2 w-64 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl overflow-hidden"
+                                    >
+                                        {/* View All */}
+                                        <Link
+                                            to="/shop"
+                                            className="block px-4 py-3 font-body text-sm text-antique-brass border-b border-[#333] hover:bg-[#252525] transition-colors"
+                                            onClick={() => setIsShopDropdownOpen(false)}
+                                        >
+                                            View All Products →
+                                        </Link>
+
+                                        {/* For the Techie */}
+                                        <Link
+                                            to="/shop?category=techie"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            onClick={() => setIsShopDropdownOpen(false)}
+                                        >
+                                            <Monitor className="h-5 w-5 text-[#c0a060]" />
+                                            <div>
+                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
+                                                    For the Techie
+                                                </span>
+                                                <p className="font-body text-xs text-smoke/60">
+                                                    Laptop Stands, Headphone Docks
+                                                </p>
+                                            </div>
+                                        </Link>
+
+                                        {/* For the Organizer */}
+                                        <Link
+                                            to="/shop?category=organizer"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            onClick={() => setIsShopDropdownOpen(false)}
+                                        >
+                                            <PenTool className="h-5 w-5 text-[#c0a060]" />
+                                            <div>
+                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
+                                                    For the Organizer
+                                                </span>
+                                                <p className="font-body text-xs text-smoke/60">
+                                                    Pen Holders, Trays
+                                                </p>
+                                            </div>
+                                        </Link>
+
+                                        {/* For the Reader */}
+                                        <Link
+                                            to="/shop?category=reader"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            onClick={() => setIsShopDropdownOpen(false)}
+                                        >
+                                            <BookOpen className="h-5 w-5 text-[#c0a060]" />
+                                            <div>
+                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
+                                                    For the Reader
+                                                </span>
+                                                <p className="font-body text-xs text-smoke/60">
+                                                    Book Stands, Lamps
+                                                </p>
+                                            </div>
+                                        </Link>
+
+                                        {/* Corporate Gifting */}
+                                        <Link
+                                            to="/bulk"
+                                            className="flex items-center gap-3 px-4 py-3 bg-[#1f1a14] hover:bg-[#2a2318] transition-colors group border-t border-[#333]"
+                                            onClick={() => setIsShopDropdownOpen(false)}
+                                        >
+                                            <Building2 className="h-5 w-5 text-[#c0a060]" />
+                                            <div>
+                                                <span className="font-body text-sm text-antique-brass">
+                                                    Corporate Gifting
+                                                </span>
+                                                <p className="font-body text-xs text-smoke/60">
+                                                    Bulk orders & custom branding
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                         <Link
                             to="/about"
                             className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"

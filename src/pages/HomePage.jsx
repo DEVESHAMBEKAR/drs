@@ -2,6 +2,7 @@ import HeroSection from '../components/HeroSection';
 import CollectionGrid from '../components/CollectionGrid';
 import HomeStoriesSection from '../components/HomeStoriesSection';
 import ProductPage from '../components/ProductPage';
+import CorporateShowcase from '../components/CorporateShowcase';
 
 const HomePage = () => {
     return (
@@ -10,6 +11,7 @@ const HomePage = () => {
             <CollectionGrid />
             <HomeStoriesSection />
             <ProductPage />
+            <CorporateShowcase />
         </>
     );
 };
