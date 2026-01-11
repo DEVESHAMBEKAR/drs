@@ -15,6 +15,8 @@ export const ShopifyProvider = ({ children }) => {
     const [cart, setCart] = useState(null);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [customerToken, setCustomerToken] = useState(() => localStorage.getItem('customer_token') || null);
+    const [userOrders, setUserOrders] = useState([]);
 
     // Initialize checkout/cart on mount
     useEffect(() => {
@@ -198,6 +200,215 @@ export const ShopifyProvider = ({ children }) => {
         return cart.lineItems.reduce((total, item) => total + item.quantity, 0);
     };
 
+    /**
+     * Customer Login - Authenticate with Shopify
+     * @param {string} email - Customer email
+     * @param {string} password - Customer password
+     * @returns {Promise<boolean|string>} - true on success, error message on failure
+     */
+    const loginCustomer = async (email, password) => {
+        try {
+            const mutation = `
+                mutation customerAccessTokenCreate($input: CustomerAccessTokenCreateInput!) {
+                    customerAccessTokenCreate(input: $input) {
+                        customerAccessToken {
+                            accessToken
+                            expiresAt
+                        }
+                        customerUserErrors {
+                            field
+                            message
+                        }
+                    }
+                }
+            `;
+
+            const variables = {
+                input: {
+                    email,
+                    password
+                }
+            };
+
+            const response = await fetch(`https://${client.config.domain}/api/2024-01/graphql.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Shopify-Storefront-Access-Token': client.config.storefrontAccessToken
+                },
+                body: JSON.stringify({ query: mutation, variables })
+            });
+
+            const result = await response.json();
+            console.log('Login response:', result);
+
+            // Check for user errors
+            if (result.data?.customerAccessTokenCreate?.customerUserErrors?.length > 0) {
+                const error = result.data.customerAccessTokenCreate.customerUserErrors[0];
+                return error.message || 'Login failed';
+            }
+
+            // Check for access token
+            const accessToken = result.data?.customerAccessTokenCreate?.customerAccessToken?.accessToken;
+
+            if (accessToken) {
+                // Save token to state and localStorage
+                setCustomerToken(accessToken);
+                localStorage.setItem('customer_token', accessToken);
+                console.log('✅ Login successful');
+                return true;
+            }
+
+            return 'Login failed. Please try again.';
+        } catch (error) {
+            console.error('❌ Login error:', error);
+            return 'Network error. Please try again.';
+        }
+    };
+
+    /**
+     * Fetch Customer Orders
+     * Retrieves order history for the logged-in customer
+     */
+    const fetchCustomerOrders = async () => {
+        if (!customerToken) {
+            console.warn('No customer token available');
+            return;
+        }
+
+        try {
+            const query = `
+                query {
+                    customer(customerAccessToken: "${customerToken}") {
+                        orders(first: 10) {
+                            edges {
+                                node {
+                                    id
+                                    orderNumber
+                                    processedAt
+                                    fulfillmentStatus
+                                    totalPrice {
+                                        amount
+                                        currencyCode
+                                    }
+                                    lineItems(first: 10) {
+                                        edges {
+                                            node {
+                                                title
+                                                quantity
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            `;
+
+            const response = await fetch(`https://${client.config.domain}/api/2024-01/graphql.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Shopify-Storefront-Access-Token': client.config.storefrontAccessToken
+                },
+                body: JSON.stringify({ query })
+            });
+
+            const result = await response.json();
+            console.log('Orders response:', result);
+
+            if (result.data?.customer?.orders?.edges) {
+                const orders = result.data.customer.orders.edges.map(edge => edge.node);
+                setUserOrders(orders);
+                console.log('✅ Orders fetched:', orders.length);
+            }
+        } catch (error) {
+            console.error('❌ Error fetching orders:', error);
+        }
+    };
+
+    /**
+     * Logout Customer
+     */
+    const logoutCustomer = () => {
+        setCustomerToken(null);
+        setUserOrders([]);
+        localStorage.removeItem('customer_token');
+        console.log('✅ Logged out');
+    };
+
+    /**
+     * Google Sign-In with Popup
+     * Opens Shopify's OAuth login in a popup window
+     */
+    const loginWithGoogle = () => {
+        return new Promise((resolve, reject) => {
+            // Popup dimensions
+            const width = 500;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+
+            // Open Shopify login in popup
+            const shopDomain = client.config.domain;
+            const popup = window.open(
+                `https://${shopDomain}/account/login`,
+                'shopify-login',
+                `width=${width},height=${height},left=${left},top=${top},toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes`
+            );
+
+            if (!popup) {
+                reject('Popup blocked. Please allow popups for this site.');
+                return;
+            }
+
+            // Listen for messages from popup
+            const handleMessage = (event) => {
+                // Verify origin for security
+                if (!event.origin.includes('myshopify.com') && event.origin !== window.location.origin) {
+                    return;
+                }
+
+                if (event.data.type === 'shopify-login-success') {
+                    // Close popup
+                    if (popup && !popup.closed) {
+                        popup.close();
+                    }
+
+                    // Save token
+                    if (event.data.token) {
+                        setCustomerToken(event.data.token);
+                        localStorage.setItem('customer_token', event.data.token);
+                        console.log('✅ Google Sign-In successful');
+                        window.removeEventListener('message', handleMessage);
+                        resolve(true);
+                    }
+                }
+            };
+
+            window.addEventListener('message', handleMessage);
+
+            // Check if popup was closed without completing login
+            const checkClosed = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(checkClosed);
+                    window.removeEventListener('message', handleMessage);
+
+                    // Check if we got a token from localStorage (Shopify might have set it)
+                    const token = localStorage.getItem('customer_token');
+                    if (token && token !== customerToken) {
+                        setCustomerToken(token);
+                        console.log('✅ Login completed via redirect');
+                        resolve(true);
+                    } else {
+                        reject('Login cancelled');
+                    }
+                }
+            }, 500);
+        });
+    };
+
     const value = {
         cart,
         isCartOpen,
@@ -210,6 +421,13 @@ export const ShopifyProvider = ({ children }) => {
         getCartTotal,
         getCartItemCount,
         client, // Expose client for advanced usage
+        // Customer authentication
+        customerToken,
+        userOrders,
+        loginCustomer,
+        loginWithGoogle,
+        fetchCustomerOrders,
+        logoutCustomer,
     };
 
     return (

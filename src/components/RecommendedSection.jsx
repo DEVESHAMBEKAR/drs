@@ -83,7 +83,7 @@ const RecommendedSection = ({ currentProductId }) => {
 
                 {/* Products Grid */}
                 <motion.div
-                    className="grid grid-cols-2 gap-6 md:grid-cols-4"
+                    className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-8"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -125,7 +125,7 @@ const RecommendedSection = ({ currentProductId }) => {
                                     </div>
 
                                     {/* Product Info */}
-                                    <div className="p-4">
+                                    <div className="p-2 md:p-4">
                                         <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist line-clamp-2 md:text-base">
                                             {product.title}
                                         </h3>

@@ -8,6 +8,7 @@ import ShopPage from './pages/ShopPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import AccountPage from './pages/AccountPage';
 
 function App() {
     return (
@@ -33,6 +34,9 @@ function App() {
 
                         {/* Contact Page */}
                         <Route path="/contact" element={<ContactPage />} />
+
+                        {/* Account Page */}
+                        <Route path="/account" element={<AccountPage />} />
                     </Routes>
                 </main>
 

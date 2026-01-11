@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useShopify } from '../context/ShopifyContext';
 
 const AuthModal = ({ isOpen, onClose, onLogin }) => {
+    const navigate = useNavigate();
+    const { loginCustomer, loginWithGoogle } = useShopify();
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [formData, setFormData] = useState({
         email: '',
@@ -34,10 +38,17 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
     };
 
     const handleLogin = async () => {
-        // For now, we'll redirect to Shopify's customer login
-        // In production, you would use Shopify's Customer Account API
-        const shopDomain = 'deep-root-studios.myshopify.com';
-        window.location.href = `https://${shopDomain}/account/login`;
+        // Call Shopify authentication
+        const result = await loginCustomer(formData.email, formData.password);
+
+        if (result === true) {
+            // Login successful - close modal and redirect
+            onClose();
+            navigate('/account');
+        } else {
+            // Login failed - show error message
+            setError(result || 'Login failed. Please try again.');
+        }
     };
 
     const handleSignup = async () => {
@@ -51,6 +62,22 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    const handleGoogleSignIn = async () => {
+        setIsLoading(true);
+        setError('');
+
+        try {
+            await loginWithGoogle();
+            // Success - close modal and redirect
+            onClose();
+            navigate('/account');
+        } catch (err) {
+            setError(err || 'Google Sign-In failed. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -94,6 +121,36 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
                                         : 'Create your Deep Root Studios account'}
                                 </p>
                             </div>
+
+                            {/* Google Sign In Button (Login only) */}
+                            {isLoginMode && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={handleGoogleSignIn}
+                                        disabled={isLoading}
+                                        className="w-full mb-6 flex items-center justify-center gap-3 border border-[#a3a3a3]/30 bg-white py-3 font-medium text-[#1f1f1f] transition-all hover:bg-[#f5f5f5] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        <svg width="18" height="18" viewBox="0 0 18 18">
+                                            <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" />
+                                            <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z" />
+                                            <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707 0-.593.102-1.17.282-1.709V4.958H.957C.347 6.173 0 7.548 0 9c0 1.452.348 2.827.957 4.042l3.007-2.335z" />
+                                            <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" />
+                                        </svg>
+                                        Continue with Google
+                                    </button>
+
+                                    {/* Divider */}
+                                    <div className="relative mb-6">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-[#a3a3a3]/30"></div>
+                                        </div>
+                                        <div className="relative flex justify-center text-xs">
+                                            <span className="bg-[#121212] px-2 text-[#a3a3a3]">Or continue with email</span>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
 
                             {/* Form */}
                             <form onSubmit={handleSubmit} className="space-y-6">
@@ -200,10 +257,13 @@ const AuthModal = ({ isOpen, onClose, onLogin }) => {
                                 <button
                                     type="submit"
                                     disabled={isLoading}
-                                    className="w-full bg-[#c0a060] py-3 font-medium tracking-wide text-[#0a0a0a] transition-all hover:bg-[#d4b574] disabled:opacity-50"
+                                    className="w-full bg-[#c0a060] py-3 font-medium tracking-wide text-[#0a0a0a] transition-all hover:bg-[#d4b574] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
+                                    {isLoading && (
+                                        <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#0a0a0a]/30 border-t-[#0a0a0a]"></div>
+                                    )}
                                     {isLoading
-                                        ? 'Please wait...'
+                                        ? 'Processing...'
                                         : isLoginMode
                                             ? 'Sign In'
                                             : 'Create Account'}

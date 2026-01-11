@@ -376,7 +376,7 @@ const ProductDetailsPage = () => {
                 >
                     {/* Product Header */}
                     <div>
-                        <h1 className="font-heading text-4xl text-antique-brass md:text-5xl">
+                        <h1 className="font-heading text-2xl text-antique-brass md:text-4xl">
                             {product.title}
                         </h1>
 

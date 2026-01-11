@@ -49,7 +49,7 @@ const AboutPage = () => {
                 >
                     {/* Main Headline */}
                     <motion.h1
-                        className="font-heading text-5xl leading-tight text-mist md:text-6xl lg:text-7xl"
+                        className="font-heading text-3xl leading-tight text-mist md:text-5xl lg:text-7xl"
                         variants={fadeInUp}
                     >
                         We don't just carve wood.

@@ -74,7 +74,7 @@ const HeroSection = () => {
             >
                 {/* Animated Main Headline with Letter Stagger */}
                 <motion.h1
-                    className="font-heading text-6xl tracking-wide text-mist md:text-7xl lg:text-8xl"
+                    className="font-heading text-4xl tracking-wide text-mist md:text-6xl lg:text-8xl"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"

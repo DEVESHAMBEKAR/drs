@@ -86,7 +86,7 @@ const ContactPage = () => {
                     >
                         {/* Headline */}
                         <motion.div variants={fadeInUp}>
-                            <h1 className="font-heading text-4xl text-[#c0a060] md:text-5xl">
+                            <h1 className="font-heading text-2xl text-[#c0a060] md:text-4xl">
                                 The Workshop is Open.
                             </h1>
                             <p className="mt-6 font-body text-lg leading-relaxed text-[#a3a3a3]">

@@ -66,7 +66,7 @@ const ProductPage = () => {
     return (
         <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal">
             {/* Product Container - Split Screen Layout */}
-            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-20 lg:grid-cols-2 lg:gap-16">
+            <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 py-10 md:py-20 lg:grid-cols-2 lg:gap-16">
 
                 {/* LEFT SIDE - Image Gallery */}
                 <motion.div
@@ -118,7 +118,7 @@ const ProductPage = () => {
                 >
                     {/* Product Header */}
                     <div>
-                        <h1 className="font-heading text-4xl text-zinc-900 dark:text-mist md:text-5xl">
+                        <h1 className="font-heading text-2xl text-zinc-900 dark:text-mist md:text-4xl">
                             Personalized Desk Organizer
                         </h1>
                         <p className="mt-4 font-body text-2xl text-antique-brass">$129.00</p>

@@ -65,7 +65,7 @@ const HomeStoriesSection = () => {
                     viewport={{ once: true, margin: '-100px' }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h2 className="font-serif text-4xl md:text-5xl text-[#c0a060] mb-4">
+                    <h2 className="font-serif text-2xl md:text-4xl text-[#c0a060] mb-4">
                         Stories from the Desk
                     </h2>
                     <p className="font-body text-base md:text-lg text-[#a3a3a3]">

@@ -4,7 +4,7 @@ import { Download, Building2, ArrowRight } from 'lucide-react';
 
 const CorporateShowcase = () => {
     return (
-        <section className="relative py-20 md:py-32 bg-[#0a0a0a] overflow-hidden">
+        <section className="relative py-10 md:py-20 lg:py-32 bg-[#0a0a0a] overflow-hidden">
             {/* Subtle background pattern */}
             <div className="absolute inset-0 opacity-5">
                 <div
@@ -30,7 +30,7 @@ const CorporateShowcase = () => {
                             Corporate Gifting
                         </span>
                     </div>
-                    <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl text-mist mb-4">
+                    <h2 className="font-heading text-2xl md:text-4xl lg:text-6xl text-mist mb-4">
                         Your Brand.{' '}
                         <span className="text-[#c0a060]">Carved in Wood.</span>
                     </h2>

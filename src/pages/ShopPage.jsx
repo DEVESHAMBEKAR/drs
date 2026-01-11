@@ -66,7 +66,7 @@ const ShopPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h1 className="font-heading text-5xl text-zinc-900 dark:text-mist md:text-6xl">
+                    <h1 className="font-heading text-3xl text-zinc-900 dark:text-mist md:text-5xl">
                         Our Collection
                     </h1>
                     <p className="mt-4 font-body text-lg text-zinc-600 dark:text-smoke">
@@ -102,7 +102,7 @@ const ShopPage = () => {
                 {/* Products Grid */}
                 {!isLoading && !error && products.length > 0 && (
                     <motion.div
-                        className="grid grid-cols-2 gap-6 md:grid-cols-4"
+                        className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-8"
                         variants={containerVariants}
                         initial="hidden"
                         animate="visible"
@@ -144,7 +144,7 @@ const ShopPage = () => {
                                         </div>
 
                                         {/* Product Info */}
-                                        <div className="p-4">
+                                        <div className="p-2 md:p-4">
                                             <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist line-clamp-2 md:text-base">
                                                 {product.title}
                                             </h3>

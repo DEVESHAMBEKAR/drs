@@ -57,10 +57,10 @@ const CollectionGrid = () => {
     };
 
     return (
-        <section className="bg-[#f4f4f5] dark:bg-deep-charcoal px-6 py-20 md:px-12 lg:px-20">
+        <section className="bg-[#f4f4f5] dark:bg-deep-charcoal px-6 py-10 md:py-20 md:px-12 lg:px-20">
             {/* Section Header */}
             <div className="mb-12 text-center">
-                <h2 className="font-heading text-4xl text-zinc-900 dark:text-mist md:text-5xl lg:text-6xl">
+                <h2 className="font-heading text-2xl text-zinc-900 dark:text-mist md:text-4xl lg:text-6xl">
                     Featured Collection
                 </h2>
                 <p className="mt-4 font-body text-lg text-zinc-600 dark:text-smoke">

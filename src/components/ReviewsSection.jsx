@@ -78,11 +78,11 @@ const ReviewsSection = () => {
                 {/* Header Section */}
                 <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
                     <div>
-                        <h2 className="font-heading text-4xl text-[#c0a060] md:text-5xl">
+                        <h2 className="font-heading text-2xl text-[#c0a060] md:text-4xl">
                             Customer Stories
                         </h2>
                         <div className="mt-4 flex items-center gap-4">
-                            <span className="font-heading text-5xl text-[#e5e5e5]">{averageRating}</span>
+                            <span className="font-heading text-3xl md:text-5xl text-[#e5e5e5]">{averageRating}</span>
                             {renderStars(5, 'w-6 h-6')}
                         </div>
                         <p className="mt-2 font-body text-sm text-zinc-500">
