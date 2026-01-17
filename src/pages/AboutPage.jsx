@@ -66,7 +66,7 @@ const AboutPage = () => {
                     </motion.p>
                 </motion.div>
 
-                {/* Mission/Philosophy Section - Walls with a Spine */}
+                {/* Mission/Philosophy Section - The Art of Ambience */}
                 <motion.div
                     className="mb-20"
                     initial={{ opacity: 0, y: 40 }}
@@ -75,7 +75,7 @@ const AboutPage = () => {
                 >
                     <div className="mx-auto max-w-3xl">
                         <h2 className="font-heading text-3xl font-bold text-neon-gold mb-8 md:text-4xl">
-                            We Build Walls with a Spine.
+                            The Art of Ambience.
                         </h2>
                         <p className="font-body text-lg leading-relaxed text-text-muted md:text-xl">
                             Most decor is passive. It sits there. We build art that pushes back.

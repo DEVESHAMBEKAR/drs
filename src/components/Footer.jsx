@@ -32,7 +32,7 @@ const Footer = () => {
                             className="h-16 w-auto dark:invert"
                         />
                         <p className="text-gray-400 text-sm tracking-widest uppercase">
-                            Walls with a Spine.
+                            The Art of Ambience.
                         </p>
 
                         {/* Social Icons */}
@@ -186,6 +186,12 @@ const Footer = () => {
                             © 2026 Deep Root Studios.
                         </p>
                         <div className="flex gap-6 text-xs">
+                            <Link
+                                to="/contact"
+                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                            >
+                                Contact
+                            </Link>
                             <Link
                                 to="/privacy"
                                 className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"

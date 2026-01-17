@@ -6,9 +6,10 @@ import { useShopify } from '../context/ShopifyContext';
 import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
 import SearchOverlay from './SearchOverlay';
+import UserDropdown from './UserDropdown';
 
 const Header = () => {
-    const { setIsCartOpen, getCartItemCount } = useShopify();
+    const { setIsCartOpen, getCartItemCount, customerToken } = useShopify();
     const itemCount = getCartItemCount();
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -17,7 +18,7 @@ const Header = () => {
 
     return (
         <>
-            <header className="fixed left-0 right-0 top-0 z-30 bg-deep-charcoal/95 backdrop-blur-md">
+            <header className="sticky left-0 right-0 top-0 z-30 bg-deep-charcoal/95 backdrop-blur-md">
                 <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5 sm:py-6">
                     {/* Mobile Menu Button */}
                     <motion.button
@@ -157,12 +158,6 @@ const Header = () => {
                         >
                             ABOUT
                         </Link>
-                        <Link
-                            to="/contact"
-                            className="font-body text-sm tracking-widest text-smoke transition-colors hover:text-antique-brass"
-                        >
-                            CONTACT
-                        </Link>
                     </motion.nav>
 
                     {/* Right Side Actions */}
@@ -190,21 +185,31 @@ const Header = () => {
                             <ThemeToggle />
                         </motion.div>
 
-                        {/* Login Button */}
-                        <motion.button
-                            onClick={() => setIsAuthModalOpen(true)}
-                            className="group flex items-center gap-2 transition-colors"
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.6, delay: 0.3 }}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            <User className="h-5 w-5 text-smoke transition-colors group-hover:text-antique-brass" />
-                            <span className="hidden font-body text-sm tracking-widest text-smoke transition-colors group-hover:text-antique-brass sm:inline">
-                                LOGIN
-                            </span>
-                        </motion.button>
+                        {/* Login/Account Button - Conditional */}
+                        {customerToken ? (
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                            >
+                                <UserDropdown />
+                            </motion.div>
+                        ) : (
+                            <motion.button
+                                onClick={() => setIsAuthModalOpen(true)}
+                                className="group flex items-center gap-2 transition-colors"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <User className="h-5 w-5 text-smoke transition-colors group-hover:text-antique-brass" />
+                                <span className="hidden font-body text-sm tracking-widest text-smoke transition-colors group-hover:text-antique-brass sm:inline">
+                                    LOGIN
+                                </span>
+                            </motion.button>
+                        )}
 
                         {/* Cart Button */}
                         <motion.button
@@ -318,14 +323,6 @@ const Header = () => {
                                         className="font-serif text-3xl text-[#c0a060] hover:text-[#d4b070] transition-colors"
                                     >
                                         About
-                                    </Link>
-
-                                    <Link
-                                        to="/contact"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="font-serif text-3xl text-[#c0a060] hover:text-[#d4b070] transition-colors"
-                                    >
-                                        Contact
                                     </Link>
                                 </div>
                             </nav>
