@@ -27,20 +27,42 @@ const executeQuery = async (query, variables = {}) => {
 };
 
 /**
- * Fetch Customer Dossier - Full Profile, Orders with Images, Address
+ * Fetch Customer Dossier - Full Profile, Orders, and ALL Addresses
  * @param {string} token - Customer access token from login
  * @returns {Promise<object>} - Customer data object
  */
 export const fetchCustomerDossier = async (token) => {
     const query = `
-        query getCustomerData($token: String!) {
+        query getCustomerDossier($token: String!) {
             customer(customerAccessToken: $token) {
+                id
                 firstName
                 lastName
                 email
                 phone
                 defaultAddress {
+                    id
                     formatted
+                }
+                addresses(first: 10) {
+                    edges {
+                        node {
+                            id
+                            firstName
+                            lastName
+                            company
+                            address1
+                            address2
+                            city
+                            province
+                            provinceCode
+                            zip
+                            country
+                            countryCodeV2
+                            phone
+                            formatted
+                        }
+                    }
                 }
                 orders(first: 10, reverse: true) {
                     edges {
@@ -58,6 +80,7 @@ export const fetchCustomerDossier = async (token) => {
                                 edges {
                                     node {
                                         title
+                                        quantity
                                         variant { 
                                             image { 
                                                 url 
@@ -86,12 +109,34 @@ export const fetchCustomerDossier = async (token) => {
 
     // Transform the data for easier consumption
     const customer = result.data.customer;
+    const defaultAddressId = customer.defaultAddress?.id || null;
+
     return {
+        id: customer.id,
         firstName: customer.firstName || 'Operative',
         lastName: customer.lastName || '',
         email: customer.email,
         phone: customer.phone,
+        defaultAddressId: defaultAddressId,
         defaultAddress: customer.defaultAddress?.formatted || null,
+        // Full addresses array with all details
+        addresses: customer.addresses?.edges?.map(edge => ({
+            id: edge.node.id,
+            firstName: edge.node.firstName,
+            lastName: edge.node.lastName,
+            company: edge.node.company,
+            address1: edge.node.address1,
+            address2: edge.node.address2,
+            city: edge.node.city,
+            province: edge.node.province,
+            provinceCode: edge.node.provinceCode,
+            zip: edge.node.zip,
+            country: edge.node.country,
+            countryCode: edge.node.countryCodeV2,
+            phone: edge.node.phone,
+            formatted: edge.node.formatted,
+            isDefault: edge.node.id === defaultAddressId,
+        })) || [],
         orders: customer.orders?.edges?.map(edge => ({
             id: edge.node.id,
             orderNumber: edge.node.orderNumber,
@@ -101,9 +146,215 @@ export const fetchCustomerDossier = async (token) => {
             fulfillmentStatus: edge.node.fulfillmentStatus,
             lineItems: edge.node.lineItems?.edges?.map(item => ({
                 title: item.node.title,
+                quantity: item.node.quantity,
                 imageUrl: item.node.variant?.image?.url || null,
             })) || [],
         })) || [],
+    };
+};
+
+/**
+ * Create a new customer address
+ * @param {string} token - Customer access token
+ * @param {object} address - Address data
+ * @returns {Promise<object>} - Created address
+ */
+export const createCustomerAddress = async (token, address) => {
+    const mutation = `
+        mutation customerAddressCreate($token: String!, $address: MailingAddressInput!) {
+            customerAddressCreate(customerAccessToken: $token, address: $address) {
+                customerAddress {
+                    id
+                    firstName
+                    lastName
+                    address1
+                    address2
+                    city
+                    province
+                    zip
+                    country
+                    phone
+                    formatted
+                }
+                customerUserErrors {
+                    field
+                    message
+                }
+            }
+        }
+    `;
+
+    const addressInput = {
+        firstName: address.firstName || '',
+        lastName: address.lastName || '',
+        company: address.company || '',
+        address1: address.address1 || '',
+        address2: address.address2 || '',
+        city: address.city || '',
+        province: address.province || '',
+        zip: address.zip || '',
+        country: address.country || 'India',
+        phone: address.phone || '',
+    };
+
+    const result = await executeQuery(mutation, { token, address: addressInput });
+
+    if (result.errors) {
+        throw new Error(result.errors[0]?.message || 'Failed to create address');
+    }
+
+    const createResult = result.data?.customerAddressCreate;
+
+    if (createResult?.customerUserErrors?.length > 0) {
+        throw new Error(createResult.customerUserErrors[0].message);
+    }
+
+    return {
+        success: true,
+        address: createResult?.customerAddress,
+    };
+};
+
+/**
+ * Update an existing customer address
+ * @param {string} token - Customer access token
+ * @param {string} addressId - Address ID to update
+ * @param {object} address - Updated address data
+ * @returns {Promise<object>} - Updated address
+ */
+export const updateCustomerAddress = async (token, addressId, address) => {
+    const mutation = `
+        mutation customerAddressUpdate($token: String!, $id: ID!, $address: MailingAddressInput!) {
+            customerAddressUpdate(customerAccessToken: $token, id: $id, address: $address) {
+                customerAddress {
+                    id
+                    firstName
+                    lastName
+                    address1
+                    address2
+                    city
+                    province
+                    zip
+                    country
+                    phone
+                    formatted
+                }
+                customerUserErrors {
+                    field
+                    message
+                }
+            }
+        }
+    `;
+
+    const addressInput = {
+        firstName: address.firstName || '',
+        lastName: address.lastName || '',
+        company: address.company || '',
+        address1: address.address1 || '',
+        address2: address.address2 || '',
+        city: address.city || '',
+        province: address.province || '',
+        zip: address.zip || '',
+        country: address.country || 'India',
+        phone: address.phone || '',
+    };
+
+    const result = await executeQuery(mutation, { token, id: addressId, address: addressInput });
+
+    if (result.errors) {
+        throw new Error(result.errors[0]?.message || 'Failed to update address');
+    }
+
+    const updateResult = result.data?.customerAddressUpdate;
+
+    if (updateResult?.customerUserErrors?.length > 0) {
+        throw new Error(updateResult.customerUserErrors[0].message);
+    }
+
+    return {
+        success: true,
+        address: updateResult?.customerAddress,
+    };
+};
+
+/**
+ * Delete a customer address
+ * @param {string} token - Customer access token
+ * @param {string} addressId - Address ID to delete
+ * @returns {Promise<object>} - Deletion result
+ */
+export const deleteCustomerAddress = async (token, addressId) => {
+    const mutation = `
+        mutation customerAddressDelete($token: String!, $id: ID!) {
+            customerAddressDelete(customerAccessToken: $token, id: $id) {
+                deletedCustomerAddressId
+                customerUserErrors {
+                    field
+                    message
+                }
+            }
+        }
+    `;
+
+    const result = await executeQuery(mutation, { token, id: addressId });
+
+    if (result.errors) {
+        throw new Error(result.errors[0]?.message || 'Failed to delete address');
+    }
+
+    const deleteResult = result.data?.customerAddressDelete;
+
+    if (deleteResult?.customerUserErrors?.length > 0) {
+        throw new Error(deleteResult.customerUserErrors[0].message);
+    }
+
+    return {
+        success: true,
+        deletedId: deleteResult?.deletedCustomerAddressId,
+    };
+};
+
+/**
+ * Set an address as the default address
+ * @param {string} token - Customer access token
+ * @param {string} addressId - Address ID to set as default
+ * @returns {Promise<object>} - Result
+ */
+export const setDefaultAddress = async (token, addressId) => {
+    const mutation = `
+        mutation customerDefaultAddressUpdate($token: String!, $addressId: ID!) {
+            customerDefaultAddressUpdate(customerAccessToken: $token, addressId: $addressId) {
+                customer {
+                    id
+                    defaultAddress {
+                        id
+                        formatted
+                    }
+                }
+                customerUserErrors {
+                    field
+                    message
+                }
+            }
+        }
+    `;
+
+    const result = await executeQuery(mutation, { token, addressId });
+
+    if (result.errors) {
+        throw new Error(result.errors[0]?.message || 'Failed to set default address');
+    }
+
+    const updateResult = result.data?.customerDefaultAddressUpdate;
+
+    if (updateResult?.customerUserErrors?.length > 0) {
+        throw new Error(updateResult.customerUserErrors[0].message);
+    }
+
+    return {
+        success: true,
+        defaultAddress: updateResult?.customer?.defaultAddress,
     };
 };
 
@@ -136,6 +387,10 @@ export const formatDate = (dateString) => {
 
 export default {
     fetchCustomerDossier,
+    createCustomerAddress,
+    updateCustomerAddress,
+    deleteCustomerAddress,
+    setDefaultAddress,
     formatCurrency,
     formatDate,
 };

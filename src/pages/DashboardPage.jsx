@@ -1,46 +1,70 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, MapPin, Package, AlertCircle, RefreshCw, ShoppingBag, Settings } from 'lucide-react';
+import { User, MapPin, Package, AlertCircle, RefreshCw, ShoppingBag, Settings, LogOut } from 'lucide-react';
 import { fetchCustomerDossier, formatCurrency, formatDate } from '../api/shopify';
+import AddressBook from '../components/AddressBook';
 
 const DashboardPage = () => {
     const navigate = useNavigate();
     const [customer, setCustomer] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'addresses'
 
-    useEffect(() => {
-        const loadCustomerDossier = async () => {
-            // Check for access token
-            const accessToken = localStorage.getItem('customer_token');
+    /**
+     * Load customer dossier from Shopify
+     */
+    const loadCustomerDossier = useCallback(async (showLoader = true) => {
+        const accessToken = localStorage.getItem('customer_token');
 
-            if (!accessToken) {
-                // No token - redirect to home (will show login modal)
-                navigate('/');
-                return;
+        if (!accessToken) {
+            navigate('/');
+            return;
+        }
+
+        try {
+            if (showLoader) setIsLoading(true);
+            setError(null);
+            const data = await fetchCustomerDossier(accessToken);
+            setCustomer(data);
+            console.log('✅ Customer dossier loaded:', data.email);
+        } catch (err) {
+            console.error('Failed to load customer dossier:', err);
+            setError(err.message);
+
+            if (err.message.includes('expired') || err.message.includes('invalid')) {
+                localStorage.removeItem('customer_token');
             }
-
-            try {
-                setIsLoading(true);
-                setError(null);
-                const data = await fetchCustomerDossier(accessToken);
-                setCustomer(data);
-            } catch (err) {
-                console.error('Failed to load customer dossier:', err);
-                setError(err.message);
-
-                // If token is invalid, clear it
-                if (err.message.includes('expired') || err.message.includes('invalid')) {
-                    localStorage.removeItem('customer_token');
-                }
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        loadCustomerDossier();
+        } finally {
+            setIsLoading(false);
+        }
     }, [navigate]);
+
+    // Initial load
+    useEffect(() => {
+        loadCustomerDossier();
+    }, [loadCustomerDossier]);
+
+    /**
+     * Refetch customer data after address changes
+     * This is the CRITICAL sync function
+     */
+    const refetchCustomerData = useCallback(async () => {
+        console.log('🔄 Refetching customer data from Shopify...');
+        await loadCustomerDossier(false); // Don't show loader for background refresh
+    }, [loadCustomerDossier]);
+
+    /**
+     * Handle logout
+     */
+    const handleLogout = () => {
+        localStorage.removeItem('customer_token');
+        navigate('/');
+    };
+
+    // Get customer access token for API calls
+    const customerToken = localStorage.getItem('customer_token');
 
     // Get payment status badge styling
     const getPaymentBadge = (status) => {
@@ -250,116 +274,151 @@ const DashboardPage = () => {
                                 {/* Divider */}
                                 <div className="border-t border-[#333] my-6"></div>
 
-                                {/* Edit Protocols Button */}
-                                <button className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#333] text-gray-400 hover:border-white hover:text-white transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-xs">
-                                    <Settings size={14} />
-                                    EDIT PROTOCOLS
+                                {/* Logout Button */}
+                                <button
+                                    onClick={handleLogout}
+                                    className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-red-900/50 text-red-500/70 hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-xs"
+                                >
+                                    <LogOut size={14} />
+                                    TERMINATE SESSION
                                 </button>
                             </div>
                         </div>
 
-                        {/* RIGHT COLUMN: Order Feed (2/3) */}
+                        {/* RIGHT COLUMN: Tabbed Content (2/3) */}
                         <div className="lg:col-span-2">
-                            <div className="flex items-center gap-2 mb-6">
-                                <Package className="h-4 w-4 text-neon-gold" />
-                                <h2 className="font-mono text-xs uppercase tracking-widest text-gray-500">
-                                    MISSION LOG // RECENT TRANSACTIONS
-                                </h2>
+                            {/* Tab Navigation */}
+                            <div className="flex gap-4 mb-6 border-b border-[#333]">
+                                <button
+                                    onClick={() => setActiveTab('orders')}
+                                    className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'orders'
+                                            ? 'text-neon-gold border-b-2 border-neon-gold'
+                                            : 'text-gray-500 hover:text-white'
+                                        }`}
+                                >
+                                    <Package className="h-4 w-4" />
+                                    MISSION LOG
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('addresses')}
+                                    className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'addresses'
+                                            ? 'text-neon-gold border-b-2 border-neon-gold'
+                                            : 'text-gray-500 hover:text-white'
+                                        }`}
+                                >
+                                    <MapPin className="h-4 w-4" />
+                                    COORDINATES ({customer?.addresses?.length || 0})
+                                </button>
                             </div>
 
-                            {customer?.orders?.length > 0 ? (
-                                <div className="space-y-4">
-                                    {customer.orders.map((order) => {
-                                        const paymentBadge = getPaymentBadge(order.financialStatus);
-                                        const fulfillmentBadge = getFulfillmentBadge(order.fulfillmentStatus);
+                            {/* Tab Content */}
+                            {activeTab === 'orders' && (
+                                <>
+                                    {customer?.orders?.length > 0 ? (
+                                        <div className="space-y-4">
+                                            {customer.orders.map((order) => {
+                                                const paymentBadge = getPaymentBadge(order.financialStatus);
+                                                const fulfillmentBadge = getFulfillmentBadge(order.fulfillmentStatus);
 
-                                        return (
-                                            <motion.div
-                                                key={order.id}
-                                                className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-white/50 transition-colors cursor-pointer group"
-                                                whileHover={{ scale: 1.005 }}
-                                                transition={{ duration: 0.2 }}
-                                            >
-                                                {/* Top Row: Order ID & Date */}
-                                                <div className="flex justify-between items-center mb-4">
-                                                    <span className="font-mono text-neon-gold font-bold text-lg">
-                                                        ORDER #{order.orderNumber}
-                                                    </span>
-                                                    <span className="text-gray-500 text-sm font-mono">
-                                                        {formatDate(order.processedAt)}
-                                                    </span>
-                                                </div>
+                                                return (
+                                                    <motion.div
+                                                        key={order.id}
+                                                        className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-white/50 transition-colors cursor-pointer group"
+                                                        whileHover={{ scale: 1.005 }}
+                                                        transition={{ duration: 0.2 }}
+                                                    >
+                                                        {/* Top Row: Order ID & Date */}
+                                                        <div className="flex justify-between items-center mb-4">
+                                                            <span className="font-mono text-neon-gold font-bold text-lg">
+                                                                ORDER #{order.orderNumber}
+                                                            </span>
+                                                            <span className="text-gray-500 text-sm font-mono">
+                                                                {formatDate(order.processedAt)}
+                                                            </span>
+                                                        </div>
 
-                                                {/* Middle Row: Product Thumbnails */}
-                                                {order.lineItems?.length > 0 && (
-                                                    <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
-                                                        {order.lineItems.map((item, index) => (
-                                                            <div
-                                                                key={index}
-                                                                className="flex-shrink-0 relative group/item"
-                                                                title={item.title}
-                                                            >
-                                                                {item.imageUrl ? (
-                                                                    <img
-                                                                        src={item.imageUrl}
-                                                                        alt={item.title}
-                                                                        className="w-12 h-12 object-cover border border-[#333] group-hover:border-white/30 transition-colors"
-                                                                    />
-                                                                ) : (
-                                                                    <div className="w-12 h-12 bg-[#1a1a1a] border border-[#333] flex items-center justify-center">
-                                                                        <ShoppingBag size={16} className="text-gray-600" />
+                                                        {/* Middle Row: Product Thumbnails */}
+                                                        {order.lineItems?.length > 0 && (
+                                                            <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
+                                                                {order.lineItems.map((item, index) => (
+                                                                    <div
+                                                                        key={index}
+                                                                        className="flex-shrink-0 relative group/item"
+                                                                        title={item.title}
+                                                                    >
+                                                                        {item.imageUrl ? (
+                                                                            <img
+                                                                                src={item.imageUrl}
+                                                                                alt={item.title}
+                                                                                className="w-12 h-12 object-cover border border-[#333] group-hover:border-white/30 transition-colors"
+                                                                            />
+                                                                        ) : (
+                                                                            <div className="w-12 h-12 bg-[#1a1a1a] border border-[#333] flex items-center justify-center">
+                                                                                <ShoppingBag size={16} className="text-gray-600" />
+                                                                            </div>
+                                                                        )}
+                                                                        {item.quantity > 1 && (
+                                                                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-neon-gold text-black text-[10px] flex items-center justify-center font-bold">
+                                                                                {item.quantity}
+                                                                            </span>
+                                                                        )}
                                                                     </div>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                        {order.lineItems.length > 4 && (
-                                                            <div className="w-12 h-12 bg-[#1a1a1a] border border-[#333] flex items-center justify-center text-gray-500 text-xs font-mono">
-                                                                +{order.lineItems.length - 4}
+                                                                ))}
                                                             </div>
                                                         )}
-                                                    </div>
-                                                )}
 
-                                                {/* Bottom Row: Status Badges & Total */}
-                                                <div className="flex flex-wrap justify-between items-center gap-3">
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {/* Payment Status */}
-                                                        <span className={`text-xs px-2 py-1 border rounded-none font-mono uppercase tracking-wider ${paymentBadge.className}`}>
-                                                            {paymentBadge.label}
-                                                        </span>
-                                                        {/* Fulfillment Status */}
-                                                        <span className={`text-xs px-2 py-1 border rounded-none font-mono uppercase tracking-wider ${fulfillmentBadge.className}`}>
-                                                            {fulfillmentBadge.label}
-                                                        </span>
-                                                    </div>
+                                                        {/* Bottom Row: Status Badges & Total */}
+                                                        <div className="flex flex-wrap justify-between items-center gap-3">
+                                                            <div className="flex flex-wrap gap-2">
+                                                                {/* Payment Status */}
+                                                                <span className={`text-xs px-2 py-1 border rounded-none font-mono uppercase tracking-wider ${paymentBadge.className}`}>
+                                                                    {paymentBadge.label}
+                                                                </span>
+                                                                {/* Fulfillment Status */}
+                                                                <span className={`text-xs px-2 py-1 border rounded-none font-mono uppercase tracking-wider ${fulfillmentBadge.className}`}>
+                                                                    {fulfillmentBadge.label}
+                                                                </span>
+                                                            </div>
 
-                                                    {/* Total Price */}
-                                                    <span className="font-display text-xl font-bold text-white">
-                                                        {formatCurrency(order.totalPrice.amount, order.totalPrice.currencyCode)}
-                                                    </span>
-                                                </div>
-                                            </motion.div>
-                                        );
-                                    })}
-                                </div>
-                            ) : (
-                                /* Empty State */
-                                <div className="border border-[#222] bg-[#0a0a0a] p-12 rounded-none text-center">
-                                    <Package className="h-16 w-16 text-gray-700 mx-auto mb-4" />
-                                    <h3 className="font-display text-xl uppercase tracking-wider text-gray-400 mb-2">
-                                        NO MISSIONS FOUND
-                                    </h3>
-                                    <p className="text-gray-600 text-sm mb-6 font-mono">
-                                        Your transaction log is empty.
-                                    </p>
-                                    <Link
-                                        to="/shop"
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black hover:bg-neon-gold transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-sm font-bold"
-                                    >
-                                        <ShoppingBag size={18} />
-                                        START A NEW ORDER
-                                    </Link>
-                                </div>
+                                                            {/* Total Price */}
+                                                            <span className="font-display text-xl font-bold text-white">
+                                                                {formatCurrency(order.totalPrice.amount, order.totalPrice.currencyCode)}
+                                                            </span>
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                        </div>
+                                    ) : (
+                                        /* Empty State */
+                                        <div className="border border-[#222] bg-[#0a0a0a] p-12 rounded-none text-center">
+                                            <Package className="h-16 w-16 text-gray-700 mx-auto mb-4" />
+                                            <h3 className="font-display text-xl uppercase tracking-wider text-gray-400 mb-2">
+                                                NO MISSIONS FOUND
+                                            </h3>
+                                            <p className="text-gray-600 text-sm mb-6 font-mono">
+                                                Your transaction log is empty.
+                                            </p>
+                                            <Link
+                                                to="/shop"
+                                                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black hover:bg-neon-gold transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-sm font-bold"
+                                            >
+                                                <ShoppingBag size={18} />
+                                                START A NEW ORDER
+                                            </Link>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Address Book Tab */}
+                            {activeTab === 'addresses' && (
+                                <AddressBook
+                                    addresses={customer?.addresses || []}
+                                    defaultAddressId={customer?.defaultAddressId}
+                                    customerToken={customerToken}
+                                    onRefresh={refetchCustomerData}
+                                />
                             )}
                         </div>
                     </motion.div>
