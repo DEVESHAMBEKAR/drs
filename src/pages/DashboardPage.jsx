@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, MapPin, Package, AlertCircle, RefreshCw, ShoppingBag, Settings, LogOut } from 'lucide-react';
+import { User, MapPin, Package, AlertCircle, RefreshCw, ShoppingBag, Settings, LogOut, Truck, ExternalLink } from 'lucide-react';
 import { fetchCustomerDossier, formatCurrency, formatDate } from '../api/shopify';
 import AddressBook from '../components/AddressBook';
 
@@ -292,8 +292,8 @@ const DashboardPage = () => {
                                 <button
                                     onClick={() => setActiveTab('orders')}
                                     className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'orders'
-                                            ? 'text-neon-gold border-b-2 border-neon-gold'
-                                            : 'text-gray-500 hover:text-white'
+                                        ? 'text-neon-gold border-b-2 border-neon-gold'
+                                        : 'text-gray-500 hover:text-white'
                                         }`}
                                 >
                                     <Package className="h-4 w-4" />
@@ -302,8 +302,8 @@ const DashboardPage = () => {
                                 <button
                                     onClick={() => setActiveTab('addresses')}
                                     className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'addresses'
-                                            ? 'text-neon-gold border-b-2 border-neon-gold'
-                                            : 'text-gray-500 hover:text-white'
+                                        ? 'text-neon-gold border-b-2 border-neon-gold'
+                                        : 'text-gray-500 hover:text-white'
                                         }`}
                                 >
                                     <MapPin className="h-4 w-4" />
@@ -385,6 +385,43 @@ const DashboardPage = () => {
                                                                 {formatCurrency(order.totalPrice.amount, order.totalPrice.currencyCode)}
                                                             </span>
                                                         </div>
+
+                                                        {/* Tracking Info Section */}
+                                                        {order.trackingInfo?.length > 0 && (
+                                                            <div className="mt-4 pt-4 border-t border-[#222]">
+                                                                <div className="flex items-center gap-2 mb-2">
+                                                                    <Truck size={14} className="text-neon-gold" />
+                                                                    <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">
+                                                                        TRACKING DETAILS
+                                                                    </span>
+                                                                </div>
+                                                                <div className="space-y-2">
+                                                                    {order.trackingInfo.map((tracking, idx) => (
+                                                                        <div key={idx} className="flex items-center justify-between bg-[#111] border border-[#222] p-3">
+                                                                            <div>
+                                                                                <p className="text-xs text-gray-500 font-mono">
+                                                                                    {tracking.company || 'Carrier'}
+                                                                                </p>
+                                                                                <p className="text-sm text-white font-mono">
+                                                                                    {tracking.number}
+                                                                                </p>
+                                                                            </div>
+                                                                            {tracking.url && (
+                                                                                <a
+                                                                                    href={tracking.url}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    className="flex items-center gap-1 px-3 py-1.5 text-xs text-neon-gold border border-neon-gold/30 hover:bg-neon-gold hover:text-black transition-colors"
+                                                                                >
+                                                                                    <ExternalLink size={12} />
+                                                                                    TRACK
+                                                                                </a>
+                                                                            )}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
                                                     </motion.div>
                                                 );
                                             })}

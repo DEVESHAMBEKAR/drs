@@ -69,12 +69,25 @@ export const fetchCustomerDossier = async (token) => {
                         node {
                             id
                             orderNumber
+                            name
                             processedAt
                             fulfillmentStatus
                             financialStatus
                             totalPrice { 
                                 amount 
                                 currencyCode 
+                            }
+                            shippingAddress {
+                                city
+                                province
+                                country
+                            }
+                            successfulFulfillments(first: 5) {
+                                trackingCompany
+                                trackingInfo(first: 3) {
+                                    number
+                                    url
+                                }
                             }
                             lineItems(first: 5) {
                                 edges {
@@ -137,19 +150,41 @@ export const fetchCustomerDossier = async (token) => {
             formatted: edge.node.formatted,
             isDefault: edge.node.id === defaultAddressId,
         })) || [],
-        orders: customer.orders?.edges?.map(edge => ({
-            id: edge.node.id,
-            orderNumber: edge.node.orderNumber,
-            processedAt: edge.node.processedAt,
-            totalPrice: edge.node.totalPrice,
-            financialStatus: edge.node.financialStatus,
-            fulfillmentStatus: edge.node.fulfillmentStatus,
-            lineItems: edge.node.lineItems?.edges?.map(item => ({
-                title: item.node.title,
-                quantity: item.node.quantity,
-                imageUrl: item.node.variant?.image?.url || null,
-            })) || [],
-        })) || [],
+        orders: customer.orders?.edges?.map(edge => {
+            // Extract tracking info from successful fulfillments
+            const fulfillments = edge.node.successfulFulfillments || [];
+            const trackingInfo = [];
+
+            fulfillments.forEach(fulfillment => {
+                const company = fulfillment.trackingCompany;
+                fulfillment.trackingInfo?.forEach(info => {
+                    if (info.number) {
+                        trackingInfo.push({
+                            company: company,
+                            number: info.number,
+                            url: info.url,
+                        });
+                    }
+                });
+            });
+
+            return {
+                id: edge.node.id,
+                orderNumber: edge.node.orderNumber,
+                name: edge.node.name,
+                processedAt: edge.node.processedAt,
+                totalPrice: edge.node.totalPrice,
+                financialStatus: edge.node.financialStatus,
+                fulfillmentStatus: edge.node.fulfillmentStatus,
+                shippingAddress: edge.node.shippingAddress,
+                trackingInfo: trackingInfo,
+                lineItems: edge.node.lineItems?.edges?.map(item => ({
+                    title: item.node.title,
+                    quantity: item.node.quantity,
+                    imageUrl: item.node.variant?.image?.url || null,
+                })) || [],
+            };
+        }) || [],
     };
 };
 
