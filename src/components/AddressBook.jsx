@@ -563,16 +563,17 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                         </div>
                                     </div>
 
-                                    {/* Phone */}
+                                    {/* Phone - MANDATORY */}
                                     <div>
-                                        <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
-                                            Phone (Optional)
+                                        <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                            Mobile Number
                                         </label>
                                         <input
                                             type="tel"
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
+                                            required
                                             placeholder="+91 XXXXX XXXXX"
                                             className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
                                         />
