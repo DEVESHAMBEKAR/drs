@@ -10,6 +10,7 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import DashboardPage from './pages/DashboardPage';
+import CheckoutReviewPage from './pages/CheckoutReviewPage';
 import AuthCallback from './pages/AuthCallback';
 
 function AppContent() {
@@ -50,6 +51,9 @@ function AppContent() {
 
                     {/* OAuth Callback - Handles Google Sign-In redirect */}
                     <Route path="/account/callback" element={<AuthCallback />} />
+
+                    {/* Checkout Review - Pre-checkout summary page */}
+                    <Route path="/checkout" element={<CheckoutReviewPage />} />
                 </Routes>
             </main>
 

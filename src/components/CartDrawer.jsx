@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useShopify } from '../context/ShopifyContext';
 import { Lock } from 'lucide-react';
 
 const CartDrawer = () => {
+    const navigate = useNavigate();
     const {
         cart,
         isCartOpen,
@@ -275,16 +277,17 @@ const CartDrawer = () => {
                                 </div>
 
                                 {/* Checkout Button - Illuminated LED Design */}
-                                <motion.a
-                                    href={cart.webUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                <motion.button
+                                    onClick={() => {
+                                        setIsCartOpen(false);
+                                        navigate('/checkout');
+                                    }}
                                     className="mt-4 block w-full bg-brand-white px-6 py-4 rounded-full text-center font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     PROCEED TO CHECKOUT
-                                </motion.a>
+                                </motion.button>
 
                                 {/* Trust Signals */}
                                 <div className="mt-4 space-y-3 border-t border-smoke/20 pt-4">

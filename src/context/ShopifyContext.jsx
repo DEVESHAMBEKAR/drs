@@ -17,6 +17,10 @@ export const ShopifyProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [customerToken, setCustomerToken] = useState(() => localStorage.getItem('customer_token') || null);
     const [userOrders, setUserOrders] = useState([]);
+    const [customer, setCustomer] = useState(null);
+
+    // Computed: Check if user is logged in
+    const isLoggedIn = !!customerToken;
 
     // Initialize checkout/cart on mount
     useEffect(() => {
@@ -29,7 +33,90 @@ export const ShopifyProvider = ({ children }) => {
             // Create new checkout if none exists
             initializeCheckout();
         }
+
+        // Check if returning from Shopify login
+        checkAuthFromUrl();
     }, []);
+
+    // Fetch orders and associate cart when customer logs in
+    useEffect(() => {
+        if (customerToken) {
+            fetchCustomerOrders();
+            fetchCustomerInfo();
+
+            // Associate existing cart with logged-in customer
+            if (cart && customer?.email) {
+                client.checkout.updateEmail(cart.id, customer.email)
+                    .then(updatedCheckout => {
+                        setCart(updatedCheckout);
+                        console.log('✅ Cart associated with customer:', customer.email);
+                    })
+                    .catch(err => console.warn('Could not associate cart:', err));
+            }
+        }
+    }, [customerToken, customer?.email]);
+
+    /**
+     * Check if user is returning from Shopify's hosted login
+     * Shopify may pass auth info in URL or cookies
+     */
+    const checkAuthFromUrl = () => {
+        // Check URL for auth callback params
+        const urlParams = new URLSearchParams(window.location.search);
+        const authSuccess = urlParams.get('customer_posted') || urlParams.get('logged_in');
+
+        if (authSuccess) {
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            console.log('✅ Customer returned from Shopify login');
+        }
+    };
+
+    /**
+     * Fetch Customer Info
+     */
+    const fetchCustomerInfo = async () => {
+        if (!customerToken) return;
+
+        try {
+            const query = `
+                query {
+                    customer(customerAccessToken: "${customerToken}") {
+                        id
+                        firstName
+                        lastName
+                        email
+                        phone
+                        defaultAddress {
+                            address1
+                            city
+                            province
+                            country
+                            zip
+                        }
+                    }
+                }
+            `;
+
+            const response = await fetch(`https://${client.config.domain}/api/2024-01/graphql.json`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Shopify-Storefront-Access-Token': client.config.storefrontAccessToken
+                },
+                body: JSON.stringify({ query })
+            });
+
+            const result = await response.json();
+
+            if (result.data?.customer) {
+                setCustomer(result.data.customer);
+                console.log('✅ Customer info fetched:', result.data.customer.email);
+            }
+        } catch (error) {
+            console.error('❌ Error fetching customer info:', error);
+        }
+    };
 
     // Log cart updates for debugging
     useEffect(() => {
@@ -48,10 +135,27 @@ export const ShopifyProvider = ({ children }) => {
         try {
             console.log('Creating new checkout...');
             const newCheckout = await client.checkout.create();
+
+            // If customer is logged in, associate their email with the checkout
+            if (customerToken && customer?.email) {
+                try {
+                    const updatedCheckout = await client.checkout.updateEmail(newCheckout.id, customer.email);
+                    setCart(updatedCheckout);
+                    localStorage.setItem('checkoutId', updatedCheckout.id);
+                    console.log('✅ Checkout created and associated with customer:', customer.email);
+                    return updatedCheckout;
+                } catch (emailError) {
+                    console.warn('Could not associate email with checkout:', emailError);
+                    setCart(newCheckout);
+                    localStorage.setItem('checkoutId', newCheckout.id);
+                    return newCheckout;
+                }
+            }
+
             setCart(newCheckout);
             localStorage.setItem('checkoutId', newCheckout.id);
             console.log('New checkout created:', newCheckout.id);
-            return newCheckout; // Return the checkout for immediate use
+            return newCheckout;
         } catch (error) {
             console.error('Error initializing checkout:', error);
             return null;
@@ -422,11 +526,14 @@ export const ShopifyProvider = ({ children }) => {
         getCartItemCount,
         client, // Expose client for advanced usage
         // Customer authentication
+        isLoggedIn,
+        customer,
         customerToken,
         userOrders,
         loginCustomer,
         loginWithGoogle,
         fetchCustomerOrders,
+        fetchCustomerInfo,
         logoutCustomer,
     };
 
