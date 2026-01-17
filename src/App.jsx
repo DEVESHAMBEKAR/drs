@@ -10,6 +10,7 @@ import ProductDetailsPage from './pages/ProductDetailsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import DashboardPage from './pages/DashboardPage';
+import OrderDetailPage from './pages/OrderDetailPage';
 import CheckoutReviewPage from './pages/CheckoutReviewPage';
 import AuthCallback from './pages/AuthCallback';
 
@@ -48,6 +49,9 @@ function AppContent() {
                     <Route path="/account" element={<DashboardPage />} />
                     <Route path="/account/orders" element={<DashboardPage />} />
                     <Route path="/account/addresses" element={<DashboardPage />} />
+
+                    {/* Order Detail Page */}
+                    <Route path="/account/order/:orderId" element={<OrderDetailPage />} />
 
                     {/* OAuth Callback - Handles Google Sign-In redirect */}
                     <Route path="/account/callback" element={<AuthCallback />} />

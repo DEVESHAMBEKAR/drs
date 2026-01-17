@@ -323,7 +323,8 @@ const DashboardPage = () => {
                                                 return (
                                                     <motion.div
                                                         key={order.id}
-                                                        className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-white/50 transition-colors cursor-pointer group"
+                                                        onClick={() => navigate(`/account/order/${order.orderNumber}`)}
+                                                        className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-neon-gold/50 transition-colors cursor-pointer group"
                                                         whileHover={{ scale: 1.005 }}
                                                         transition={{ duration: 0.2 }}
                                                     >
