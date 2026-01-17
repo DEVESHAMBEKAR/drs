@@ -239,8 +239,8 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <MapPin className="h-5 w-5 text-neon-gold" />
-                    <h2 className="font-mono text-sm uppercase tracking-widest text-neon-gold">
+                    <MapPin className="h-5 w-5 text-white" />
+                    <h2 className="font-mono text-sm uppercase tracking-widest text-white">
                         BASE COORDINATES ({addresses.length})
                     </h2>
                 </div>
@@ -267,7 +267,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                     <motion.div
                         key={address.id}
                         className={`relative border p-5 bg-[#0a0a0a] ${address.isDefault
-                            ? 'border-neon-gold/50'
+                            ? 'border-white/50'
                             : 'border-[#333] hover:border-[#555]'
                             } transition-colors`}
                         initial={{ opacity: 0, y: 10 }}
@@ -275,7 +275,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                     >
                         {/* Default Badge */}
                         {address.isDefault && (
-                            <div className="absolute top-3 right-3 flex items-center gap-1 text-neon-gold text-xs font-mono">
+                            <div className="absolute top-3 right-3 flex items-center gap-1 text-white text-xs font-mono">
                                 <Star size={12} fill="currentColor" />
                                 PRIMARY
                             </div>
@@ -312,7 +312,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                 <button
                                     onClick={() => handleSetDefault(address.id)}
                                     disabled={isLoading}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-xs text-neon-gold/70 hover:text-neon-gold border border-neon-gold/30 hover:border-neon-gold transition-colors"
+                                    className="flex items-center gap-1 px-3 py-1.5 text-xs text-white/70 hover:text-white border border-white/30 hover:border-white transition-colors"
                                 >
                                     <Star size={12} />
                                     SET DEFAULT
@@ -353,14 +353,14 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                         resetForm();
                         setIsFormOpen(true);
                     }}
-                    className="border-2 border-dashed border-[#333] hover:border-neon-gold/50 p-8 flex flex-col items-center justify-center gap-3 transition-colors group min-h-[200px]"
+                    className="border-2 border-dashed border-[#333] hover:border-white/50 p-8 flex flex-col items-center justify-center gap-3 transition-colors group min-h-[200px]"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                 >
-                    <div className="w-12 h-12 rounded-full bg-[#111] border border-[#333] group-hover:border-neon-gold/50 flex items-center justify-center transition-colors">
-                        <Plus className="h-6 w-6 text-gray-600 group-hover:text-neon-gold" />
+                    <div className="w-12 h-12 rounded-full bg-[#111] border border-[#333] group-hover:border-white/50 flex items-center justify-center transition-colors">
+                        <Plus className="h-6 w-6 text-gray-600 group-hover:text-white" />
                     </div>
-                    <span className="font-mono text-xs text-gray-500 group-hover:text-neon-gold uppercase tracking-wider">
+                    <span className="font-mono text-xs text-gray-500 group-hover:text-white uppercase tracking-wider">
                         REGISTER NEW COORDINATES
                     </span>
                 </motion.button>
@@ -406,7 +406,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                         {/* Name Row */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     First Name
                                                 </label>
                                                 <input
@@ -415,11 +415,11 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.firstName}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     Last Name
                                                 </label>
                                                 <input
@@ -428,7 +428,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.lastName}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -443,13 +443,13 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 name="company"
                                                 value={formData.company}
                                                 onChange={handleChange}
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
                                             />
                                         </div>
 
                                         {/* Address Line 1 */}
                                         <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                            <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                 Address Line 1
                                             </label>
                                             <input
@@ -459,7 +459,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 onChange={handleChange}
                                                 required
                                                 placeholder="Street address, P.O. box"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
                                             />
                                         </div>
 
@@ -474,14 +474,14 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 value={formData.address2}
                                                 onChange={handleChange}
                                                 placeholder="Apartment, suite, unit, building, floor"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
                                             />
                                         </div>
 
                                         {/* PIN Code & Country Row - FIRST */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     PIN / ZIP Code
                                                 </label>
                                                 <div className="relative">
@@ -495,12 +495,12 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                         placeholder="6-digit PIN"
                                                         className={`w-full h-10 px-3 bg-[#111] border text-white text-sm focus:outline-none ${pincodeError
                                                             ? 'border-red-500 focus:border-red-500'
-                                                            : 'border-[#333] focus:border-neon-gold'
+                                                            : 'border-[#333] focus:border-white'
                                                             }`}
                                                     />
                                                     {pincodeLoading && (
                                                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                            <Loader2 className="h-4 w-4 animate-spin text-neon-gold" />
+                                                            <Loader2 className="h-4 w-4 animate-spin text-white" />
                                                         </div>
                                                     )}
                                                 </div>
@@ -512,14 +512,14 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 )}
                                             </div>
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     Country
                                                 </label>
                                                 <select
                                                     name="country"
                                                     value={formData.country}
                                                     onChange={handleChange}
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
                                                 >
                                                     <option value="India">India</option>
                                                     <option value="United States">United States</option>
@@ -533,7 +533,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                         {/* City & State Row - Auto-filled from pincode */}
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     City / District
                                                     {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
                                                 </label>
@@ -543,12 +543,12 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.city}
                                                     onChange={handleChange}
                                                     required
-                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
                                                         }`}
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     State / Province
                                                     {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
                                                 </label>
@@ -558,7 +558,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.province}
                                                     onChange={handleChange}
                                                     required
-                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
                                                         }`}
                                                 />
                                             </div>
@@ -566,7 +566,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
 
                                         {/* Phone - MANDATORY */}
                                         <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                            <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                 Mobile Number
                                             </label>
                                             <input
@@ -576,12 +576,12 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 onChange={handleChange}
                                                 required
                                                 placeholder="+91 XXXXX XXXXX"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
                                             />
                                         </div>
 
                                         {/* Set as Default Checkbox */}
-                                        <label className="flex items-center gap-3 p-3 bg-[#111] border border-[#333] cursor-pointer hover:border-neon-gold/50 transition-colors">
+                                        <label className="flex items-center gap-3 p-3 bg-[#111] border border-[#333] cursor-pointer hover:border-white/50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="isDefault"
@@ -606,7 +606,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="w-full h-12 bg-neon-gold text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:opacity-50 flex items-center justify-center gap-2"
+                                            className="w-full h-12 bg-white text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
                                         >
                                             {isLoading ? (
                                                 <>

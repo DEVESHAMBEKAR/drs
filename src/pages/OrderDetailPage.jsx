@@ -86,7 +86,7 @@ const OrderDetailPage = () => {
         return (
             <div className="min-h-screen bg-[#050505] flex items-center justify-center">
                 <div className="text-center">
-                    <Loader2 className="h-12 w-12 animate-spin text-neon-gold mx-auto mb-4" />
+                    <Loader2 className="h-12 w-12 animate-spin text-white mx-auto mb-4" />
                     <p className="text-gray-500 font-mono text-sm">LOADING ORDER DATA...</p>
                 </div>
             </div>
@@ -106,7 +106,7 @@ const OrderDetailPage = () => {
                     </p>
                     <Link
                         to="/account"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-neon-gold text-black font-bold uppercase tracking-wider"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black font-bold uppercase tracking-wider"
                     >
                         <ArrowLeft size={18} />
                         RETURN TO DASHBOARD
@@ -146,7 +146,7 @@ const OrderDetailPage = () => {
                     className="mb-8"
                 >
                     <div className="flex flex-wrap items-center gap-4 mb-4">
-                        <h1 className="font-display text-3xl md:text-4xl font-bold uppercase tracking-wider text-neon-gold">
+                        <h1 className="font-display text-3xl md:text-4xl font-bold uppercase tracking-wider text-white">
                             ORDER #{order.orderNumber}
                         </h1>
                         <div className="flex gap-2">
@@ -177,7 +177,7 @@ const OrderDetailPage = () => {
                         {/* Items Section */}
                         <div className="border border-[#333] bg-[#0a0a0a] p-6 mb-6">
                             <div className="flex items-center gap-2 mb-6">
-                                <ShoppingBag className="h-5 w-5 text-neon-gold" />
+                                <ShoppingBag className="h-5 w-5 text-white" />
                                 <h2 className="font-mono text-sm uppercase tracking-widest text-gray-400">
                                     ORDER ITEMS ({order.lineItems?.length || 0})
                                 </h2>
@@ -222,7 +222,7 @@ const OrderDetailPage = () => {
                         {order.trackingInfo?.length > 0 && (
                             <div className="border border-[#333] bg-[#0a0a0a] p-6">
                                 <div className="flex items-center gap-2 mb-6">
-                                    <Truck className="h-5 w-5 text-neon-gold" />
+                                    <Truck className="h-5 w-5 text-white" />
                                     <h2 className="font-mono text-sm uppercase tracking-widest text-gray-400">
                                         SHIPMENT TRACKING
                                     </h2>
@@ -247,7 +247,7 @@ const OrderDetailPage = () => {
                                                     href={tracking.url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="flex items-center justify-center gap-2 px-6 py-3 bg-neon-gold text-black font-bold uppercase tracking-wider hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all"
+                                                    className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-black font-bold uppercase tracking-wider hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all"
                                                 >
                                                     <ExternalLink size={16} />
                                                     TRACK SHIPMENT
@@ -268,14 +268,14 @@ const OrderDetailPage = () => {
                         className="space-y-6"
                     >
                         {/* Order Total Card */}
-                        <div className="border border-neon-gold/30 bg-[#0a0a0a] p-6">
+                        <div className="border border-white/30 bg-[#0a0a0a] p-6">
                             <div className="flex items-center gap-2 mb-4">
-                                <CreditCard className="h-5 w-5 text-neon-gold" />
+                                <CreditCard className="h-5 w-5 text-white" />
                                 <h2 className="font-mono text-sm uppercase tracking-widest text-gray-400">
                                     ORDER TOTAL
                                 </h2>
                             </div>
-                            <p className="font-display text-4xl font-bold text-neon-gold">
+                            <p className="font-display text-4xl font-bold text-white">
                                 {formatCurrency(order.totalPrice.amount, order.totalPrice.currencyCode)}
                             </p>
                         </div>
@@ -284,7 +284,7 @@ const OrderDetailPage = () => {
                         {order.shippingAddress && (
                             <div className="border border-[#333] bg-[#0a0a0a] p-6">
                                 <div className="flex items-center gap-2 mb-4">
-                                    <MapPin className="h-5 w-5 text-neon-gold" />
+                                    <MapPin className="h-5 w-5 text-white" />
                                     <h2 className="font-mono text-sm uppercase tracking-widest text-gray-400">
                                         SHIPPING TO
                                     </h2>
@@ -306,7 +306,7 @@ const OrderDetailPage = () => {
                         {/* Order Timeline */}
                         <div className="border border-[#333] bg-[#0a0a0a] p-6">
                             <div className="flex items-center gap-2 mb-4">
-                                <Clock className="h-5 w-5 text-neon-gold" />
+                                <Clock className="h-5 w-5 text-white" />
                                 <h2 className="font-mono text-sm uppercase tracking-widest text-gray-400">
                                     STATUS
                                 </h2>

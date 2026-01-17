@@ -197,7 +197,7 @@ const DashboardPage = () => {
                     </h1>
                     {!isLoading && customer && (
                         <p className="mt-3 text-gray-500 text-sm md:text-base font-mono">
-                            Welcome back, <span className="text-neon-gold">{customer.firstName}</span>. Accessing secure records.
+                            Welcome back, <span className="text-white">{customer.firstName}</span>. Accessing secure records.
                         </p>
                     )}
                 </motion.div>
@@ -216,7 +216,7 @@ const DashboardPage = () => {
                             {/* Operative Details Card */}
                             <div className="border border-[#333] bg-[#0a0a0a] p-6 rounded-none">
                                 <div className="flex items-center gap-2 mb-6">
-                                    <User className="h-4 w-4 text-neon-gold" />
+                                    <User className="h-4 w-4 text-white" />
                                     <h2 className="font-mono text-xs uppercase tracking-widest text-gray-500">
                                         OPERATIVE DETAILS
                                     </h2>
@@ -253,7 +253,7 @@ const DashboardPage = () => {
                                 {/* Base Location */}
                                 <div>
                                     <div className="flex items-center gap-2 mb-3">
-                                        <MapPin className="h-4 w-4 text-neon-gold" />
+                                        <MapPin className="h-4 w-4 text-white" />
                                         <h3 className="font-mono text-xs uppercase tracking-widest text-gray-500">
                                             BASE LOCATION
                                         </h3>
@@ -292,7 +292,7 @@ const DashboardPage = () => {
                                 <button
                                     onClick={() => setActiveTab('orders')}
                                     className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'orders'
-                                        ? 'text-neon-gold border-b-2 border-neon-gold'
+                                        ? 'text-white border-b-2 border-white'
                                         : 'text-gray-500 hover:text-white'
                                         }`}
                                 >
@@ -302,7 +302,7 @@ const DashboardPage = () => {
                                 <button
                                     onClick={() => setActiveTab('addresses')}
                                     className={`flex items-center gap-2 pb-4 font-mono text-xs uppercase tracking-widest transition-colors ${activeTab === 'addresses'
-                                        ? 'text-neon-gold border-b-2 border-neon-gold'
+                                        ? 'text-white border-b-2 border-white'
                                         : 'text-gray-500 hover:text-white'
                                         }`}
                                 >
@@ -324,13 +324,13 @@ const DashboardPage = () => {
                                                     <motion.div
                                                         key={order.id}
                                                         onClick={() => navigate(`/account/order/${order.orderNumber}`)}
-                                                        className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-neon-gold/50 transition-colors cursor-pointer group"
+                                                        className="border border-[#222] bg-[#0a0a0a] p-4 md:p-5 rounded-none hover:border-white/50 transition-colors cursor-pointer group"
                                                         whileHover={{ scale: 1.005 }}
                                                         transition={{ duration: 0.2 }}
                                                     >
                                                         {/* Top Row: Order ID & Date */}
                                                         <div className="flex justify-between items-center mb-4">
-                                                            <span className="font-mono text-neon-gold font-bold text-lg">
+                                                            <span className="font-mono text-white font-bold text-lg">
                                                                 ORDER #{order.orderNumber}
                                                             </span>
                                                             <span className="text-gray-500 text-sm font-mono">
@@ -359,7 +359,7 @@ const DashboardPage = () => {
                                                                             </div>
                                                                         )}
                                                                         {item.quantity > 1 && (
-                                                                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-neon-gold text-black text-[10px] flex items-center justify-center font-bold">
+                                                                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-white text-black text-[10px] flex items-center justify-center font-bold">
                                                                                 {item.quantity}
                                                                             </span>
                                                                         )}
@@ -391,7 +391,7 @@ const DashboardPage = () => {
                                                         {order.trackingInfo?.length > 0 && (
                                                             <div className="mt-4 pt-4 border-t border-[#222]">
                                                                 <div className="flex items-center gap-2 mb-2">
-                                                                    <Truck size={14} className="text-neon-gold" />
+                                                                    <Truck size={14} className="text-white" />
                                                                     <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">
                                                                         TRACKING DETAILS
                                                                     </span>
@@ -412,7 +412,7 @@ const DashboardPage = () => {
                                                                                     href={tracking.url}
                                                                                     target="_blank"
                                                                                     rel="noopener noreferrer"
-                                                                                    className="flex items-center gap-1 px-3 py-1.5 text-xs text-neon-gold border border-neon-gold/30 hover:bg-neon-gold hover:text-black transition-colors"
+                                                                                    className="flex items-center gap-1 px-3 py-1.5 text-xs text-white border border-white/30 hover:bg-white hover:text-black transition-colors"
                                                                                 >
                                                                                     <ExternalLink size={12} />
                                                                                     TRACK
@@ -439,7 +439,7 @@ const DashboardPage = () => {
                                             </p>
                                             <Link
                                                 to="/shop"
-                                                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black hover:bg-neon-gold transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-sm font-bold"
+                                                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-black hover:bg-white transition-colors duration-200 rounded-none font-display uppercase tracking-wider text-sm font-bold"
                                             >
                                                 <ShoppingBag size={18} />
                                                 START A NEW ORDER
