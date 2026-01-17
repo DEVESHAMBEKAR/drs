@@ -28,6 +28,8 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+    const [pincodeLoading, setPincodeLoading] = useState(false);
+    const [pincodeError, setPincodeError] = useState(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -43,6 +45,40 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
         phone: '',
         isDefault: false,
     });
+
+    /**
+     * Fetch city and state from pincode using Indian Postal API
+     */
+    const fetchLocationByPincode = async (pincode) => {
+        if (!pincode || pincode.length !== 6 || !/^\d{6}$/.test(pincode)) {
+            return;
+        }
+
+        setPincodeLoading(true);
+        setPincodeError(null);
+
+        try {
+            const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+            const data = await response.json();
+
+            if (data[0]?.Status === 'Success' && data[0]?.PostOffice?.length > 0) {
+                const postOffice = data[0].PostOffice[0];
+                setFormData(prev => ({
+                    ...prev,
+                    city: postOffice.District || postOffice.Block || '',
+                    province: postOffice.State || '',
+                }));
+                console.log('✅ Pincode lookup successful:', postOffice.District, postOffice.State);
+            } else {
+                setPincodeError('Invalid pincode');
+            }
+        } catch (err) {
+            console.error('Pincode lookup failed:', err);
+            setPincodeError('Could not fetch location');
+        } finally {
+            setPincodeLoading(false);
+        }
+    };
 
     /**
      * Reset form and close modal
@@ -64,6 +100,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
         setEditingAddress(null);
         setIsFormOpen(false);
         setError(null);
+        setPincodeError(null);
     };
 
     /**
@@ -85,6 +122,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
         });
         setEditingAddress(address);
         setIsFormOpen(true);
+        setPincodeError(null);
     };
 
     /**
@@ -96,6 +134,11 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
             ...prev,
             [name]: type === 'checkbox' ? checked : value,
         }));
+
+        // Auto-fetch city/state when pincode is entered (India only)
+        if (name === 'zip' && formData.country === 'India') {
+            fetchLocationByPincode(value);
+        }
     };
 
     /**
@@ -224,8 +267,8 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                     <motion.div
                         key={address.id}
                         className={`relative border p-5 bg-[#0a0a0a] ${address.isDefault
-                                ? 'border-neon-gold/50'
-                                : 'border-[#333] hover:border-[#555]'
+                            ? 'border-neon-gold/50'
+                            : 'border-[#333] hover:border-[#555]'
                             } transition-colors`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -434,50 +477,38 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                         />
                                     </div>
 
-                                    {/* City & Province Row */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                City
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="city"
-                                                value={formData.city}
-                                                onChange={handleChange}
-                                                required
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                State / Province
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="province"
-                                                value={formData.province}
-                                                onChange={handleChange}
-                                                required
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* ZIP & Country Row */}
+                                    {/* PIN Code & Country Row - FIRST */}
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
                                                 PIN / ZIP Code
                                             </label>
-                                            <input
-                                                type="text"
-                                                name="zip"
-                                                value={formData.zip}
-                                                onChange={handleChange}
-                                                required
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    name="zip"
+                                                    value={formData.zip}
+                                                    onChange={handleChange}
+                                                    required
+                                                    maxLength={6}
+                                                    placeholder="6-digit PIN"
+                                                    className={`w-full h-10 px-3 bg-[#111] border text-white text-sm focus:outline-none ${pincodeError
+                                                        ? 'border-red-500 focus:border-red-500'
+                                                        : 'border-[#333] focus:border-neon-gold'
+                                                        }`}
+                                                />
+                                                {pincodeLoading && (
+                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                        <Loader2 className="h-4 w-4 animate-spin text-neon-gold" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            {pincodeError && (
+                                                <p className="text-xs text-red-400 mt-1">{pincodeError}</p>
+                                            )}
+                                            {formData.country === 'India' && !pincodeError && !pincodeLoading && formData.zip?.length === 6 && formData.city && (
+                                                <p className="text-xs text-green-500 mt-1">✓ City & State auto-filled</p>
+                                            )}
                                         </div>
                                         <div>
                                             <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
@@ -495,6 +526,40 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 <option value="Canada">Canada</option>
                                                 <option value="Australia">Australia</option>
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    {/* City & State Row - Auto-filled from pincode */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                City / District
+                                                {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                value={formData.city}
+                                                onChange={handleChange}
+                                                required
+                                                className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                    }`}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                State / Province
+                                                {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="province"
+                                                value={formData.province}
+                                                onChange={handleChange}
+                                                required
+                                                className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                    }`}
+                                            />
                                         </div>
                                     </div>
 
@@ -555,11 +620,11 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                     </button>
                                 </form>
                             </div>
-                        </motion.div>
+                        </motion.div >
                     </>
                 )}
-            </AnimatePresence>
-        </div>
+            </AnimatePresence >
+        </div >
     );
 };
 
