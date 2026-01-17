@@ -379,247 +379,249 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
                         />
 
-                        {/* Form Modal */}
+                        {/* Form Modal - Scrollable Container */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+                            className="fixed inset-0 z-50 overflow-y-auto"
                         >
-                            <div className="relative w-full max-w-lg bg-[#0a0a0a] border border-[#333] p-6 md:p-8 my-8">
-                                {/* Close Button */}
-                                <button
-                                    onClick={resetForm}
-                                    className="absolute right-4 top-4 text-gray-500 hover:text-white"
-                                >
-                                    <X size={20} />
-                                </button>
+                            <div className="min-h-screen px-4 py-8 flex items-start justify-center">
+                                <div className="relative w-full max-w-lg bg-[#0a0a0a] border border-[#333] p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+                                    {/* Close Button */}
+                                    <button
+                                        onClick={resetForm}
+                                        className="absolute right-4 top-4 text-gray-500 hover:text-white z-10"
+                                    >
+                                        <X size={20} />
+                                    </button>
 
-                                {/* Form Header */}
-                                <h3 className="font-display text-xl text-white uppercase tracking-wider mb-6">
-                                    {editingAddress ? 'EDIT COORDINATES' : 'NEW COORDINATES'}
-                                </h3>
+                                    {/* Form Header */}
+                                    <h3 className="font-display text-xl text-white uppercase tracking-wider mb-6">
+                                        {editingAddress ? 'EDIT COORDINATES' : 'NEW COORDINATES'}
+                                    </h3>
 
-                                {/* Form */}
-                                <form onSubmit={handleSubmit} className="space-y-4">
-                                    {/* Name Row */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                First Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="firstName"
-                                                value={formData.firstName}
-                                                onChange={handleChange}
-                                                required
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                Last Name
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="lastName"
-                                                value={formData.lastName}
-                                                onChange={handleChange}
-                                                required
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Company */}
-                                    <div>
-                                        <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
-                                            Company (Optional)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="company"
-                                            value={formData.company}
-                                            onChange={handleChange}
-                                            className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* Address Line 1 */}
-                                    <div>
-                                        <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                            Address Line 1
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address1"
-                                            value={formData.address1}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="Street address, P.O. box"
-                                            className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* Address Line 2 */}
-                                    <div>
-                                        <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
-                                            Address Line 2 (Optional)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="address2"
-                                            value={formData.address2}
-                                            onChange={handleChange}
-                                            placeholder="Apartment, suite, unit, building, floor"
-                                            className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
-                                        />
-                                    </div>
-
-                                    {/* PIN Code & Country Row - FIRST */}
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                PIN / ZIP Code
-                                            </label>
-                                            <div className="relative">
+                                    {/* Form */}
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        {/* Name Row */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    First Name
+                                                </label>
                                                 <input
                                                     type="text"
-                                                    name="zip"
-                                                    value={formData.zip}
+                                                    name="firstName"
+                                                    value={formData.firstName}
                                                     onChange={handleChange}
                                                     required
-                                                    maxLength={6}
-                                                    placeholder="6-digit PIN"
-                                                    className={`w-full h-10 px-3 bg-[#111] border text-white text-sm focus:outline-none ${pincodeError
-                                                        ? 'border-red-500 focus:border-red-500'
-                                                        : 'border-[#333] focus:border-neon-gold'
-                                                        }`}
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
                                                 />
-                                                {pincodeLoading && (
-                                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                                                        <Loader2 className="h-4 w-4 animate-spin text-neon-gold" />
-                                                    </div>
-                                                )}
                                             </div>
-                                            {pincodeError && (
-                                                <p className="text-xs text-red-400 mt-1">{pincodeError}</p>
-                                            )}
-                                            {formData.country === 'India' && !pincodeError && !pincodeLoading && formData.zip?.length === 6 && formData.city && (
-                                                <p className="text-xs text-green-500 mt-1">✓ City & State auto-filled</p>
-                                            )}
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    Last Name
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="lastName"
+                                                    value={formData.lastName}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                />
+                                            </div>
                                         </div>
+
+                                        {/* Company */}
                                         <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                Country
+                                            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
+                                                Company (Optional)
                                             </label>
-                                            <select
-                                                name="country"
-                                                value={formData.country}
+                                            <input
+                                                type="text"
+                                                name="company"
+                                                value={formData.company}
                                                 onChange={handleChange}
                                                 className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
-                                            >
-                                                <option value="India">India</option>
-                                                <option value="United States">United States</option>
-                                                <option value="United Kingdom">United Kingdom</option>
-                                                <option value="Canada">Canada</option>
-                                                <option value="Australia">Australia</option>
-                                            </select>
+                                            />
                                         </div>
-                                    </div>
 
-                                    {/* City & State Row - Auto-filled from pincode */}
-                                    <div className="grid grid-cols-2 gap-4">
+                                        {/* Address Line 1 */}
                                         <div>
                                             <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                City / District
-                                                {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                                Address Line 1
                                             </label>
                                             <input
                                                 type="text"
-                                                name="city"
-                                                value={formData.city}
+                                                name="address1"
+                                                value={formData.address1}
                                                 onChange={handleChange}
                                                 required
-                                                className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
-                                                    }`}
+                                                placeholder="Street address, P.O. box"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
                                             />
                                         </div>
+
+                                        {/* Address Line 2 */}
                                         <div>
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                                State / Province
-                                                {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                            <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
+                                                Address Line 2 (Optional)
                                             </label>
                                             <input
                                                 type="text"
-                                                name="province"
-                                                value={formData.province}
+                                                name="address2"
+                                                value={formData.address2}
                                                 onChange={handleChange}
-                                                required
-                                                className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
-                                                    }`}
+                                                placeholder="Apartment, suite, unit, building, floor"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
                                             />
                                         </div>
-                                    </div>
 
-                                    {/* Phone - MANDATORY */}
-                                    <div>
-                                        <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
-                                            Mobile Number
+                                        {/* PIN Code & Country Row - FIRST */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    PIN / ZIP Code
+                                                </label>
+                                                <div className="relative">
+                                                    <input
+                                                        type="text"
+                                                        name="zip"
+                                                        value={formData.zip}
+                                                        onChange={handleChange}
+                                                        required
+                                                        maxLength={6}
+                                                        placeholder="6-digit PIN"
+                                                        className={`w-full h-10 px-3 bg-[#111] border text-white text-sm focus:outline-none ${pincodeError
+                                                            ? 'border-red-500 focus:border-red-500'
+                                                            : 'border-[#333] focus:border-neon-gold'
+                                                            }`}
+                                                    />
+                                                    {pincodeLoading && (
+                                                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                                            <Loader2 className="h-4 w-4 animate-spin text-neon-gold" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {pincodeError && (
+                                                    <p className="text-xs text-red-400 mt-1">{pincodeError}</p>
+                                                )}
+                                                {formData.country === 'India' && !pincodeError && !pincodeLoading && formData.zip?.length === 6 && formData.city && (
+                                                    <p className="text-xs text-green-500 mt-1">✓ City & State auto-filled</p>
+                                                )}
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    Country
+                                                </label>
+                                                <select
+                                                    name="country"
+                                                    value={formData.country}
+                                                    onChange={handleChange}
+                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none"
+                                                >
+                                                    <option value="India">India</option>
+                                                    <option value="United States">United States</option>
+                                                    <option value="United Kingdom">United Kingdom</option>
+                                                    <option value="Canada">Canada</option>
+                                                    <option value="Australia">Australia</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        {/* City & State Row - Auto-filled from pincode */}
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    City / District
+                                                    {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="city"
+                                                    value={formData.city}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                        }`}
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                    State / Province
+                                                    {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="province"
+                                                    value={formData.province}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-neon-gold focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
+                                                        }`}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Phone - MANDATORY */}
+                                        <div>
+                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider mb-2">
+                                                Mobile Number
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={handleChange}
+                                                required
+                                                placeholder="+91 XXXXX XXXXX"
+                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
+                                            />
+                                        </div>
+
+                                        {/* Set as Default Checkbox */}
+                                        <label className="flex items-center gap-3 p-3 bg-[#111] border border-[#333] cursor-pointer hover:border-neon-gold/50 transition-colors">
+                                            <input
+                                                type="checkbox"
+                                                name="isDefault"
+                                                checked={formData.isDefault}
+                                                onChange={handleChange}
+                                                className="w-4 h-4 accent-neon-gold"
+                                            />
+                                            <div>
+                                                <span className="text-sm text-white">Designate as Primary Base</span>
+                                                <p className="text-xs text-gray-500">This address will be used for shipping by default</p>
+                                            </div>
                                         </label>
-                                        <input
-                                            type="tel"
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="+91 XXXXX XXXXX"
-                                            className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-neon-gold focus:outline-none"
-                                        />
-                                    </div>
 
-                                    {/* Set as Default Checkbox */}
-                                    <label className="flex items-center gap-3 p-3 bg-[#111] border border-[#333] cursor-pointer hover:border-neon-gold/50 transition-colors">
-                                        <input
-                                            type="checkbox"
-                                            name="isDefault"
-                                            checked={formData.isDefault}
-                                            onChange={handleChange}
-                                            className="w-4 h-4 accent-neon-gold"
-                                        />
-                                        <div>
-                                            <span className="text-sm text-white">Designate as Primary Base</span>
-                                            <p className="text-xs text-gray-500">This address will be used for shipping by default</p>
-                                        </div>
-                                    </label>
-
-                                    {/* Error in Form */}
-                                    {error && (
-                                        <div className="p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-400">
-                                            {error}
-                                        </div>
-                                    )}
-
-                                    {/* Submit Button */}
-                                    <button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="w-full h-12 bg-neon-gold text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:opacity-50 flex items-center justify-center gap-2"
-                                    >
-                                        {isLoading ? (
-                                            <>
-                                                <Loader2 className="h-5 w-5 animate-spin" />
-                                                SYNCING...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Check size={18} />
-                                                {editingAddress ? 'UPDATE COORDINATES' : 'SAVE COORDINATES'}
-                                            </>
+                                        {/* Error in Form */}
+                                        {error && (
+                                            <div className="p-3 bg-red-500/10 border border-red-500/30 text-sm text-red-400">
+                                                {error}
+                                            </div>
                                         )}
-                                    </button>
-                                </form>
+
+                                        {/* Submit Button */}
+                                        <button
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className="w-full h-12 bg-neon-gold text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:opacity-50 flex items-center justify-center gap-2"
+                                        >
+                                            {isLoading ? (
+                                                <>
+                                                    <Loader2 className="h-5 w-5 animate-spin" />
+                                                    SYNCING...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Check size={18} />
+                                                    {editingAddress ? 'UPDATE COORDINATES' : 'SAVE COORDINATES'}
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </motion.div >
                     </>
