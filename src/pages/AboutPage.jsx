@@ -54,7 +54,7 @@ const AboutPage = () => {
                     >
                         We don't just hang art.
                         <br />
-                        <span className="text-neon-gold">We engineer backbones.</span>
+                        <span className="text-black dark:text-white font-bold">We engineer backbones.</span>
                     </motion.h1>
 
                     {/* Sub-headline */}
@@ -74,7 +74,7 @@ const AboutPage = () => {
                     transition={{ duration: 1, delay: 0.5 }}
                 >
                     <div className="mx-auto max-w-3xl">
-                        <h2 className="font-heading text-3xl font-bold text-neon-gold mb-8 md:text-4xl">
+                        <h2 className="font-heading text-3xl font-bold text-black dark:text-white mb-8 md:text-4xl">
                             The Art of Ambience.
                         </h2>
                         <p className="font-body text-lg leading-relaxed text-text-muted md:text-xl">
@@ -116,7 +116,7 @@ const AboutPage = () => {
                             className="border border-luxury-border bg-luxury-card p-8 text-center rounded-none"
                             variants={fadeInUp}
                         >
-                            <h3 className="mb-4 font-heading text-2xl text-neon-gold">
+                            <h3 className="mb-4 font-heading text-2xl text-black dark:text-white">
                                 {value.title}
                             </h3>
                             <p className="font-body text-sm leading-relaxed text-text-muted">
@@ -138,7 +138,7 @@ const AboutPage = () => {
                         <p className="font-heading text-2xl italic text-mist md:text-3xl">
                             "Designed for the modern thinker."
                         </p>
-                        <p className="mt-6 font-body text-sm tracking-widest text-antique-brass">
+                        <p className="mt-6 font-body text-sm tracking-widest text-gray-400">
                             — Deep Root Studios
                         </p>
                     </div>

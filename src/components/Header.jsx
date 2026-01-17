@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { User, Search, ChevronDown, Monitor, PenTool, BookOpen, Building2, Menu, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, Search, ChevronDown, Monitor, PenTool, BookOpen, Building2, Menu, X, Package, MapPin, LogOut } from 'lucide-react';
 import { useShopify } from '../context/ShopifyContext';
 import AuthModal from './AuthModal';
 import ThemeToggle from './ThemeToggle';
@@ -9,12 +9,26 @@ import SearchOverlay from './SearchOverlay';
 import UserDropdown from './UserDropdown';
 
 const Header = () => {
-    const { setIsCartOpen, getCartItemCount, customerToken } = useShopify();
+    const navigate = useNavigate();
+    const { setIsCartOpen, getCartItemCount, customerToken, customer, logoutCustomer } = useShopify();
     const itemCount = getCartItemCount();
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const isLoggedIn = !!customerToken;
+
+    // Handle mobile logout
+    const handleMobileLogout = () => {
+        setIsMobileMenuOpen(false);
+        if (logoutCustomer) {
+            logoutCustomer();
+        } else {
+            localStorage.removeItem('customer_token');
+            window.location.href = '/';
+        }
+    };
 
     return (
         <>
@@ -23,11 +37,10 @@ const Header = () => {
                     {/* Mobile Menu Button */}
                     <motion.button
                         onClick={() => setIsMobileMenuOpen(true)}
-                        className="block md:hidden text-smoke hover:text-antique-brass transition-colors"
+                        className="block md:hidden text-smoke hover:text-antique-brass transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
-                        whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         aria-label="Open menu"
                     >
@@ -161,15 +174,14 @@ const Header = () => {
                     </motion.nav>
 
                     {/* Right Side Actions */}
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 md:gap-4">
                         {/* Search Button */}
                         <motion.button
                             onClick={() => setIsSearchOpen(true)}
-                            className="group flex items-center gap-2 transition-colors"
+                            className="group flex items-center gap-2 transition-colors min-w-[44px] min-h-[44px] justify-center"
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             aria-label="Search products"
                         >
@@ -185,9 +197,10 @@ const Header = () => {
                             <ThemeToggle />
                         </motion.div>
 
-                        {/* Login/Account Button - Conditional */}
+                        {/* Login/Account Button - Conditional (Desktop Only) */}
                         {customerToken ? (
                             <motion.div
+                                className="hidden md:block"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -197,11 +210,10 @@ const Header = () => {
                         ) : (
                             <motion.button
                                 onClick={() => setIsAuthModalOpen(true)}
-                                className="group flex items-center gap-2 transition-colors"
+                                className="group flex items-center gap-2 transition-colors min-w-[44px] min-h-[44px] justify-center"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
-                                whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                             >
                                 <User className="h-5 w-5 text-smoke transition-colors group-hover:text-antique-brass" />
@@ -214,11 +226,10 @@ const Header = () => {
                         {/* Cart Button */}
                         <motion.button
                             onClick={() => setIsCartOpen(true)}
-                            className="group relative flex items-center gap-2 transition-colors"
+                            className="group relative flex items-center gap-2 transition-colors min-w-[44px] min-h-[44px] justify-center"
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.6, delay: 0.4 }}
-                            whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
                             {/* Cart Icon */}
@@ -239,7 +250,7 @@ const Header = () => {
                             {/* Item Count Badge */}
                             {itemCount > 0 && (
                                 <motion.span
-                                    className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-antique-brass font-body text-xs font-bold text-deep-charcoal"
+                                    className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-antique-brass font-body text-xs font-bold text-deep-charcoal"
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ type: 'spring', stiffness: 500, damping: 15 }}
@@ -268,7 +279,7 @@ const Header = () => {
                 onClose={() => setIsSearchOpen(false)}
             />
 
-            {/* Mobile Drawer */}
+            {/* Mobile Drawer - Enhanced with Account Links */}
             <AnimatePresence>
                 {isMobileMenuOpen && (
                     <>
@@ -287,24 +298,24 @@ const Header = () => {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                            className="fixed left-0 top-0 bottom-0 w-[80%] max-w-sm bg-[#0a0a0a] z-50 flex flex-col md:hidden"
+                            className="fixed left-0 top-0 bottom-0 w-[85%] max-w-sm bg-[#0a0a0a] z-50 flex flex-col md:hidden"
                         >
                             {/* Close Button */}
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="absolute top-6 right-6 text-smoke hover:text-antique-brass transition-colors"
+                                className="absolute top-6 right-6 text-smoke hover:text-antique-brass transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                                 aria-label="Close menu"
                             >
                                 <X className="h-6 w-6" />
                             </button>
 
                             {/* Navigation Links */}
-                            <nav className="flex-1 px-8 pt-20 pb-8 overflow-y-auto">
-                                <div className="flex flex-col gap-8">
+                            <nav className="flex-1 px-6 pt-20 pb-6 overflow-y-auto">
+                                <div className="flex flex-col gap-6">
                                     <Link
                                         to="/"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="font-serif text-3xl text-[#c0a060] hover:text-[#d4b070] transition-colors"
+                                        className="font-serif text-2xl text-white hover:text-gray-300 transition-colors py-2"
                                     >
                                         Home
                                     </Link>
@@ -312,7 +323,7 @@ const Header = () => {
                                     <Link
                                         to="/shop"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="font-serif text-3xl text-[#c0a060] hover:text-[#d4b070] transition-colors"
+                                        className="font-serif text-2xl text-white hover:text-gray-300 transition-colors py-2"
                                     >
                                         Shop
                                     </Link>
@@ -320,39 +331,98 @@ const Header = () => {
                                     <Link
                                         to="/about"
                                         onClick={() => setIsMobileMenuOpen(false)}
-                                        className="font-serif text-3xl text-[#c0a060] hover:text-[#d4b070] transition-colors"
+                                        className="font-serif text-2xl text-white hover:text-gray-300 transition-colors py-2"
                                     >
                                         About
                                     </Link>
+
+                                    <Link
+                                        to="/contact"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                        className="font-serif text-2xl text-white hover:text-gray-300 transition-colors py-2"
+                                    >
+                                        Contact
+                                    </Link>
                                 </div>
+
+                                {/* Account Section - Only show when logged in */}
+                                {isLoggedIn && (
+                                    <div className="mt-8 pt-6 border-t border-[#333]">
+                                        <p className="text-xs text-gray-500 uppercase tracking-widest mb-4 font-mono">
+                                            MY ACCOUNT
+                                        </p>
+                                        <div className="flex flex-col gap-2">
+                                            <Link
+                                                to="/account"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="flex items-center gap-3 text-gray-300 hover:text-white active:text-white transition-colors py-3 min-h-[48px]"
+                                            >
+                                                <Package className="h-5 w-5" />
+                                                <span className="font-body text-sm tracking-wide">My Orders</span>
+                                            </Link>
+
+                                            <Link
+                                                to="/account"
+                                                onClick={() => {
+                                                    setIsMobileMenuOpen(false);
+                                                    // Navigate and switch to addresses tab
+                                                    setTimeout(() => {
+                                                        const addressTab = document.querySelector('[data-tab="addresses"]');
+                                                        if (addressTab) addressTab.click();
+                                                    }, 100);
+                                                }}
+                                                className="flex items-center gap-3 text-gray-300 hover:text-white active:text-white transition-colors py-3 min-h-[48px]"
+                                            >
+                                                <MapPin className="h-5 w-5" />
+                                                <span className="font-body text-sm tracking-wide">My Addresses</span>
+                                            </Link>
+
+                                            <button
+                                                onClick={handleMobileLogout}
+                                                className="flex items-center gap-3 text-red-400 hover:text-red-300 active:text-red-300 transition-colors py-3 min-h-[48px] w-full text-left"
+                                            >
+                                                <LogOut className="h-5 w-5" />
+                                                <span className="font-body text-sm tracking-wide">Logout</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                             </nav>
 
-                            {/* Footer - Login & Account */}
-                            <div className="border-t border-[#333] px-8 py-6">
-                                <div className="flex flex-col gap-4">
+                            {/* Footer - Login (only when not logged in) */}
+                            {!isLoggedIn && (
+                                <div className="border-t border-[#333] px-6 py-6">
                                     <button
                                         onClick={() => {
                                             setIsMobileMenuOpen(false);
                                             setIsAuthModalOpen(true);
                                         }}
-                                        className="flex items-center gap-3 text-smoke hover:text-antique-brass transition-colors"
+                                        className="flex items-center justify-center gap-3 w-full h-12 border border-white text-white hover:bg-white hover:text-black active:scale-95 transition-all font-body text-sm tracking-widest uppercase"
                                     >
                                         <User className="h-5 w-5" />
-                                        <span className="font-body text-sm tracking-widest">LOGIN</span>
-                                    </button>
-
-                                    <button
-                                        onClick={() => {
-                                            setIsMobileMenuOpen(false);
-                                            setIsAuthModalOpen(true);
-                                        }}
-                                        className="flex items-center gap-3 text-smoke hover:text-antique-brass transition-colors"
-                                    >
-                                        <User className="h-5 w-5" />
-                                        <span className="font-body text-sm tracking-widest">ACCOUNT</span>
+                                        SIGN IN
                                     </button>
                                 </div>
-                            </div>
+                            )}
+
+                            {/* Logged in user info */}
+                            {isLoggedIn && customer && (
+                                <div className="border-t border-[#333] px-6 py-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                                            <User className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-white font-medium">
+                                                {customer.firstName} {customer.lastName}
+                                            </p>
+                                            <p className="text-xs text-gray-500 truncate max-w-[180px]">
+                                                {customer.email}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </motion.div>
                     </>
                 )}

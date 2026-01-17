@@ -9,7 +9,8 @@ import {
     X,
     Check,
     Loader2,
-    AlertCircle
+    AlertCircle,
+    MoreVertical
 } from 'lucide-react';
 import {
     createCustomerAddress,
@@ -21,6 +22,7 @@ import {
 /**
  * AddressBook Component
  * Full CRUD operations with Shopify sync
+ * Mobile-optimized with bottom sheet form and touch-friendly interactions
  */
 const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefresh }) => {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -30,6 +32,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
     const [deleteConfirmId, setDeleteConfirmId] = useState(null);
     const [pincodeLoading, setPincodeLoading] = useState(false);
     const [pincodeError, setPincodeError] = useState(null);
+    const [mobileMenuId, setMobileMenuId] = useState(null); // For mobile meatball menu
 
     // Form state
     const [formData, setFormData] = useState({
@@ -101,6 +104,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
         setIsFormOpen(false);
         setError(null);
         setPincodeError(null);
+        setMobileMenuId(null);
     };
 
     /**
@@ -123,6 +127,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
         setEditingAddress(address);
         setIsFormOpen(true);
         setPincodeError(null);
+        setMobileMenuId(null);
     };
 
     /**
@@ -203,6 +208,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
             }
 
             setDeleteConfirmId(null);
+            setMobileMenuId(null);
         } catch (err) {
             console.error('Address delete error:', err);
             setError(err.message || 'Failed to delete address');
@@ -226,6 +232,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
             if (onRefresh) {
                 await onRefresh();
             }
+            setMobileMenuId(null);
         } catch (err) {
             console.error('Set default error:', err);
             setError(err.message || 'Failed to set default address');
@@ -241,7 +248,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                 <div className="flex items-center gap-3">
                     <MapPin className="h-5 w-5 text-white" />
                     <h2 className="font-mono text-sm uppercase tracking-widest text-white">
-                        BASE COORDINATES ({addresses.length})
+                        SAVED ADDRESSES ({addresses.length})
                     </h2>
                 </div>
             </div>
@@ -266,23 +273,40 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                 {addresses.map((address) => (
                     <motion.div
                         key={address.id}
-                        className={`relative border p-5 bg-[#0a0a0a] ${address.isDefault
+                        className={`relative border p-4 md:p-5 bg-[#0a0a0a] ${address.isDefault
                             ? 'border-white/50'
                             : 'border-[#333] hover:border-[#555]'
                             } transition-colors`}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        {/* Default Badge */}
+                        {/* Mobile: Meatball Menu Button (top-right) */}
+                        <button
+                            onClick={() => setMobileMenuId(mobileMenuId === address.id ? null : address.id)}
+                            className="md:hidden absolute top-3 right-3 w-10 h-10 flex items-center justify-center text-gray-500 hover:text-white active:scale-95 transition-all"
+                            aria-label="More options"
+                        >
+                            <MoreVertical size={20} />
+                        </button>
+
+                        {/* Desktop: Default Badge */}
                         {address.isDefault && (
-                            <div className="absolute top-3 right-3 flex items-center gap-1 text-white text-xs font-mono">
+                            <div className="hidden md:flex absolute top-3 right-3 items-center gap-1 text-white text-xs font-mono">
                                 <Star size={12} fill="currentColor" />
                                 PRIMARY
                             </div>
                         )}
 
+                        {/* Mobile: Default Badge (below meatball) */}
+                        {address.isDefault && (
+                            <div className="md:hidden absolute top-14 right-3 flex items-center gap-1 text-white text-[10px] font-mono">
+                                <Star size={10} fill="currentColor" />
+                                PRIMARY
+                            </div>
+                        )}
+
                         {/* Address Content */}
-                        <div className="pr-20">
+                        <div className="pr-12 md:pr-20">
                             <p className="font-display text-white text-sm mb-2">
                                 {address.firstName} {address.lastName}
                             </p>
@@ -298,8 +322,48 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                             )}
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex gap-2 mt-4 pt-4 border-t border-[#222]">
+                        {/* Mobile: Dropdown Menu */}
+                        <AnimatePresence>
+                            {mobileMenuId === address.id && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="md:hidden absolute top-12 right-3 z-10 w-40 bg-[#1a1a1a] border border-[#333] shadow-xl"
+                                >
+                                    <button
+                                        onClick={() => openEditForm(address)}
+                                        className="w-full flex items-center gap-2 px-4 py-3 text-xs text-gray-300 hover:bg-[#252525] hover:text-white transition-colors"
+                                    >
+                                        <Edit3 size={14} />
+                                        Edit Address
+                                    </button>
+                                    {!address.isDefault && (
+                                        <button
+                                            onClick={() => handleSetDefault(address.id)}
+                                            disabled={isLoading}
+                                            className="w-full flex items-center gap-2 px-4 py-3 text-xs text-gray-300 hover:bg-[#252525] hover:text-white transition-colors"
+                                        >
+                                            <Star size={14} />
+                                            Set as Default
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setDeleteConfirmId(address.id);
+                                            setMobileMenuId(null);
+                                        }}
+                                        className="w-full flex items-center gap-2 px-4 py-3 text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+                                    >
+                                        <Trash2 size={14} />
+                                        Delete
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Desktop: Action Buttons */}
+                        <div className="hidden md:flex gap-2 mt-4 pt-4 border-t border-[#222]">
                             <button
                                 onClick={() => openEditForm(address)}
                                 className="flex items-center gap-1 px-3 py-1.5 text-xs text-gray-400 hover:text-white border border-[#333] hover:border-white transition-colors"
@@ -344,29 +408,57 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                 </button>
                             )}
                         </div>
+
+                        {/* Mobile: Delete Confirmation Overlay */}
+                        <AnimatePresence>
+                            {deleteConfirmId === address.id && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="md:hidden absolute inset-0 bg-[#0a0a0a]/95 flex flex-col items-center justify-center gap-4 p-4"
+                                >
+                                    <p className="text-sm text-gray-300 text-center">Delete this address?</p>
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={() => handleDelete(address.id)}
+                                            disabled={isLoading}
+                                            className="px-6 py-3 h-12 text-sm text-white bg-red-600 hover:bg-red-700 active:scale-95 transition-all"
+                                        >
+                                            {isLoading ? <Loader2 size={16} className="animate-spin" /> : 'DELETE'}
+                                        </button>
+                                        <button
+                                            onClick={() => setDeleteConfirmId(null)}
+                                            className="px-6 py-3 h-12 text-sm text-gray-400 border border-[#333] active:scale-95 transition-all"
+                                        >
+                                            CANCEL
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 ))}
 
-                {/* Add New Address Card */}
+                {/* Add New Address Card - Mobile Optimized */}
                 <motion.button
                     onClick={() => {
                         resetForm();
                         setIsFormOpen(true);
                     }}
-                    className="border-2 border-dashed border-[#333] hover:border-white/50 p-8 flex flex-col items-center justify-center gap-3 transition-colors group min-h-[200px]"
-                    whileHover={{ scale: 1.02 }}
+                    className="border-2 border-dashed border-[#333] hover:border-white/50 active:border-white/50 p-6 md:p-8 flex flex-col items-center justify-center gap-3 transition-colors group min-h-[160px] md:min-h-[200px] active:scale-[0.98]"
                     whileTap={{ scale: 0.98 }}
                 >
                     <div className="w-12 h-12 rounded-full bg-[#111] border border-[#333] group-hover:border-white/50 flex items-center justify-center transition-colors">
                         <Plus className="h-6 w-6 text-gray-600 group-hover:text-white" />
                     </div>
-                    <span className="font-mono text-xs text-gray-500 group-hover:text-white uppercase tracking-wider">
+                    <span className="font-mono text-xs text-gray-500 group-hover:text-white uppercase tracking-wider text-center">
                         REGISTER NEW COORDINATES
                     </span>
                 </motion.button>
             </div>
 
-            {/* Address Form Modal */}
+            {/* Address Form - Bottom Sheet on Mobile, Modal on Desktop */}
             <AnimatePresence>
                 {isFormOpen && (
                     <>
@@ -379,32 +471,43 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                             className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
                         />
 
-                        {/* Form Modal - Scrollable Container */}
+                        {/* Form Container - Bottom Sheet on Mobile */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                            className="fixed inset-0 z-50 overflow-y-auto"
+                            initial={{ opacity: 0, y: '100%' }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: '100%' }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="fixed inset-x-0 bottom-0 z-50 md:inset-0 md:flex md:items-center md:justify-center md:p-4"
                         >
-                            <div className="min-h-screen px-4 py-8 flex items-start justify-center">
-                                <div className="relative w-full max-w-lg bg-[#0a0a0a] border border-[#333] p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+                            {/* Desktop: Click outside to close */}
+                            <div className="hidden md:block absolute inset-0" onClick={resetForm} />
+
+                            {/* Form Panel */}
+                            <div className="relative w-full md:max-w-lg bg-[#0a0a0a] border-t md:border border-[#333] rounded-t-2xl md:rounded-none max-h-[90vh] overflow-hidden">
+                                {/* Mobile Drag Handle */}
+                                <div className="md:hidden flex justify-center py-3">
+                                    <div className="w-10 h-1 bg-gray-600 rounded-full" />
+                                </div>
+
+                                {/* Scrollable Content */}
+                                <div className="p-5 md:p-8 overflow-y-auto max-h-[calc(90vh-20px)] md:max-h-[80vh]">
                                     {/* Close Button */}
                                     <button
                                         onClick={resetForm}
-                                        className="absolute right-4 top-4 text-gray-500 hover:text-white z-10"
+                                        className="absolute right-4 top-4 md:top-6 text-gray-500 hover:text-white z-10 w-10 h-10 flex items-center justify-center"
                                     >
                                         <X size={20} />
                                     </button>
 
                                     {/* Form Header */}
-                                    <h3 className="font-display text-xl text-white uppercase tracking-wider mb-6">
+                                    <h3 className="font-display text-lg md:text-xl text-white uppercase tracking-wider mb-6 pr-10">
                                         {editingAddress ? 'EDIT COORDINATES' : 'NEW COORDINATES'}
                                     </h3>
 
                                     {/* Form */}
                                     <form onSubmit={handleSubmit} className="space-y-4">
                                         {/* Name Row */}
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                                             <div>
                                                 <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     First Name
@@ -415,7 +518,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.firstName}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
+                                                    className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none"
                                                 />
                                             </div>
                                             <div>
@@ -428,7 +531,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.lastName}
                                                     onChange={handleChange}
                                                     required
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
+                                                    className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none"
                                                 />
                                             </div>
                                         </div>
@@ -443,7 +546,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 name="company"
                                                 value={formData.company}
                                                 onChange={handleChange}
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
+                                                className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none"
                                             />
                                         </div>
 
@@ -459,7 +562,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 onChange={handleChange}
                                                 required
                                                 placeholder="Street address, P.O. box"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
+                                                className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none rounded-none"
                                             />
                                         </div>
 
@@ -473,13 +576,13 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 name="address2"
                                                 value={formData.address2}
                                                 onChange={handleChange}
-                                                placeholder="Apartment, suite, unit, building, floor"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
+                                                placeholder="Apartment, suite, unit"
+                                                className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none rounded-none"
                                             />
                                         </div>
 
-                                        {/* PIN Code & Country Row - FIRST */}
-                                        <div className="grid grid-cols-2 gap-4">
+                                        {/* PIN Code & Country Row */}
+                                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                                             <div>
                                                 <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     PIN / ZIP Code
@@ -493,7 +596,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                         required
                                                         maxLength={6}
                                                         placeholder="6-digit PIN"
-                                                        className={`w-full h-10 px-3 bg-[#111] border text-white text-sm focus:outline-none ${pincodeError
+                                                        className={`w-full h-12 px-3 bg-[#111] border text-white text-sm focus:outline-none rounded-none ${pincodeError
                                                             ? 'border-red-500 focus:border-red-500'
                                                             : 'border-[#333] focus:border-white'
                                                             }`}
@@ -508,7 +611,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     <p className="text-xs text-red-400 mt-1">{pincodeError}</p>
                                                 )}
                                                 {formData.country === 'India' && !pincodeError && !pincodeLoading && formData.zip?.length === 6 && formData.city && (
-                                                    <p className="text-xs text-green-500 mt-1">✓ City & State auto-filled</p>
+                                                    <p className="text-xs text-green-500 mt-1">✓ Auto-filled</p>
                                                 )}
                                             </div>
                                             <div>
@@ -519,7 +622,7 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     name="country"
                                                     value={formData.country}
                                                     onChange={handleChange}
-                                                    className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none"
+                                                    className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none"
                                                 >
                                                     <option value="India">India</option>
                                                     <option value="United States">United States</option>
@@ -530,12 +633,11 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                             </div>
                                         </div>
 
-                                        {/* City & State Row - Auto-filled from pincode */}
-                                        <div className="grid grid-cols-2 gap-4">
+                                        {/* City & State Row */}
+                                        <div className="grid grid-cols-2 gap-3 md:gap-4">
                                             <div>
                                                 <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     City / District
-                                                    {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
                                                 </label>
                                                 <input
                                                     type="text"
@@ -543,14 +645,12 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.city}
                                                     onChange={handleChange}
                                                     required
-                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
-                                                        }`}
+                                                    className={`w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none ${pincodeLoading ? 'opacity-50' : ''}`}
                                                 />
                                             </div>
                                             <div>
                                                 <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                     State / Province
-                                                    {pincodeLoading && <span className="ml-2 text-gray-500">(loading...)</span>}
                                                 </label>
                                                 <input
                                                     type="text"
@@ -558,13 +658,12 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                     value={formData.province}
                                                     onChange={handleChange}
                                                     required
-                                                    className={`w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none ${pincodeLoading ? 'opacity-50' : ''
-                                                        }`}
+                                                    className={`w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm focus:border-white focus:outline-none rounded-none ${pincodeLoading ? 'opacity-50' : ''}`}
                                                 />
                                             </div>
                                         </div>
 
-                                        {/* Phone - MANDATORY */}
+                                        {/* Phone */}
                                         <div>
                                             <label className="block text-xs text-white/80 uppercase tracking-wider mb-2">
                                                 Mobile Number
@@ -576,22 +675,21 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                                 onChange={handleChange}
                                                 required
                                                 placeholder="+91 XXXXX XXXXX"
-                                                className="w-full h-10 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none"
+                                                className="w-full h-12 px-3 bg-[#111] border border-[#333] text-white text-sm placeholder-gray-600 focus:border-white focus:outline-none rounded-none"
                                             />
                                         </div>
 
                                         {/* Set as Default Checkbox */}
-                                        <label className="flex items-center gap-3 p-3 bg-[#111] border border-[#333] cursor-pointer hover:border-white/50 transition-colors">
+                                        <label className="flex items-center gap-3 p-4 h-14 bg-[#111] border border-[#333] cursor-pointer hover:border-white/50 active:border-white/50 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="isDefault"
                                                 checked={formData.isDefault}
                                                 onChange={handleChange}
-                                                className="w-4 h-4 accent-neon-gold"
+                                                className="w-5 h-5 accent-white"
                                             />
                                             <div>
-                                                <span className="text-sm text-white">Designate as Primary Base</span>
-                                                <p className="text-xs text-gray-500">This address will be used for shipping by default</p>
+                                                <span className="text-sm text-white">Set as Primary Address</span>
                                             </div>
                                         </label>
 
@@ -602,11 +700,11 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                             </div>
                                         )}
 
-                                        {/* Submit Button */}
+                                        {/* Submit Button - Thumb Zone Optimized */}
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="w-full h-12 bg-white text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-50 flex items-center justify-center gap-2"
+                                            className="w-full h-14 bg-white text-black font-bold uppercase tracking-wider transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 rounded-none"
                                         >
                                             {isLoading ? (
                                                 <>
@@ -623,11 +721,19 @@ const AddressBook = ({ addresses = [], defaultAddressId, customerToken, onRefres
                                     </form>
                                 </div>
                             </div>
-                        </motion.div >
+                        </motion.div>
                     </>
                 )}
-            </AnimatePresence >
-        </div >
+            </AnimatePresence>
+
+            {/* Close mobile menu when clicking outside */}
+            {mobileMenuId && (
+                <div
+                    className="fixed inset-0 z-0 md:hidden"
+                    onClick={() => setMobileMenuId(null)}
+                />
+            )}
+        </div>
     );
 };
 

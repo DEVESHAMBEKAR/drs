@@ -193,7 +193,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             transition={{ duration: 0.3 }}
-                            className="relative w-full max-w-md border-2 border-neon-gold/20 bg-[#0a0a0a] p-8 rounded-none max-h-[90vh] overflow-y-auto shadow-2xl shadow-neon-gold/5"
+                            className="relative w-full max-w-md border-2 border-white/20 bg-[#0a0a0a] p-8 rounded-none max-h-[90vh] overflow-y-auto shadow-2xl shadow-white/5"
                         >
                             {/* Close Button */}
                             <button
@@ -207,14 +207,14 @@ const AuthModal = ({ isOpen, onClose }) => {
                             {success ? (
                                 <div className="text-center py-8">
                                     <div className="mb-6">
-                                        <div className="w-16 h-16 mx-auto bg-neon-gold/20 border-2 border-neon-gold rounded-full flex items-center justify-center">
-                                            <svg className="w-8 h-8 text-neon-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div className="w-16 h-16 mx-auto bg-white/20 border-2 border-white rounded-full flex items-center justify-center">
+                                            <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
                                     </div>
 
-                                    <h2 className="font-heading text-xl font-bold tracking-wider uppercase text-neon-gold mb-2">
+                                    <h2 className="font-heading text-xl font-bold tracking-wider uppercase text-white mb-2">
                                         {isLoggedIn && customer?.firstName
                                             ? `WELCOME, ${customer.firstName.toUpperCase()}!`
                                             : 'LOGIN SUCCESSFUL'}
@@ -225,7 +225,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                     </p>
 
                                     <div className="mt-4">
-                                        <div className="w-6 h-6 mx-auto border-2 border-neon-gold border-t-transparent rounded-full animate-spin" />
+                                        <div className="w-6 h-6 mx-auto border-2 border-white border-t-transparent rounded-full animate-spin" />
                                     </div>
                                 </div>
                             ) : (
@@ -247,12 +247,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         {/* First Name (Signup only) */}
                                         {!isLoginMode && (
                                             <div className="space-y-2">
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider font-semibold">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider font-semibold">
                                                     First Name
                                                 </label>
                                                 <div className="relative">
                                                     <User
-                                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-neon-gold/50"
+                                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
                                                         size={18}
                                                     />
                                                     <input
@@ -261,7 +261,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                         value={formData.firstName}
                                                         onChange={handleChange}
                                                         required={!isLoginMode}
-                                                        className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-neon-gold focus:outline-none"
+                                                        className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-white focus:outline-none"
                                                         placeholder="John"
                                                     />
                                                 </div>
@@ -271,12 +271,12 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         {/* Last Name (Signup only) */}
                                         {!isLoginMode && (
                                             <div className="space-y-2">
-                                                <label className="block text-xs text-neon-gold/80 uppercase tracking-wider font-semibold">
+                                                <label className="block text-xs text-white/80 uppercase tracking-wider font-semibold">
                                                     Last Name
                                                 </label>
                                                 <div className="relative">
                                                     <User
-                                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-neon-gold/50"
+                                                        className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
                                                         size={18}
                                                     />
                                                     <input
@@ -285,7 +285,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                         value={formData.lastName}
                                                         onChange={handleChange}
                                                         required={!isLoginMode}
-                                                        className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-neon-gold focus:outline-none"
+                                                        className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-white focus:outline-none"
                                                         placeholder="Doe"
                                                     />
                                                 </div>
@@ -294,12 +294,12 @@ const AuthModal = ({ isOpen, onClose }) => {
 
                                         {/* Email */}
                                         <div className="space-y-2">
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider font-semibold">
+                                            <label className="block text-xs text-white/80 uppercase tracking-wider font-semibold">
                                                 Email Address
                                             </label>
                                             <div className="relative">
                                                 <Mail
-                                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-neon-gold/50"
+                                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
                                                     size={18}
                                                 />
                                                 <input
@@ -309,7 +309,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                     onChange={handleChange}
                                                     required
                                                     autoFocus
-                                                    className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-neon-gold focus:outline-none"
+                                                    className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-4 text-white placeholder-gray-600 transition-colors focus:border-white focus:outline-none"
                                                     placeholder="you@example.com"
                                                 />
                                             </div>
@@ -317,12 +317,12 @@ const AuthModal = ({ isOpen, onClose }) => {
 
                                         {/* Password */}
                                         <div className="space-y-2">
-                                            <label className="block text-xs text-neon-gold/80 uppercase tracking-wider font-semibold">
+                                            <label className="block text-xs text-white/80 uppercase tracking-wider font-semibold">
                                                 Password
                                             </label>
                                             <div className="relative">
                                                 <Lock
-                                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-neon-gold/50"
+                                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50"
                                                     size={18}
                                                 />
                                                 <input
@@ -332,7 +332,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                     onChange={handleChange}
                                                     required
                                                     minLength={5}
-                                                    className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-12 text-white placeholder-gray-600 transition-colors focus:border-neon-gold focus:outline-none"
+                                                    className="w-full h-12 border border-luxury-border bg-luxury-card rounded-none py-3 pl-10 pr-12 text-white placeholder-gray-600 transition-colors focus:border-white focus:outline-none"
                                                     placeholder="••••••••"
                                                 />
                                                 <button
@@ -361,7 +361,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="w-full h-12 bg-neon-gold text-black font-bold tracking-wider uppercase rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                            className="w-full h-12 bg-white text-black font-bold tracking-wider uppercase rounded-none transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                         >
                                             {isLoading ? (
                                                 <div className="h-5 w-5 animate-spin rounded-full border-2 border-black/30 border-t-black" />
@@ -381,7 +381,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                 href="https://deep-root-studios.myshopify.com/account/login#recover"
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="text-xs text-gray-500 hover:text-neon-gold transition-colors underline-offset-4 hover:underline"
+                                                className="text-xs text-gray-500 hover:text-white transition-colors underline-offset-4 hover:underline"
                                             >
                                                 Forgot Password?
                                             </a>
@@ -400,7 +400,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                                                 setError('');
                                                 setFormData({ email: '', password: '', firstName: '', lastName: '' });
                                             }}
-                                            className="mt-2 text-neon-gold hover:text-white transition-colors font-bold uppercase tracking-wider text-sm"
+                                            className="mt-2 text-white hover:text-gray-300 transition-colors font-bold uppercase tracking-wider text-sm"
                                         >
                                             {isLoginMode ? 'CREATE ACCOUNT' : 'SIGN IN'}
                                         </button>

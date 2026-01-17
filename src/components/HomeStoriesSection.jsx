@@ -65,7 +65,7 @@ const HomeStoriesSection = () => {
                     viewport={{ once: true, margin: '-100px' }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h2 className="font-serif text-2xl md:text-4xl text-[#c0a060] mb-4">
+                    <h2 className="font-serif text-2xl md:text-4xl text-white mb-4">
                         Stories from the Desk
                     </h2>
                     <p className="font-body text-base md:text-lg text-[#a3a3a3]">
@@ -86,11 +86,11 @@ const HomeStoriesSection = () => {
                             key={story.id}
                             variants={cardVariants}
                             whileHover={{ y: -5 }}
-                            className="bg-[#18181b] border border-[#c0a060]/20 p-8 transition-all duration-300 hover:border-[#c0a060]/50 hover:shadow-lg hover:shadow-[#c0a060]/10"
+                            className="bg-[#18181b] border border-white/20 p-8 transition-all duration-300 hover:border-white/50 hover:shadow-lg hover:shadow-white/10"
                         >
                             {/* Quote Icon */}
                             <div className="mb-6">
-                                <Quote className="w-10 h-10 text-[#c0a060]" strokeWidth={1.5} />
+                                <Quote className="w-10 h-10 text-white" strokeWidth={1.5} />
                             </div>
 
                             {/* Review Text */}
@@ -101,16 +101,16 @@ const HomeStoriesSection = () => {
                             </blockquote>
 
                             {/* User Info */}
-                            <div className="border-t border-[#c0a060]/10 pt-6">
+                            <div className="border-t border-white/10 pt-6">
                                 {/* Name and Verified Badge */}
                                 <div className="flex items-center gap-2 mb-2">
                                     <h4 className="font-body font-medium text-[#e5e5e5]">
                                         {story.name}
                                     </h4>
                                     {story.verified && (
-                                        <span className="inline-flex items-center gap-1 bg-[#c0a060]/10 px-2 py-0.5 rounded-full">
+                                        <span className="inline-flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full">
                                             <svg
-                                                className="w-3 h-3 text-[#c0a060]"
+                                                className="w-3 h-3 text-white"
                                                 fill="currentColor"
                                                 viewBox="0 0 20 20"
                                             >
@@ -120,7 +120,7 @@ const HomeStoriesSection = () => {
                                                     clipRule="evenodd"
                                                 />
                                             </svg>
-                                            <span className="font-body text-xs text-[#c0a060]">
+                                            <span className="font-body text-xs text-white">
                                                 Verified Buyer
                                             </span>
                                         </span>

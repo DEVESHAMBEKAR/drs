@@ -26,11 +26,13 @@ const Footer = () => {
 
                     {/* Column 1: Brand Identity - DRS */}
                     <div className="space-y-6">
-                        <img
-                            src="/drs-logo.png"
-                            alt="DRS - Deep Root Studios"
-                            className="h-16 w-auto dark:invert"
-                        />
+                        <div className="h-12 w-32 overflow-hidden">
+                            <img
+                                src="/drs-logo.png"
+                                alt="DRS - Deep Root Studios"
+                                className="h-24 w-auto brightness-0 invert object-contain -mt-6 -ml-4"
+                            />
+                        </div>
                         <p className="text-gray-400 text-sm tracking-widest uppercase">
                             The Art of Ambience.
                         </p>
@@ -41,7 +43,7 @@ const Footer = () => {
                                 href="https://instagram.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                                 aria-label="Instagram"
                             >
                                 <Instagram size={20} />
@@ -50,7 +52,7 @@ const Footer = () => {
                                 href="https://pinterest.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                                 aria-label="Pinterest"
                             >
                                 <svg
@@ -68,7 +70,7 @@ const Footer = () => {
                             </a>
                             <a
                                 href="mailto:hello@deeprootstudios.com"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                                 aria-label="Email"
                             >
                                 <Mail size={20} />
@@ -78,7 +80,7 @@ const Footer = () => {
 
                     {/* Column 2: Shop Navigation */}
                     <div className="space-y-6">
-                        <h3 className="font-serif text-lg text-[#c0a060] tracking-wide">
+                        <h3 className="font-serif text-lg text-white tracking-wide">
                             The Collection
                         </h3>
                         <nav className="flex flex-col space-y-3">
@@ -105,7 +107,7 @@ const Footer = () => {
 
                     {/* Column 3: Contact Information */}
                     <div className="space-y-6">
-                        <h3 className="font-serif text-lg text-[#c0a060] tracking-wide">
+                        <h3 className="font-serif text-lg text-white tracking-wide">
                             Visit Us
                         </h3>
                         <div className="flex flex-col space-y-4">
@@ -123,7 +125,7 @@ const Footer = () => {
                                 <p className="text-[#737373] text-xs uppercase tracking-wider">Phone</p>
                                 <a
                                     href="tel:+919579276597"
-                                    className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300 text-sm block"
+                                    className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm block"
                                 >
                                     +91 9579276597
                                 </a>
@@ -134,7 +136,7 @@ const Footer = () => {
                                 <p className="text-[#737373] text-xs uppercase tracking-wider">Email</p>
                                 <a
                                     href="mailto:thedeeprootstudios@gmail.com"
-                                    className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300 text-sm block break-all"
+                                    className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm block break-all"
                                 >
                                     thedeeprootstudios@gmail.com
                                 </a>
@@ -158,13 +160,13 @@ const Footer = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Your email address"
-                                    className="w-full bg-transparent border-0 border-b border-[#a3a3a3] text-[#e5e5e5] placeholder-[#a3a3a3] py-2 px-0 focus:outline-none focus:border-[#c0a060] transition-colors duration-300 text-sm"
+                                    className="w-full bg-transparent border-0 border-b border-[#a3a3a3] text-[#e5e5e5] placeholder-[#a3a3a3] py-2 px-0 focus:outline-none focus:border-white transition-colors duration-300 text-sm"
                                     required
                                 />
                             </div>
                             <button
                                 type="submit"
-                                className="w-full border border-[#c0a060] text-[#c0a060] hover:bg-[#c0a060] hover:text-[#0a0a0a] py-2.5 px-6 transition-all duration-300 text-sm font-medium tracking-wide flex items-center justify-center gap-2 group"
+                                className="w-full border border-white text-white hover:bg-white hover:text-[#0a0a0a] py-2.5 px-6 transition-all duration-300 text-sm font-medium tracking-wide flex items-center justify-center gap-2 group"
                             >
                                 {isSubscribed ? (
                                     'Subscribed!'
@@ -188,19 +190,19 @@ const Footer = () => {
                         <div className="flex gap-6 text-xs">
                             <Link
                                 to="/contact"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                             >
                                 Contact
                             </Link>
                             <Link
                                 to="/privacy"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                             >
                                 Privacy Policy
                             </Link>
                             <Link
                                 to="/terms"
-                                className="text-[#a3a3a3] hover:text-[#c0a060] transition-colors duration-300"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                             >
                                 Terms of Service
                             </Link>

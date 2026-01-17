@@ -79,6 +79,16 @@
 
 @layer utilities {
 
+    /* Hide scrollbar utility - for mobile horizontal scrolling */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
     /* Bento Box Grid Layout - Uneven Tile Sizes */
     .bento-grid {
         display: grid;

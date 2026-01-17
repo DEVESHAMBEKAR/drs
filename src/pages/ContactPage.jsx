@@ -169,7 +169,7 @@ const ContactPage = () => {
                                         onChange={handleChange}
                                         required
                                         placeholder="Your Name"
-                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
+                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-white focus:outline-none"
                                     />
                                 </div>
 
@@ -182,7 +182,7 @@ const ContactPage = () => {
                                         onChange={handleChange}
                                         required
                                         placeholder="your@email.com"
-                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
+                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-white focus:outline-none"
                                     />
                                 </div>
 
@@ -193,7 +193,7 @@ const ContactPage = () => {
                                         value={formData.interest}
                                         onChange={handleChange}
                                         required
-                                        className="w-full appearance-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main transition-colors focus:border-neon-gold focus:outline-none"
+                                        className="w-full appearance-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main transition-colors focus:border-white focus:outline-none"
                                         style={{
                                             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
                                             backgroundRepeat: 'no-repeat',
@@ -224,7 +224,7 @@ const ContactPage = () => {
                                         required
                                         rows={4}
                                         placeholder="Tell us what you need..."
-                                        className="w-full resize-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
+                                        className="w-full resize-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-white focus:outline-none"
                                     />
                                 </div>
 
@@ -232,7 +232,7 @@ const ContactPage = () => {
                                 <motion.button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex w-full items-center justify-center gap-2 bg-neon-gold rounded-none py-4 font-body text-sm tracking-widest text-black transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex w-full items-center justify-center gap-2 bg-white rounded-none py-4 font-body text-sm tracking-widest text-black transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                                     whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                                     whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                                 >

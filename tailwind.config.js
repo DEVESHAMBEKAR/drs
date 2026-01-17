@@ -18,7 +18,7 @@ export default {
         'text-muted': '#a1a1aa',     // Secondary text (Gray)
 
         // The 'Glow' Accents
-        'neon-gold': '#fbbf24',      // For Warm White LED accents
+        'neon-gold': '#ffffff',      // For Monochrome white accents
         'neon-blue': '#38bdf8',      // For Cool White/Tech accents
         'brand-white': '#ffffff',    // High contrast buttons
       },

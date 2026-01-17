@@ -144,7 +144,7 @@ const AuthCallback = () => {
                                     ease: "easeInOut"
                                 }}
                             >
-                                <Shield className="h-16 w-16 text-neon-gold mx-auto" />
+                                <Shield className="h-16 w-16 text-white mx-auto" />
                             </motion.div>
 
                             <h2 className="font-display text-xl uppercase tracking-wider text-white mb-2">
@@ -157,7 +157,7 @@ const AuthCallback = () => {
                             {/* Loading Bar */}
                             <div className="mt-6 h-1 bg-[#222] overflow-hidden rounded-none">
                                 <motion.div
-                                    className="h-full bg-neon-gold"
+                                    className="h-full bg-white"
                                     initial={{ x: '-100%' }}
                                     animate={{ x: '100%' }}
                                     transition={{
@@ -209,7 +209,7 @@ const AuthCallback = () => {
                             <div className="flex flex-col gap-3">
                                 <button
                                     onClick={() => navigate('/')}
-                                    className="w-full h-12 bg-white text-black font-display font-bold tracking-wider uppercase rounded-none transition-all hover:bg-neon-gold"
+                                    className="w-full h-12 bg-white text-black font-display font-bold tracking-wider uppercase rounded-none transition-all hover:bg-gray-200"
                                 >
                                     TRY AGAIN
                                 </button>

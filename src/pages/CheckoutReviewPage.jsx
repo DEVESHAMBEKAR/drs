@@ -158,8 +158,8 @@ const CheckoutReviewPage = () => {
                         {/* Shipping Manifest Card */}
                         <div className="border border-[#333] bg-[#0a0a0a] p-6 md:p-8">
                             <div className="flex items-center gap-3 mb-6">
-                                <MapPin className="h-5 w-5 text-neon-gold" />
-                                <h2 className="font-mono text-sm uppercase tracking-widest text-neon-gold">
+                                <MapPin className="h-5 w-5 text-white" />
+                                <h2 className="font-mono text-sm uppercase tracking-widest text-white">
                                     SHIPPING MANIFEST
                                 </h2>
                             </div>
@@ -168,8 +168,8 @@ const CheckoutReviewPage = () => {
                                 <div className="space-y-6">
                                     {/* Customer Info */}
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 bg-neon-gold/10 border border-neon-gold/30 flex items-center justify-center">
-                                            <User className="h-6 w-6 text-neon-gold" />
+                                        <div className="w-12 h-12 bg-white/10 border border-white/30 flex items-center justify-center">
+                                            <User className="h-6 w-6 text-white" />
                                         </div>
                                         <div>
                                             <p className="font-display text-xl text-white">
@@ -198,7 +198,7 @@ const CheckoutReviewPage = () => {
                                         {customer.defaultAddress ? (
                                             <div className="bg-[#111] border border-[#222] p-4">
                                                 <div className="flex items-start gap-3">
-                                                    <Truck className="h-5 w-5 text-neon-gold flex-shrink-0 mt-0.5" />
+                                                    <Truck className="h-5 w-5 text-white flex-shrink-0 mt-0.5" />
                                                     <div className="text-gray-300 text-sm leading-relaxed space-y-1">
                                                         {Array.isArray(customer.defaultAddress) ? (
                                                             customer.defaultAddress.map((line, i) => (
@@ -250,7 +250,7 @@ const CheckoutReviewPage = () => {
                                     </p>
                                     <Link
                                         to="/"
-                                        className="inline-flex items-center gap-2 px-6 py-3 border border-neon-gold text-neon-gold hover:bg-neon-gold hover:text-black transition-colors font-display uppercase tracking-wider text-sm"
+                                        className="inline-flex items-center gap-2 px-6 py-3 border border-white text-white hover:bg-white hover:text-black transition-colors font-display uppercase tracking-wider text-sm"
                                     >
                                         <Lock size={16} />
                                         LOGIN TO PRE-FILL
@@ -264,9 +264,9 @@ const CheckoutReviewPage = () => {
 
                         {/* Security Note */}
                         <div className="flex items-start gap-4 p-4 bg-[#0a0a0a] border border-[#222]">
-                            <Shield className="h-5 w-5 text-neon-gold flex-shrink-0" />
+                            <Shield className="h-5 w-5 text-white flex-shrink-0" />
                             <div>
-                                <p className="text-xs text-neon-gold font-mono uppercase tracking-wider mb-1">
+                                <p className="text-xs text-white font-mono uppercase tracking-wider mb-1">
                                     SECURE TRANSFER PROTOCOL
                                 </p>
                                 <p className="text-gray-500 text-xs">
@@ -287,8 +287,8 @@ const CheckoutReviewPage = () => {
                         <div className="border border-[#333] bg-[#0a0a0a] p-6 md:p-8 sticky top-28">
                             {/* Header */}
                             <div className="flex items-center gap-3 mb-6">
-                                <Package className="h-5 w-5 text-neon-gold" />
-                                <h2 className="font-mono text-sm uppercase tracking-widest text-neon-gold">
+                                <Package className="h-5 w-5 text-white" />
+                                <h2 className="font-mono text-sm uppercase tracking-widest text-white">
                                     ITEM LOG ({getCartItemCount()})
                                 </h2>
                             </div>
@@ -329,7 +329,7 @@ const CheckoutReviewPage = () => {
                                                 <span className="text-xs text-gray-600 font-mono">
                                                     QTY: {item.quantity}
                                                 </span>
-                                                <span className="text-sm text-neon-gold font-bold">
+                                                <span className="text-sm text-white font-bold">
                                                     {formatPrice(item.variant?.price || item.variant?.priceV2)}
                                                 </span>
                                             </div>
@@ -380,7 +380,7 @@ const CheckoutReviewPage = () => {
                             <button
                                 onClick={handleCheckout}
                                 disabled={isProcessing || !cart?.lineItems?.length}
-                                className="w-full h-14 bg-white text-black font-bold uppercase tracking-wider transition-all duration-300 hover:bg-neon-gold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                                className="w-full h-14 bg-white text-black font-bold uppercase tracking-wider transition-all duration-300 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                             >
                                 {isProcessing ? (
                                     <>
