@@ -21,11 +21,11 @@ A luxury e-commerce website for Deep Root Studios, specializing in handcrafted p
 - **Gift Wrapping Option** (+₹150 upsell)
 - **Custom Attributes** sent to Shopify orders
 
-### 🎁 Personalization
-- Wood selection (Walnut/Oak)
-- Custom engraving (max 15 characters)
-- Real-time preview
-- Attributes visible in Shopify Admin
+### 🛡️ Order Management
+- **Dashboard** with Orders and Address management
+- **Order Cancellation** with automated email notifications
+- **Live Shipping Tracking** status updates
+- **Secure Authentication** with email/password login
 
 ## 🚀 Quick Start
 
@@ -100,7 +100,7 @@ DRS/
 ### Colors
 - **Deep Charcoal** (#0a0a0a) - Background
 - **Soft Black** (#121212) - Cards
-- **Antique Brass** (#c0a060) - Primary actions
+- **White** (#ffffff) - Primary actions & Accents
 - **Mist** (#e5e5e5) - Primary text
 - **Smoke** (#a3a3a3) - Secondary text
 
@@ -127,24 +127,12 @@ npm run lint     # Run ESLint
 
 ## 🎯 Key Features
 
-### Product Customization
-- Select wood type (Walnut/Oak)
-- Add custom engraving (max 15 chars)
-- Live preview in serif font
-- Custom attributes sent to Shopify
 
-### Shopping Cart
-- Slide-in drawer from right
-- Display custom attributes
-- Quantity controls
-- Gift wrapping option (+₹150)
-- Direct Shopify checkout
+### User Dashboard
+- **Order History**: View past orders and status
+- **Cancellation**: Request order cancellation via email
+- **Address Book**: Manage saved addresses
 
-### Gift Wrapping
-- Optional premium gift wrapping
-- Automatically adds/removes from cart
-- Shows in order details
-- ₹150 additional charge
 
 ## 📚 Documentation
 
@@ -180,6 +168,7 @@ Add these to your deployment platform:
 ```env
 VITE_SHOPIFY_DOMAIN=your-store.myshopify.com
 VITE_SHOPIFY_TOKEN=your-storefront-token
+VITE_WEB3FORMS_KEY=your-web3forms-key # For cancellation emails
 ```
 
 ## 🐛 Troubleshooting
