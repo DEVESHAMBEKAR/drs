@@ -1,13 +1,13 @@
-# Deep Root Studios - Premium Personalized Wooden Gifts
+# Deep Root Studios - Premium Illuminated Decor & Art
 
-A luxury e-commerce website for Deep Root Studios, specializing in handcrafted personalized wooden organizers and decor.
+A luxury e-commerce website for Deep Root Studios, specializing in precision-engineered illuminated decor and architectural art.
 
-![Deep Root Studios](https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=1200&auto=format&fit=crop)
+![Deep Root Studios](https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1200&auto=format&fit=crop)
 
 ## ✨ Features
 
 ### 🎨 Premium Design
-- **Cinematic Hero Section** with wood grain background
+- **Cinematic Hero Section** with immersive background
 - **Bento Box Product Grid** with uneven tile layouts
 - **Dark, Luxury Aesthetic** using custom color palette
 - **Smooth Animations** powered by Framer Motion
@@ -203,4 +203,4 @@ For issues or questions:
 
 **Built with ❤️ for Deep Root Studios**
 
-*Meaning Carved in Wood.*
+*The Art of Ambience.*
