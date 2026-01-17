@@ -57,11 +57,11 @@ const ShopPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-28 pb-20">
+        <div className="min-h-screen bg-white dark:bg-luxury-black pt-36 pb-20">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Page Header */}
                 <motion.div
-                    className="mb-12"
+                    className="mb-8"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
@@ -70,133 +70,157 @@ const ShopPage = () => {
                         Our Collection
                     </h1>
                     <p className="mt-4 font-body text-lg text-zinc-600 dark:text-smoke">
-                        Handcrafted wooden pieces, personalized just for you
+                        Premium halo-lit wall art
                     </p>
                 </motion.div>
 
-                {/* Loading State */}
-                {isLoading && (
-                    <div className="flex min-h-[400px] items-center justify-center">
-                        <div className="text-center">
-                            <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-smoke/20 border-t-antique-brass mx-auto"></div>
-                            <p className="font-body text-smoke">Loading products...</p>
-                        </div>
-                    </div>
-                )}
+                {/* Flex Container - Sidebar + Products Grid */}
+                <div className="flex flex-col gap-8 md:flex-row md:gap-12">
+                    {/* Sticky Sidebar - Desktop Only */}
+                    <aside className="w-full md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:w-64">
+                        <nav className="space-y-6">
+                            <h2 className="font-heading text-xl text-neon-gold mb-6">
+                                Collections
+                            </h2>
 
-                {/* Error State */}
-                {error && (
-                    <div className="flex min-h-[400px] items-center justify-center">
-                        <div className="rounded border border-red-500/30 bg-red-500/10 p-6 text-center">
-                            <p className="font-body text-red-400">{error}</p>
-                            <button
-                                onClick={() => window.location.reload()}
-                                className="mt-4 border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
+                            <ul className="space-y-4">
+                                <li>
+                                    <button className="font-body text-lg text-text-main hover:text-neon-gold transition-colors duration-300 text-left w-full">
+                                        All Products
+                                    </button>
+                                </li>
+                                <li>
+                                    <button className="font-body text-lg text-text-muted hover:text-neon-gold transition-colors duration-300 text-left w-full">
+                                        Anime
+                                    </button>
+                                </li>
+                                <li>
+                                    <button className="font-body text-lg text-text-muted hover:text-neon-gold transition-colors duration-300 text-left w-full">
+                                        Sports
+                                    </button>
+                                </li>
+                                <li>
+                                    <button className="font-body text-lg text-text-muted hover:text-neon-gold transition-colors duration-300 text-left w-full">
+                                        Custom
+                                    </button>
+                                </li>
+                            </ul>
+
+                            {/* Divider */}
+                            <div className="border-t border-luxury-border pt-6 mt-8">
+                                <p className="font-body text-sm text-text-muted">
+                                    {products.length} Products
+                                </p>
+                            </div>
+                        </nav>
+                    </aside>
+
+                    {/* Products Grid Container - Takes Remaining Space */}
+                    <div className="flex-1">
+
+                        {/* Loading State */}
+                        {isLoading && (
+                            <div className="flex min-h-[400px] items-center justify-center">
+                                <div className="text-center">
+                                    <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-smoke/20 border-t-antique-brass mx-auto"></div>
+                                    <p className="font-body text-smoke">Loading products...</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Error State */}
+                        {error && (
+                            <div className="flex min-h-[400px] items-center justify-center">
+                                <div className="rounded border border-red-500/30 bg-red-500/10 p-6 text-center">
+                                    <p className="font-body text-red-400">{error}</p>
+                                    <button
+                                        onClick={() => window.location.reload()}
+                                        className="mt-4 border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
+                                    >
+                                        RETRY
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Products Grid - Brutalist Style */}
+                        {!isLoading && !error && products.length > 0 && (
+                            <motion.div
+                                className="grid grid-cols-2 gap-0 border-t border-l border-[#333] md:grid-cols-4"
+                                variants={containerVariants}
+                                initial="hidden"
+                                animate="visible"
                             >
-                                RETRY
-                            </button>
-                        </div>
-                    </div>
-                )}
+                                {products.map((product) => (
+                                    <motion.div key={product.id} variants={itemVariants}>
+                                        <Link
+                                            to={`/product/${encodeURIComponent(product.id)}`}
+                                            className="group block"
+                                        >
+                                            {/* Product Card - Brutalist Sharp Corners */}
+                                            <div className="border-r border-b border-[#333] bg-luxury-card transition-all duration-300 hover:bg-luxury-black">
+                                                {/* Product Image - Strict Aspect Ratio */}
+                                                <div className="relative aspect-square overflow-hidden bg-black">
+                                                    {product.images && product.images.length > 0 ? (
+                                                        <motion.img
+                                                            src={product.images[0].src}
+                                                            alt={product.title}
+                                                            loading="lazy"
+                                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-center justify-center">
+                                                            <span className="font-body text-sm text-text-muted">
+                                                                No image
+                                                            </span>
+                                                        </div>
+                                                    )}
 
-                {/* Products Grid */}
-                {!isLoading && !error && products.length > 0 && (
-                    <motion.div
-                        className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-8"
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                    >
-                        {products.map((product) => (
-                            <motion.div key={product.id} variants={itemVariants}>
-                                <Link
-                                    to={`/product/${encodeURIComponent(product.id)}`}
-                                    className="group block"
-                                >
-                                    {/* Product Card */}
-                                    <div className="overflow-hidden bg-white dark:bg-soft-black transition-all duration-300 hover:shadow-2xl">
-                                        {/* Product Image */}
-                                        <div className="relative aspect-square overflow-hidden bg-gray-200 dark:bg-deep-charcoal">
-                                            {product.images && product.images.length > 0 ? (
-                                                <motion.img
-                                                    src={product.images[0].src}
-                                                    alt={product.title}
-                                                    loading="lazy"
-                                                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                />
-                                            ) : (
-                                                <div className="flex h-full w-full items-center justify-center">
-                                                    <span className="font-body text-sm text-smoke/50">
-                                                        No image
-                                                    </span>
+                                                    {/* Subtle Hover Overlay */}
+                                                    <div className="absolute inset-0 bg-neon-gold/0 transition-all duration-300 group-hover:bg-neon-gold/5" />
                                                 </div>
-                                            )}
 
-                                            {/* Hover Overlay */}
-                                            <div className="absolute inset-0 bg-antique-brass/0 transition-all duration-300 group-hover:bg-antique-brass/10" />
+                                                {/* Product Info - Minimal Text Left Aligned */}
+                                                <div className="p-3 md:p-4">
+                                                    <h3 className="font-body text-sm font-medium text-text-main line-clamp-1 md:text-base text-left">
+                                                        {product.title}
+                                                    </h3>
 
-                                            {/* Personalizable Badge */}
-                                            <div className="absolute right-2 top-2 bg-white/90 dark:bg-deep-charcoal/90 px-2 py-1 backdrop-blur-sm">
-                                                <span className="font-body text-xs tracking-widest text-antique-brass">
-                                                    CUSTOM
-                                                </span>
+                                                    {product.variants && product.variants.length > 0 && (
+                                                        <p className="mt-2 font-body text-base font-bold text-neon-gold md:text-lg text-left">
+                                                            ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        {/* Product Info */}
-                                        <div className="p-2 md:p-4">
-                                            <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist line-clamp-2 md:text-base">
-                                                {product.title}
-                                            </h3>
-
-                                            {product.variants && product.variants.length > 0 && (
-                                                <p className="mt-2 font-body text-base text-antique-brass md:text-lg">
-                                                    ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
-                                                </p>
-                                            )}
-
-                                            {/* View Details Link */}
-                                            <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-zinc-600 dark:text-smoke transition-colors group-hover:text-antique-brass">
-                                                <span>VIEW DETAILS</span>
-                                                <svg
-                                                    className="h-3 w-3 transition-transform group-hover:translate-x-1"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        strokeWidth={2}
-                                                        d="M9 5l7 7-7 7"
-                                                    />
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
+                                        </Link>
+                                    </motion.div>
+                                ))}
                             </motion.div>
-                        ))}
-                    </motion.div>
-                )}
+                        )}
 
-                {/* Empty State */}
-                {!isLoading && !error && products.length === 0 && (
-                    <div className="flex min-h-[400px] items-center justify-center">
-                        <div className="text-center">
-                            <p className="font-body text-lg text-zinc-600 dark:text-smoke">
-                                No products available at the moment.
-                            </p>
-                            <Link
-                                to="/"
-                                className="mt-4 inline-block border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
-                            >
-                                BACK TO HOME
-                            </Link>
-                        </div>
+                        {/* Empty State */}
+                        {!isLoading && !error && products.length === 0 && (
+                            <div className="flex min-h-[400px] items-center justify-center">
+                                <div className="text-center">
+                                    <p className="font-body text-lg text-zinc-600 dark:text-smoke">
+                                        No products available at the moment.
+                                    </p>
+                                    <Link
+                                        to="/"
+                                        className="mt-4 inline-block border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
+                                    >
+                                        BACK TO HOME
+                                    </Link>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
+                    {/* End Products Grid Container */}
+                </div>
+                {/* End Flex Container */}
             </div>
+            {/* End Max Width Container */}
         </div>
     );
 };

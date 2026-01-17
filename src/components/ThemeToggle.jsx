@@ -64,8 +64,8 @@ const ThemeToggle = () => {
         <motion.button
             onClick={toggleTheme}
             className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-300 ${theme === 'dark'
-                    ? 'border-[#c0a060]/30 bg-[#0a0a0a] text-[#c0a060]'
-                    : 'border-[#a3a3a3] bg-[#e5e5e5] text-[#0a0a0a]'
+                ? 'border-luxury-border bg-luxury-card text-neon-gold'
+                : 'border-zinc-300 bg-zinc-100 text-zinc-900'
                 }`}
             whileTap={{ scale: 0.9 }}
             aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}

@@ -24,13 +24,15 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
 
-                    {/* Column 1: Brand Identity */}
+                    {/* Column 1: Brand Identity - DRS */}
                     <div className="space-y-6">
-                        <h2 className="font-serif text-3xl tracking-widest text-[#e5e5e5]">
-                            DEEP ROOT
-                        </h2>
-                        <p className="font-sans text-[#a3a3a3] text-sm leading-relaxed">
-                            Furniture that breathes. Stories carved in wood.
+                        <img
+                            src="/drs-logo.png"
+                            alt="DRS - Deep Root Studios"
+                            className="h-16 w-auto dark:invert"
+                        />
+                        <p className="text-gray-400 text-sm tracking-widest uppercase">
+                            Walls with a Spine.
                         </p>
 
                         {/* Social Icons */}
@@ -91,12 +93,6 @@ const Footer = () => {
                                 className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
                             >
                                 Best Sellers
-                            </Link>
-                            <Link
-                                to="/corporate"
-                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
-                            >
-                                Corporate Gifting
                             </Link>
                             <Link
                                 to="/shop?filter=new"
@@ -187,7 +183,7 @@ const Footer = () => {
                 <div className="border-t border-[#a3a3a3]/20 pt-8">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-[#a3a3a3] text-xs text-center md:text-left">
-                            © 2024 Deep Root Studios. All rights reserved.
+                            © 2026 Deep Root Studios.
                         </p>
                         <div className="flex gap-6 text-xs">
                             <Link

@@ -141,7 +141,7 @@ const CartDrawer = () => {
                                     <p className="font-body text-lg text-smoke">Your cart is empty</p>
                                     <button
                                         onClick={() => setIsCartOpen(false)}
-                                        className="mt-4 border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
+                                        className="mt-4 border border-luxury-border bg-transparent px-6 py-2 rounded-md font-body text-sm tracking-widest text-text-main transition-all duration-300 hover:border-brand-white"
                                     >
                                         CONTINUE SHOPPING
                                     </button>
@@ -274,13 +274,13 @@ const CartDrawer = () => {
                                     </div>
                                 </div>
 
-                                {/* Checkout Button */}
+                                {/* Checkout Button - Illuminated LED Design */}
                                 <motion.a
                                     href={cart.webUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="mt-4 block w-full bg-antique-brass px-6 py-4 text-center font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:bg-antique-brass/90"
-                                    whileHover={{ scale: 1.02 }}
+                                    className="mt-4 block w-full bg-brand-white px-6 py-4 rounded-full text-center font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
+                                    whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
                                     PROCEED TO CHECKOUT

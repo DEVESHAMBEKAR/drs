@@ -7,19 +7,20 @@
 
 @layer base {
 
-    /* Global body styles */
+    /* Global body styles - Light/Dark Mode Support */
     body {
-        @apply bg-[#f4f4f5] text-[#18181b] dark:bg-deep-charcoal dark:text-mist font-body transition-colors duration-300;
+        /* Light Mode - Clean Premium White */
+        @apply bg-white text-zinc-900 dark:bg-luxury-black dark:text-text-main font-sans transition-colors duration-300;
         scroll-behavior: smooth;
     }
 
     /* Custom text selection */
     ::selection {
-        @apply bg-antique-brass text-black;
+        @apply bg-neon-gold text-black;
     }
 
     ::-moz-selection {
-        @apply bg-antique-brass text-black;
+        @apply bg-neon-gold text-black;
     }
 
     /* Smooth scrolling for all elements */
@@ -66,7 +67,14 @@
 }
 
 @layer components {
-    /* Optional: Add reusable component classes here */
+
+    /* Glassmorphism Panel - High-end smoked glass aesthetic */
+    .glass-panel {
+        background: rgba(18, 18, 18, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 }
 
 @layer utilities {

@@ -136,8 +136,8 @@ const RecommendedSection = ({ currentProductId }) => {
                                             </p>
                                         )}
 
-                                        {/* View Details Link */}
-                                        <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-zinc-600 dark:text-smoke transition-colors group-hover:text-antique-brass">
+                                        {/* View Details Link - Secondary LED Style */}
+                                        <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-text-muted transition-colors group-hover:text-brand-white">
                                             <span>VIEW DETAILS</span>
                                             <svg
                                                 className="h-3 w-3 transition-transform group-hover:translate-x-1"

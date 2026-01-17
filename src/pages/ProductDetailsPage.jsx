@@ -290,7 +290,7 @@ const ProductDetailsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-28">
+        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-36">
             {/* Back to Shop Link */}
             <div className="mx-auto max-w-7xl px-6 py-6">
                 <Link
@@ -718,17 +718,17 @@ const ProductDetailsPage = () => {
 
                     {/* Action Buttons Row */}
                     <div ref={buySectionRef} className="flex flex-col gap-4 sm:flex-row">
-                        {/* Add to Cart Button - White Outline */}
+                        {/* Add to Cart Button - Secondary LED Style */}
                         <motion.button
                             onClick={handleAddToCart}
                             disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
-                            className="flex-1 flex items-center justify-center gap-2 border-2 border-[#c0a060] bg-transparent px-8 py-4 font-body text-sm tracking-widest text-[#c0a060] transition-all duration-300 hover:bg-[#c0a060] hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 flex items-center justify-center gap-2 border border-luxury-border bg-transparent px-8 py-4 rounded-md font-body text-sm tracking-widest text-text-main transition-all duration-300 hover:border-brand-white disabled:opacity-50 disabled:cursor-not-allowed"
                             whileHover={!(isLoading || isAdding) ? { scale: 1.02 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
                         >
                             {isAdding ? (
                                 <>
-                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-[#c0a060]/20 border-t-[#c0a060]"></div>
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-text-main/20 border-t-text-main"></div>
                                     ADDING...
                                 </>
                             ) : (
@@ -741,12 +741,12 @@ const ProductDetailsPage = () => {
                             )}
                         </motion.button>
 
-                        {/* Buy It Now Button - Solid Gold */}
+                        {/* Buy It Now Button - Illuminated LED Design */}
                         <motion.button
                             onClick={handleBuyNow}
                             disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
-                            className="flex-1 flex items-center justify-center gap-2 bg-[#c0a060] px-8 py-4 font-body text-sm tracking-widest text-black transition-all duration-300 hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
-                            whileHover={!(isLoading || isAdding) ? { scale: 1.02 } : {}}
+                            className="flex-1 flex items-center justify-center gap-2 bg-brand-white px-8 py-4 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                            whileHover={!(isLoading || isAdding) ? { scale: 1.05 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
                         >
                             {isAdding ? (
@@ -892,11 +892,11 @@ const ProductDetailsPage = () => {
                         )}
                     </div>
 
-                    {/* Right: Compact Add to Cart Button */}
+                    {/* Right: Compact Add to Cart Button - Illuminated LED Design */}
                     <button
                         onClick={handleAddToCart}
                         disabled={isLoading || isAdding}
-                        className="bg-[#c0a060] hover:bg-[#b09050] px-6 py-3 font-body text-sm tracking-widest text-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        className="bg-brand-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] px-6 py-3 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                         {isAdding ? 'ADDING...' : 'ADD TO CART'}
                     </button>

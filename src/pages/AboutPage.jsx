@@ -21,24 +21,24 @@ const AboutPage = () => {
 
     const values = [
         {
-            title: 'Handcrafted in Pune',
+            title: 'Dual-Layer Construction',
             description:
-                'Every piece is shaped by skilled artisans who understand the language of wood.',
+                'Matte black acrylic front, clear diffusion back. The "Sandwich Method" creates depth and glow.',
         },
         {
-            title: 'Sustainable Timber',
+            title: '120 LEDs/meter',
             description:
-                'We source responsibly, ensuring every grain tells a story of ethical forestry.',
+                'High-density lighting eliminates hotspots. Your art glows evenly, edge to edge.',
         },
         {
-            title: 'Uniquely Yours',
+            title: 'Stainless Steel Standoffs',
             description:
-                'No two pieces are alike. Your personalization makes each creation one-of-a-kind.',
+                '1-inch floating mount. Your art hovers off the wall with architectural precision.',
         },
     ];
 
     return (
-        <div className="min-h-screen bg-deep-charcoal pt-28 pb-20">
+        <div className="min-h-screen bg-deep-charcoal pt-36 pb-20">
             <div className="mx-auto max-w-5xl px-6">
                 {/* Hero Section */}
                 <motion.div
@@ -52,9 +52,9 @@ const AboutPage = () => {
                         className="font-heading text-3xl leading-tight text-mist md:text-5xl lg:text-7xl"
                         variants={fadeInUp}
                     >
-                        We don't just carve wood.
+                        We don't just hang art.
                         <br />
-                        <span className="text-antique-brass">We carve silence.</span>
+                        <span className="text-neon-gold">We engineer backbones.</span>
                     </motion.h1>
 
                     {/* Sub-headline */}
@@ -62,11 +62,11 @@ const AboutPage = () => {
                         className="mt-8 font-body text-xl tracking-widest text-smoke md:text-2xl"
                         variants={fadeInUp}
                     >
-                        Analog Soul. Digital World.
+                        Rigid. Precise. Illuminated.
                     </motion.p>
                 </motion.div>
 
-                {/* Story Section */}
+                {/* Mission/Philosophy Section - Walls with a Spine */}
                 <motion.div
                     className="mb-20"
                     initial={{ opacity: 0, y: 40 }}
@@ -74,18 +74,13 @@ const AboutPage = () => {
                     transition={{ duration: 1, delay: 0.5 }}
                 >
                     <div className="mx-auto max-w-3xl">
-                        <p className="font-body text-lg leading-relaxed text-smoke md:text-xl">
-                            In a world buzzing with notifications, Deep Root Studios was born
-                            from a simple desire: to bring the forest back to the desk. We
-                            believe that the objects you hold every day—your phone stand,
-                            your pen holder, your speaker—should have a soul. They shouldn't
-                            just be manufactured; they should be grown.
-                        </p>
-                        <p className="mt-8 font-body text-lg leading-relaxed text-smoke md:text-xl">
-                            We select timber with character—Walnut, Teak, and Oak that
-                            carries the history of decades in its grain. We don't hide the
-                            knots or the imperfections; we highlight them. They are the
-                            fingerprints of nature.
+                        <h2 className="font-heading text-3xl font-bold text-neon-gold mb-8 md:text-4xl">
+                            We Build Walls with a Spine.
+                        </h2>
+                        <p className="font-body text-lg leading-relaxed text-text-muted md:text-xl">
+                            Most decor is passive. It sits there. We build art that pushes back.
+                            Our dual-layer acrylic construction isn't just about durability—it's
+                            about giving your space a backbone. Rigid, precise, and impossible to ignore.
                         </p>
                     </div>
                 </motion.div>
@@ -118,13 +113,13 @@ const AboutPage = () => {
                     {values.map((value, index) => (
                         <motion.div
                             key={index}
-                            className="border border-smoke/20 bg-soft-black p-8 text-center"
+                            className="border border-luxury-border bg-luxury-card p-8 text-center rounded-none"
                             variants={fadeInUp}
                         >
-                            <h3 className="mb-4 font-heading text-2xl text-antique-brass">
+                            <h3 className="mb-4 font-heading text-2xl text-neon-gold">
                                 {value.title}
                             </h3>
-                            <p className="font-body text-sm leading-relaxed text-smoke">
+                            <p className="font-body text-sm leading-relaxed text-text-muted">
                                 {value.description}
                             </p>
                         </motion.div>

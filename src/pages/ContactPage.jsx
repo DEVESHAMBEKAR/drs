@@ -73,7 +73,7 @@ const ContactPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] pt-28 pb-20">
+        <div className="min-h-screen bg-white dark:bg-luxury-black pt-36 pb-20">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Two Column Layout */}
                 <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
@@ -86,13 +86,13 @@ const ContactPage = () => {
                     >
                         {/* Headline */}
                         <motion.div variants={fadeInUp}>
-                            <h1 className="font-heading text-2xl text-[#c0a060] md:text-4xl">
-                                The Workshop is Open.
+                            <h1 className="font-heading text-2xl text-neon-gold md:text-4xl">
+                                Let's Build Your Vision.
                             </h1>
-                            <p className="mt-6 font-body text-lg leading-relaxed text-[#a3a3a3]">
-                                Every piece tells a story. We'd love to hear yours. Whether
-                                you are looking for a specific custom engraving or planning
-                                corporate gifts, we are here to listen.
+                            <p className="mt-6 font-body text-lg leading-relaxed text-zinc-600 dark:text-text-muted">
+                                From concept to glow. Whether you're commissioning a custom
+                                anime silhouette or outfitting an entire gaming setup,
+                                we engineer walls with spine.
                             </p>
                         </motion.div>
 
@@ -104,22 +104,22 @@ const ContactPage = () => {
                                     className="flex items-start gap-4"
                                     variants={fadeInUp}
                                 >
-                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-[#c0a060]/30 bg-[#c0a060]/10">
-                                        <detail.icon className="h-5 w-5 text-[#c0a060]" />
+                                    <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center border border-neon-gold/30 bg-neon-gold/10 rounded-none">
+                                        <detail.icon className="h-5 w-5 text-neon-gold" />
                                     </div>
                                     <div>
-                                        <p className="font-body text-sm tracking-widest text-[#a3a3a3]">
+                                        <p className="font-body text-sm tracking-widest text-zinc-500 dark:text-gray-400">
                                             {detail.label}
                                         </p>
                                         {detail.href ? (
                                             <a
                                                 href={detail.href}
-                                                className="font-body text-lg text-[#e5e5e5] transition-colors hover:text-[#c0a060]"
+                                                className="font-body text-lg text-zinc-900 dark:text-text-main transition-colors hover:text-neon-gold"
                                             >
                                                 {detail.value}
                                             </a>
                                         ) : (
-                                            <p className="font-body text-lg text-[#e5e5e5]">
+                                            <p className="font-body text-lg text-zinc-900 dark:text-text-main">
                                                 {detail.value}
                                             </p>
                                         )}
@@ -130,7 +130,7 @@ const ContactPage = () => {
 
                         {/* Decorative Line */}
                         <motion.div
-                            className="hidden h-px w-full bg-gradient-to-r from-[#c0a060]/50 via-[#c0a060]/20 to-transparent lg:block"
+                            className="hidden h-px w-full bg-gradient-to-r from-neon-gold/50 via-neon-gold/20 to-transparent lg:block"
                             variants={fadeInUp}
                         />
                     </motion.div>
@@ -141,8 +141,8 @@ const ContactPage = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
                     >
-                        <div className="border border-[#a3a3a3]/10 bg-[#0a0a0a]/50 p-8 backdrop-blur-sm md:p-10">
-                            <h2 className="mb-8 font-heading text-2xl text-[#e5e5e5]">
+                        <div className="border border-zinc-200 dark:border-luxury-border/20 bg-white/50 dark:bg-luxury-black/50 backdrop-blur-sm p-8 md:p-10">
+                            <h2 className="mb-8 font-heading text-2xl text-zinc-900 dark:text-text-main">
                                 Send us a Message
                             </h2>
 
@@ -169,7 +169,7 @@ const ContactPage = () => {
                                         onChange={handleChange}
                                         required
                                         placeholder="Your Name"
-                                        className="w-full border-b border-[#a3a3a3]/30 bg-transparent py-3 font-body text-[#e5e5e5] placeholder-[#a3a3a3]/50 transition-colors focus:border-[#c0a060] focus:outline-none"
+                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
                                     />
                                 </div>
 
@@ -182,7 +182,7 @@ const ContactPage = () => {
                                         onChange={handleChange}
                                         required
                                         placeholder="your@email.com"
-                                        className="w-full border-b border-[#a3a3a3]/30 bg-transparent py-3 font-body text-[#e5e5e5] placeholder-[#a3a3a3]/50 transition-colors focus:border-[#c0a060] focus:outline-none"
+                                        className="w-full border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
                                     />
                                 </div>
 
@@ -193,24 +193,24 @@ const ContactPage = () => {
                                         value={formData.interest}
                                         onChange={handleChange}
                                         required
-                                        className="w-full appearance-none border-b border-[#a3a3a3]/30 bg-transparent py-3 font-body text-[#e5e5e5] transition-colors focus:border-[#c0a060] focus:outline-none"
+                                        className="w-full appearance-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main transition-colors focus:border-neon-gold focus:outline-none"
                                         style={{
                                             backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a3a3a3' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
                                             backgroundRepeat: 'no-repeat',
                                             backgroundPosition: 'right 0 center',
                                         }}
                                     >
-                                        <option value="" disabled className="bg-[#0a0a0a]">
+                                        <option value="" disabled className="bg-white dark:bg-luxury-black">
                                             Select your interest
                                         </option>
-                                        <option value="custom-order" className="bg-[#0a0a0a]">
-                                            Custom Order
+                                        <option value="anime-collection" className="bg-white dark:bg-luxury-black">
+                                            Anime Collection
                                         </option>
-                                        <option value="corporate-gifting" className="bg-[#0a0a0a]">
-                                            Corporate Gifting
+                                        <option value="sports-collection" className="bg-white dark:bg-luxury-black">
+                                            Sports Collection
                                         </option>
-                                        <option value="other" className="bg-[#0a0a0a]">
-                                            Other
+                                        <option value="custom-design" className="bg-white dark:bg-luxury-black">
+                                            Custom Design
                                         </option>
                                     </select>
                                 </div>
@@ -224,7 +224,7 @@ const ContactPage = () => {
                                         required
                                         rows={4}
                                         placeholder="Tell us what you need..."
-                                        className="w-full resize-none border-b border-[#a3a3a3]/30 bg-transparent py-3 font-body text-[#e5e5e5] placeholder-[#a3a3a3]/50 transition-colors focus:border-[#c0a060] focus:outline-none"
+                                        className="w-full resize-none border-b border-zinc-300 dark:border-gray-400/30 bg-transparent py-3 font-body text-zinc-900 dark:text-text-main placeholder-zinc-400 dark:placeholder-gray-400/50 transition-colors focus:border-neon-gold focus:outline-none"
                                     />
                                 </div>
 
@@ -232,7 +232,7 @@ const ContactPage = () => {
                                 <motion.button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex w-full items-center justify-center gap-2 bg-[#c0a060] py-4 font-body text-sm tracking-widest text-[#0a0a0a] transition-all duration-300 hover:bg-[#d4b574] disabled:cursor-not-allowed disabled:opacity-50"
+                                    className="flex w-full items-center justify-center gap-2 bg-neon-gold rounded-none py-4 font-body text-sm tracking-widest text-black transition-all duration-300 hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
                                     whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
                                     whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                                 >

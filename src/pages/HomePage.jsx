@@ -1,17 +1,15 @@
 import HeroSection from '../components/HeroSection';
 import CollectionGrid from '../components/CollectionGrid';
 import HomeStoriesSection from '../components/HomeStoriesSection';
-import ProductPage from '../components/ProductPage';
-import CorporateShowcase from '../components/CorporateShowcase';
+import CollectionsGrid from '../components/CollectionsGrid';
 
 const HomePage = () => {
     return (
         <>
             <HeroSection />
+            <CollectionsGrid />
             <CollectionGrid />
             <HomeStoriesSection />
-            <ProductPage />
-            <CorporateShowcase />
         </>
     );
 };

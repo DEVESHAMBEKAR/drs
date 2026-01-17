@@ -250,12 +250,12 @@ const ProductPage = () => {
                         </div>
                     </div>
 
-                    {/* Add to Cart Button */}
+                    {/* Add to Cart Button - Illuminated LED Design */}
                     <motion.button
                         onClick={handleAddToCart}
                         disabled={isLoading}
-                        className="w-full bg-antique-brass px-8 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:bg-antique-brass/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                        whileHover={!isLoading ? { scale: 1.02 } : {}}
+                        className="w-full bg-brand-white px-8 py-4 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                        whileHover={!isLoading ? { scale: 1.05 } : {}}
                         whileTap={!isLoading ? { scale: 0.98 } : {}}
                     >
                         {isLoading ? 'ADDING TO CART...' : 'ADD TO CART'}

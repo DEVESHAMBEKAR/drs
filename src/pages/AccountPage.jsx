@@ -41,7 +41,7 @@ const AccountPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#0a0a0a] pt-28 pb-20">
+        <div className="min-h-screen bg-white dark:bg-luxury-black pt-36 pb-20">
             <div className="mx-auto max-w-5xl px-6">
                 {/* Page Header */}
                 <motion.div

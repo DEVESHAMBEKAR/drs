@@ -16,7 +16,7 @@ const HeroSection = () => {
     const headlineY = useTransform(scrollYProgress, [0, 1], ['0%', '-50%']);
 
     // Split headline into letters for stagger animation
-    const headline = 'Meaning Carved in Wood.';
+    const headline = 'Walls with a Spine.';
     const words = headline.split(' ');
 
     // Container animation for staggering letters
@@ -49,11 +49,11 @@ const HeroSection = () => {
 
     return (
         <div ref={ref} className="relative h-screen w-full overflow-hidden">
-            {/* Animated Background Image with Parallax - Wood Grain/Desk Setup */}
+            {/* Dark Industrial Background Image - Matte Wall Texture */}
             <motion.div
-                className="absolute inset-0 bg-cover bg-center"
+                className="absolute inset-0 bg-cover bg-center bg-no-repeat sm:bg-[center_top]"
                 style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?q=80&w=2940&auto=format&fit=crop')`,
+                    backgroundImage: `url('https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=2600&auto=format&fit=crop')`,
                     y: backgroundY,
                 }}
                 initial={{ scale: 1.0 }}
@@ -64,17 +64,20 @@ const HeroSection = () => {
                 }}
             />
 
-            {/* Dark Gradient Overlay for Text Readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+            {/* Dark Overlay for Text Contrast - 50% Black */}
+            <div className="absolute inset-0 bg-black/50" />
 
-            {/* Content Container */}
+            {/* Gradient Fade at Bottom - Seamless Blend */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+
+            {/* Content Container - Above Overlays, Full Width Edge-to-Edge */}
             <motion.div
-                className="relative z-10 flex h-full flex-col items-center justify-center px-6"
+                className="relative z-20 flex h-full w-full flex-col items-center justify-center px-4 md:px-8"
                 style={{ y: headlineY }}
             >
-                {/* Animated Main Headline with Letter Stagger */}
+                {/* Animated Main Headline with Letter Stagger - Massive Edge-to-Edge */}
                 <motion.h1
-                    className="font-heading text-4xl tracking-wide text-mist md:text-6xl lg:text-8xl"
+                    className="font-heading text-[7vw] lg:text-[8vw] font-black leading-none tracking-tighter text-center text-white w-full"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -85,7 +88,8 @@ const HeroSection = () => {
                                 <motion.span
                                     key={`${wordIndex}-${letterIndex}`}
                                     variants={letterVariants}
-                                    className="inline-block"
+                                    className={`inline-block ${word === 'Spine.' ? 'text-neon-gold' : ''
+                                        }`}
                                 >
                                     {letter}
                                 </motion.span>
@@ -97,9 +101,9 @@ const HeroSection = () => {
                     ))}
                 </motion.h1>
 
-                {/* Animated Subheadline */}
+                {/* Animated Subheadline - Edgy Brand Copy */}
                 <motion.p
-                    className="mt-6 max-w-2xl text-center font-body text-lg tracking-wide text-smoke md:text-xl"
+                    className="mt-8 max-w-4xl text-center font-body text-base md:text-lg lg:text-xl tracking-wide text-gray-300 px-4 md:px-8"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -108,7 +112,7 @@ const HeroSection = () => {
                         ease: [0.25, 0.1, 0.25, 1],
                     }}
                 >
-                    Handcrafted organizers and decor, personalized for your story.
+                    Bold silhouettes. Rigid precision. Give your space the backbone it deserves with our halo-lit acrylic art.
                 </motion.p>
 
                 {/* CTA Button */}
@@ -122,10 +126,10 @@ const HeroSection = () => {
                         ease: [0.25, 0.1, 0.25, 1],
                     }}
                 >
-                    {/* Explore Collection - Solid Brass Button with Magnetic Effect */}
+                    {/* Explore Collection - Illuminated LED Button */}
                     <MagneticButton
                         href="/shop"
-                        className="bg-antique-brass px-12 py-4 font-body text-sm tracking-widest text-deep-charcoal transition-all duration-300 hover:shadow-[0_0_20px_rgba(192,160,96,0.6)]"
+                        className="bg-brand-white px-12 py-4 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_30px_rgba(255,255,255,0.6)]"
                     >
                         EXPLORE COLLECTION
                     </MagneticButton>

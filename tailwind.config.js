@@ -8,12 +8,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        'deep-charcoal': '#0a0a0a',
-        'soft-black': '#121212',
-        'raw-walnut': '#5d4037',
-        'antique-brass': '#c0a060',
-        'mist': '#e5e5e5',
-        'smoke': '#a3a3a3',
+        // The Backgrounds
+        'luxury-black': '#050505',   // Main page background (Deepest Black)
+        'luxury-card': '#121212',    // Product cards (Slightly lighter)
+        'luxury-border': '#27272a',  // Subtle borders
+
+        // The Text
+        'text-main': '#ededed',      // Primary text (Soft White)
+        'text-muted': '#a1a1aa',     // Secondary text (Gray)
+
+        // The 'Glow' Accents
+        'neon-gold': '#fbbf24',      // For Warm White LED accents
+        'neon-blue': '#38bdf8',      // For Cool White/Tech accents
+        'brand-white': '#ffffff',    // High contrast buttons
       },
       fontFamily: {
         'heading': ['"Playfair Display"', 'serif'],

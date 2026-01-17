@@ -33,7 +33,7 @@ const Header = () => {
                         <Menu className="h-6 w-6" />
                     </motion.button>
 
-                    {/* Logo */}
+                    {/* Logo - DRS Brand */}
                     <Link to="/">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -42,9 +42,9 @@ const Header = () => {
                             className="flex items-center"
                         >
                             <img
-                                src="/logo.png"
-                                alt="Deep Root Studios"
-                                className="h-16 w-auto invert mix-blend-screen"
+                                src="/drs-logo.png"
+                                alt="DRS - Deep Root Studios"
+                                className="h-14 w-auto dark:invert sm:h-20"
                             />
                         </motion.div>
                     </Link>
@@ -86,81 +86,64 @@ const Header = () => {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: 10 }}
                                         transition={{ duration: 0.2 }}
-                                        className="absolute left-0 top-full mt-2 w-64 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl overflow-hidden"
+                                        className="absolute left-0 top-full mt-2 w-64 bg-white dark:bg-luxury-card border border-zinc-200 dark:border-luxury-border rounded-lg shadow-xl overflow-hidden"
                                     >
                                         {/* View All */}
                                         <Link
                                             to="/shop"
-                                            className="block px-4 py-3 font-body text-sm text-antique-brass border-b border-[#333] hover:bg-[#252525] transition-colors"
+                                            className="block px-4 py-3 font-body text-sm text-neon-gold border-b border-zinc-200 dark:border-luxury-border hover:bg-zinc-50 dark:hover:bg-[#252525] transition-colors"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
                                             View All Products →
                                         </Link>
 
-                                        {/* For the Techie */}
+                                        {/* Anime Collection */}
                                         <Link
-                                            to="/shop?category=techie"
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            to="/shop?category=anime"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[#252525] transition-colors group"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
-                                            <Monitor className="h-5 w-5 text-[#c0a060]" />
+                                            <Monitor className="h-5 w-5 text-neon-gold" />
                                             <div>
-                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
-                                                    For the Techie
+                                                <span className="font-body text-sm text-zinc-900 dark:text-mist group-hover:text-neon-gold transition-colors">
+                                                    Anime
                                                 </span>
                                                 <p className="font-body text-xs text-smoke/60">
-                                                    Laptop Stands, Headphone Docks
+                                                    Iconic characters, halo-lit
                                                 </p>
                                             </div>
                                         </Link>
 
-                                        {/* For the Organizer */}
+                                        {/* Sports Collection */}
                                         <Link
-                                            to="/shop?category=organizer"
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            to="/shop?category=sports"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[#252525] transition-colors group"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
-                                            <PenTool className="h-5 w-5 text-[#c0a060]" />
+                                            <PenTool className="h-5 w-5 text-neon-gold" />
                                             <div>
-                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
-                                                    For the Organizer
+                                                <span className="font-body text-sm text-zinc-900 dark:text-mist group-hover:text-neon-gold transition-colors">
+                                                    Sports
                                                 </span>
                                                 <p className="font-body text-xs text-smoke/60">
-                                                    Pen Holders, Trays
+                                                    Athletes, teams, moments
                                                 </p>
                                             </div>
                                         </Link>
 
-                                        {/* For the Reader */}
+                                        {/* Custom Collection */}
                                         <Link
-                                            to="/shop?category=reader"
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-[#252525] transition-colors group"
+                                            to="/shop?category=custom"
+                                            className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[#252525] transition-colors group"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
-                                            <BookOpen className="h-5 w-5 text-[#c0a060]" />
+                                            <BookOpen className="h-5 w-5 text-neon-gold" />
                                             <div>
-                                                <span className="font-body text-sm text-mist group-hover:text-antique-brass transition-colors">
-                                                    For the Reader
+                                                <span className="font-body text-sm text-zinc-900 dark:text-mist group-hover:text-neon-gold transition-colors">
+                                                    Custom
                                                 </span>
                                                 <p className="font-body text-xs text-smoke/60">
-                                                    Book Stands, Lamps
-                                                </p>
-                                            </div>
-                                        </Link>
-
-                                        {/* Corporate Gifting */}
-                                        <Link
-                                            to="/bulk"
-                                            className="flex items-center gap-3 px-4 py-3 bg-[#1f1a14] hover:bg-[#2a2318] transition-colors group border-t border-[#333]"
-                                            onClick={() => setIsShopDropdownOpen(false)}
-                                        >
-                                            <Building2 className="h-5 w-5 text-[#c0a060]" />
-                                            <div>
-                                                <span className="font-body text-sm text-antique-brass">
-                                                    Corporate Gifting
-                                                </span>
-                                                <p className="font-body text-xs text-smoke/60">
-                                                    Bulk orders & custom branding
+                                                    Your design, our craft
                                                 </p>
                                             </div>
                                         </Link>
