@@ -5,7 +5,7 @@ const AccordionItem = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="border-t border-[#333]">
+        <div className="border-t border-zinc-200 dark:border-[#333]">
             {/* Header Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
@@ -13,7 +13,7 @@ const AccordionItem = ({ title, children }) => {
                 aria-expanded={isOpen}
             >
                 {/* Title */}
-                <span className="font-sans text-sm tracking-widest uppercase text-[#a3a3a3]">
+                <span className="font-sans text-sm tracking-widest uppercase text-zinc-600 dark:text-gray-400">
                     {title}
                 </span>
 
@@ -21,7 +21,7 @@ const AccordionItem = ({ title, children }) => {
                 <motion.div
                     animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="text-[#a3a3a3]"
+                    className="text-zinc-600 dark:text-gray-400"
                 >
                     <svg
                         className="h-5 w-5"
@@ -49,7 +49,7 @@ const AccordionItem = ({ title, children }) => {
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                         className="overflow-hidden"
                     >
-                        <div className="pb-4 pt-2 text-[#e5e5e5]">
+                        <div className="pb-4 pt-2 text-zinc-700 dark:text-gray-300">
                             {children}
                         </div>
                     </motion.div>

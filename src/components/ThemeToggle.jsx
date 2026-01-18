@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 
 const ThemeToggle = () => {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState('light'); // Default to light mode
 
-    // On mount, check localStorage or system preference
+    // On mount, check localStorage or default to light
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
 
@@ -13,11 +13,9 @@ const ThemeToggle = () => {
             setTheme(savedTheme);
             document.documentElement.classList.toggle('dark', savedTheme === 'dark');
         } else {
-            // Check system preference
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const initialTheme = prefersDark ? 'dark' : 'light';
-            setTheme(initialTheme);
-            document.documentElement.classList.toggle('dark', prefersDark);
+            // Default to light mode on first visit
+            setTheme('light');
+            document.documentElement.classList.remove('dark');
         }
     }, []);
 

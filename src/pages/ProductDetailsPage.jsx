@@ -5,7 +5,7 @@ import { useShopify } from '../context/ShopifyContext';
 import AccordionItem from '../components/AccordionItem';
 import RecommendedSection from '../components/RecommendedSection';
 import ReviewsSection from '../components/ReviewsSection';
-import { Truck, Wrench, Zap, Play, PenLine } from 'lucide-react';
+import { Truck, Wrench, Zap, Play, PenLine, Globe, Shield } from 'lucide-react';
 
 const ProductDetailsPage = () => {
     // Extract full product ID from URL path (handles Shopify GIDs with slashes)
@@ -17,6 +17,7 @@ const ProductDetailsPage = () => {
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedVariant, setSelectedVariant] = useState(null); // NEW: Track selected variant
     const [engravingText, setEngravingText] = useState('');
     const [isEngravingEnabled, setIsEngravingEnabled] = useState(false);
     const [fontStyle, setFontStyle] = useState('classic');
@@ -57,6 +58,15 @@ const ProductDetailsPage = () => {
         }
     }, [id, client]);
 
+    // Initialize selected variant to first available variant
+    useEffect(() => {
+        if (product && product.variants && product.variants.length > 0) {
+            // Find first available variant, or fallback to first variant
+            const firstAvailable = product.variants.find(v => v.available) || product.variants[0];
+            setSelectedVariant(firstAvailable);
+        }
+    }, [product]);
+
     // Scroll observer to show/hide sticky bar
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -81,20 +91,36 @@ const ProductDetailsPage = () => {
         };
     }, [product]);
 
+    // Handle variant selection
+    const handleVariantChange = (variant) => {
+        if (!variant) return;
+
+        setSelectedVariant(variant);
+
+        // Update image if variant has a specific image
+        if (variant.image && product.images) {
+            const imageIndex = product.images.findIndex(img => img.id === variant.image.id);
+            if (imageIndex !== -1) {
+                setSelectedImage(imageIndex);
+            }
+        }
+    };
+
     // Handle add to cart with custom attributes
     const handleAddToCart = async () => {
-        if (!product || !product.variants || product.variants.length === 0) {
+        if (!product || !selectedVariant) {
             console.error('Product or variant not available');
-            alert('Product variant not available');
+            alert('Please select a product variant');
             return;
         }
 
         setIsAdding(true);
-        const variantId = product.variants[0].id;
+        const variantId = selectedVariant.id; // Use selected variant instead of first variant
 
         // Debug logging
         console.log('Adding variant:', variantId);
         console.log('Product:', product.title);
+        console.log('Selected Variant:', selectedVariant.title);
         console.log('Quantity:', quantity);
         console.log('Engraving:', engravingText);
 
@@ -132,17 +158,18 @@ const ProductDetailsPage = () => {
 
     // Handle Buy Now - add to cart and redirect to checkout
     const handleBuyNow = async () => {
-        if (!product || !product.variants || product.variants.length === 0) {
+        if (!product || !selectedVariant) {
             console.error('Product or variant not available');
-            alert('Product variant not available');
+            alert('Please select a product variant');
             return;
         }
 
         setIsAdding(true);
-        const variantId = product.variants[0].id;
+        const variantId = selectedVariant.id; // Use selected variant
 
         // Debug logging
         console.log('Buy Now - Adding variant:', variantId);
+        console.log('Selected Variant:', selectedVariant.title);
 
         // Prepare custom attributes for Shopify
         const customAttributes = [];
@@ -260,13 +287,33 @@ const ProductDetailsPage = () => {
         }
     };
 
+    // Helper function to get dimensions for variant
+    const getDimensionsForVariant = (variantTitle) => {
+        const dimensionsMap = {
+            'Small': '12 x 12 inches',
+            'Medium': '18 x 18 inches',
+            'Large': '24 x 24 inches',
+            'X-Large': '30 x 30 inches',
+            'XL': '30 x 30 inches',
+        };
+
+        // Try to find exact match or partial match
+        for (const [key, value] of Object.entries(dimensionsMap)) {
+            if (variantTitle.includes(key)) {
+                return `📐 Dimensions: ${value}`;
+            }
+        }
+
+        return ''; // Return empty if no match found
+    };
+
     // Loading State
     if (isLoading) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#f4f4f5] dark:bg-deep-charcoal pt-28">
+            <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black pt-28">
                 <div className="text-center">
-                    <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-zinc-300 dark:border-smoke/20 border-t-antique-brass mx-auto"></div>
-                    <p className="font-body text-lg text-zinc-600 dark:text-smoke">Loading product...</p>
+                    <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-zinc-300 dark:border-zinc-700 border-t-black dark:border-t-white mx-auto"></div>
+                    <p className="font-body text-lg text-zinc-600 dark:text-gray-400">Loading product...</p>
                 </div>
             </div>
         );
@@ -275,12 +322,12 @@ const ProductDetailsPage = () => {
     // Error State
     if (error || !product) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#f4f4f5] dark:bg-deep-charcoal pt-28">
+            <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black pt-28">
                 <div className="text-center">
-                    <p className="mb-4 font-body text-lg text-zinc-600 dark:text-smoke">{error || 'Product not found'}</p>
+                    <p className="mb-4 font-body text-lg text-zinc-600 dark:text-gray-400">{error || 'Product not found'}</p>
                     <Link
                         to="/shop"
-                        className="inline-block border border-antique-brass px-6 py-2 font-body text-sm tracking-widest text-antique-brass transition-all hover:bg-antique-brass hover:text-deep-charcoal"
+                        className="inline-block border-2 border-black dark:border-white px-6 py-2 font-body text-sm tracking-widest text-black dark:text-white transition-all hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
                     >
                         BACK TO SHOP
                     </Link>
@@ -290,12 +337,12 @@ const ProductDetailsPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-[#f4f4f5] dark:bg-deep-charcoal pt-36">
+        <div className="min-h-screen bg-white dark:bg-black pt-16">
             {/* Back to Shop Link */}
             <div className="mx-auto max-w-7xl px-6 py-6">
                 <Link
                     to="/shop"
-                    className="inline-flex items-center gap-2 font-body text-sm tracking-widest text-zinc-900 dark:text-mist transition-colors hover:text-antique-brass dark:hover:text-antique-brass"
+                    className="inline-flex items-center gap-2 font-body text-sm tracking-widest text-zinc-900 dark:text-white transition-colors hover:text-zinc-600 dark:hover:text-gray-300"
                 >
                     <svg
                         className="h-4 w-4"
@@ -376,15 +423,52 @@ const ProductDetailsPage = () => {
                 >
                     {/* Product Header */}
                     <div>
-                        <h1 className="font-heading text-2xl text-antique-brass md:text-4xl">
+                        <h1 className="font-heading text-2xl text-black dark:text-white md:text-4xl">
                             {product.title}
                         </h1>
 
-                        {product.variants && product.variants.length > 0 && (
+                        {selectedVariant && (
                             <>
-                                <p className="mt-4 font-body text-3xl text-zinc-900 dark:text-mist">
-                                    ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
-                                </p>
+                                {/* Price Display with Dynamic Discount */}
+                                {(() => {
+                                    const currentPrice = parseFloat(selectedVariant.price.amount);
+                                    const compareAtPrice = selectedVariant.compareAtPrice
+                                        ? parseFloat(selectedVariant.compareAtPrice.amount)
+                                        : null;
+                                    const hasDiscount = compareAtPrice && compareAtPrice > currentPrice;
+                                    const savedPercentage = hasDiscount
+                                        ? Math.round(((compareAtPrice - currentPrice) / compareAtPrice) * 100)
+                                        : 0;
+
+                                    return (
+                                        <div className="mt-4">
+                                            {hasDiscount ? (
+                                                // With Discount - Show Compare Price, Current Price, and Badge
+                                                <div className="flex items-end gap-3 mb-2">
+                                                    {/* Current Price */}
+                                                    <p className="text-3xl md:text-4xl font-display font-bold text-zinc-900 dark:text-white">
+                                                        ₹{currentPrice.toFixed(2)}
+                                                    </p>
+
+                                                    {/* Compare At Price (Strikethrough) */}
+                                                    <p className="text-lg text-gray-500 dark:text-gray-500 line-through decoration-gray-600 dark:decoration-gray-400 font-mono mb-1">
+                                                        ₹{compareAtPrice.toFixed(2)}
+                                                    </p>
+
+                                                    {/* Discount Badge - Stock Market Aesthetic */}
+                                                    <span className="px-2 py-0.5 border-2 border-black dark:border-white bg-black dark:bg-white text-white dark:text-black text-xs font-bold tracking-wider uppercase mb-1">
+                                                        SAVE {savedPercentage}%
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                // No Discount - Simple Price
+                                                <p className="font-body text-3xl text-zinc-900 dark:text-white">
+                                                    ₹{currentPrice.toFixed(2)}
+                                                </p>
+                                            )}
+                                        </div>
+                                    );
+                                })()}
 
                                 {/* Delivery Estimate */}
                                 <div className="mt-3 flex items-center gap-2">
@@ -405,24 +489,65 @@ const ProductDetailsPage = () => {
                         )}
                     </div>
 
+                    {/* Variant Selector - Industrial Dark Luxury Style */}
+                    {product.variants && product.variants.length > 1 && (
+                        <div>
+                            <label className="mb-3 block font-body text-xs tracking-widest uppercase text-gray-500 dark:text-gray-400">
+                                SELECT CONFIGURATION
+                            </label>
+                            <div className="flex flex-wrap gap-3">
+                                {product.variants.map((variant) => {
+                                    const isSelected = selectedVariant?.id === variant.id;
+                                    const isAvailable = variant.available;
+
+                                    return (
+                                        <button
+                                            key={variant.id}
+                                            onClick={() => isAvailable && handleVariantChange(variant)}
+                                            disabled={!isAvailable}
+                                            className={`
+                                                h-12 min-w-[80px] px-6 flex items-center justify-center
+                                                font-display uppercase tracking-widest text-sm
+                                                transition-all duration-300 cursor-pointer
+                                                ${isSelected
+                                                    ? 'border-2 border-black dark:border-white bg-black dark:bg-white text-white dark:text-black shadow-lg'
+                                                    : isAvailable
+                                                        ? 'border-2 border-zinc-300 dark:border-zinc-700 bg-white dark:bg-black text-zinc-900 dark:text-white hover:border-black dark:hover:border-white'
+                                                        : 'border-2 border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-600 cursor-not-allowed line-through opacity-40'
+                                                }
+                                            `}
+                                        >
+                                            {variant.title}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                            {/* Dynamic Dimensions Display */}
+                            {selectedVariant && (
+                                <p className="mt-2 text-xs text-gray-500 dark:text-gray-500 font-mono">
+                                    {getDimensionsForVariant(selectedVariant.title)}
+                                </p>
+                            )}
+                        </div>
+                    )}
 
 
                     {/* Quantity Selector */}
                     <div>
-                        <label className="mb-2 block font-body text-sm tracking-widest text-zinc-700 dark:text-mist">
+                        <label className="mb-2 block font-body text-sm tracking-widest text-zinc-700 dark:text-white">
                             QUANTITY
                         </label>
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                className="flex h-10 w-10 items-center justify-center border border-zinc-300 dark:border-smoke/30 bg-white dark:bg-soft-black text-zinc-900 dark:text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
+                                className="flex h-10 w-10 items-center justify-center border-2 border-zinc-300 dark:border-white bg-white dark:bg-black text-zinc-900 dark:text-white transition-all hover:border-black dark:hover:border-gray-300"
                             >
                                 −
                             </button>
-                            <span className="font-body text-lg text-zinc-900 dark:text-mist">{quantity}</span>
+                            <span className="font-body text-lg text-zinc-900 dark:text-white">{quantity}</span>
                             <button
                                 onClick={() => setQuantity(quantity + 1)}
-                                className="flex h-10 w-10 items-center justify-center border border-zinc-300 dark:border-smoke/30 bg-white dark:bg-soft-black text-zinc-900 dark:text-mist transition-all hover:border-antique-brass hover:text-antique-brass"
+                                className="flex h-10 w-10 items-center justify-center border-2 border-zinc-300 dark:border-white bg-white dark:bg-black text-zinc-900 dark:text-white transition-all hover:border-black dark:hover:border-gray-300"
                             >
                                 +
                             </button>
@@ -431,7 +556,7 @@ const ProductDetailsPage = () => {
 
                     {/* Pincode Checker */}
                     <div>
-                        <label className="mb-2 block font-body text-sm tracking-widest text-zinc-700 dark:text-mist">
+                        <label className="mb-2 block font-body text-sm tracking-widest text-zinc-700 dark:text-white">
                             CHECK DELIVERY
                         </label>
                         <div className="flex gap-2">
@@ -445,12 +570,12 @@ const ProductDetailsPage = () => {
                                 }}
                                 placeholder="Enter Pincode"
                                 maxLength={6}
-                                className="flex-1 border border-zinc-300 dark:border-smoke/30 bg-white dark:bg-soft-black px-4 py-2 font-body text-zinc-900 dark:text-mist placeholder-zinc-400 dark:placeholder-smoke/50 transition-all focus:border-antique-brass focus:outline-none"
+                                className="flex-1 border-2 border-zinc-300 dark:border-white bg-white dark:bg-black px-4 py-2 font-body text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-gray-500 transition-all focus:border-black dark:focus:border-gray-300 focus:outline-none"
                             />
                             <button
                                 onClick={handleCheckPincode}
                                 disabled={isCheckingPincode}
-                                className="border border-zinc-300 dark:border-smoke/30 bg-white dark:bg-soft-black px-6 py-2 font-body text-sm tracking-widest text-zinc-900 dark:text-mist transition-all hover:border-antique-brass hover:text-antique-brass disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="border-2 border-zinc-300 dark:border-white bg-white dark:bg-black px-6 py-2 font-body text-sm tracking-widest text-zinc-900 dark:text-white transition-all hover:border-black dark:hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 {isCheckingPincode ? 'CHECKING...' : 'CHECK'}
                             </button>
@@ -479,17 +604,17 @@ const ProductDetailsPage = () => {
 
                     {/* Action Buttons Row */}
                     <div ref={buySectionRef} className="flex flex-col gap-4 sm:flex-row">
-                        {/* Add to Cart Button - Secondary LED Style */}
+                        {/* Add to Cart Button - Secondary Style */}
                         <motion.button
                             onClick={handleAddToCart}
                             disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
-                            className="flex-1 flex items-center justify-center gap-2 border border-luxury-border bg-transparent px-8 py-4 rounded-md font-body text-sm tracking-widest text-text-main transition-all duration-300 hover:border-brand-white disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 flex items-center justify-center gap-2 border-2 border-black dark:border-white bg-transparent px-8 py-4 rounded-md font-body text-sm tracking-widest text-black dark:text-white transition-all duration-300 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black disabled:opacity-50 disabled:cursor-not-allowed"
                             whileHover={!(isLoading || isAdding) ? { scale: 1.02 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
                         >
                             {isAdding ? (
                                 <>
-                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-text-main/20 border-t-text-main"></div>
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current/20 border-t-current"></div>
                                     ADDING...
                                 </>
                             ) : (
@@ -502,17 +627,17 @@ const ProductDetailsPage = () => {
                             )}
                         </motion.button>
 
-                        {/* Buy It Now Button - Illuminated LED Design */}
+                        {/* Buy It Now Button - Primary Style */}
                         <motion.button
                             onClick={handleBuyNow}
                             disabled={isLoading || isAdding || !product || !product.variants || product.variants.length === 0}
-                            className="flex-1 flex items-center justify-center gap-2 bg-brand-white px-8 py-4 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)] disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex-1 flex items-center justify-center gap-2 bg-black dark:bg-white px-8 py-4 rounded-full font-body text-sm tracking-widest text-white dark:text-black transition-all duration-300 ease-out hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
                             whileHover={!(isLoading || isAdding) ? { scale: 1.05 } : {}}
                             whileTap={!(isLoading || isAdding) ? { scale: 0.98 } : {}}
                         >
                             {isAdding ? (
                                 <>
-                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-black/20 border-t-black"></div>
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current/20 border-t-current"></div>
                                     PROCESSING...
                                 </>
                             ) : (
@@ -524,6 +649,33 @@ const ProductDetailsPage = () => {
                                 </>
                             )}
                         </motion.button>
+                    </div>
+
+                    {/* Trust Row - Service Assurance */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-8 py-6 border-y border-zinc-200 dark:border-zinc-700">
+                        {/* Free Delivery */}
+                        <div className="flex flex-col items-center text-center">
+                            <Truck className="w-5 h-5 mb-2 text-black dark:text-white" />
+                            <p className="font-mono text-xs tracking-wider uppercase text-gray-600 dark:text-gray-400">
+                                FREE DELIVERY
+                            </p>
+                        </div>
+
+                        {/* 1 Year Warranty */}
+                        <div className="flex flex-col items-center text-center">
+                            <Shield className="w-5 h-5 mb-2 text-black dark:text-white" />
+                            <p className="font-mono text-xs tracking-wider uppercase text-gray-600 dark:text-gray-400">
+                                1 YEAR WARRANTY
+                            </p>
+                        </div>
+
+                        {/* Ready to Ship */}
+                        <div className="flex flex-col items-center text-center">
+                            <Zap className="w-5 h-5 mb-2 text-black dark:text-white" />
+                            <p className="font-mono text-xs tracking-wider uppercase text-gray-600 dark:text-gray-400">
+                                READY TO SHIP
+                            </p>
+                        </div>
                     </div>
 
                     {/* Details Accordions */}
@@ -550,21 +702,21 @@ const ProductDetailsPage = () => {
                                         {product.description?.toLowerCase().includes('flat-pack') && (
                                             <div className="space-y-3">
                                                 {/* GIF Placeholder */}
-                                                <div className="relative aspect-video bg-[#1a1a1a] border border-[#333] rounded flex items-center justify-center group cursor-pointer hover:border-[#c0a060] transition-colors">
+                                                <div className="relative aspect-video bg-zinc-100 dark:bg-[#1a1a1a] border-2 border-zinc-200 dark:border-[#333] rounded flex items-center justify-center group cursor-pointer hover:border-black dark:hover:border-white transition-colors">
                                                     <div className="text-center">
-                                                        <Play className="w-12 h-12 text-[#c0a060] mx-auto mb-2" />
-                                                        <p className="font-body text-xs text-[#a3a3a3]">Assembly Demo</p>
+                                                        <Play className="w-12 h-12 text-black dark:text-white mx-auto mb-2" />
+                                                        <p className="font-body text-xs text-zinc-600 dark:text-gray-400">Assembly Demo</p>
                                                     </div>
                                                 </div>
 
                                                 {/* Assembly Info */}
                                                 <div className="flex items-start gap-3">
-                                                    <Wrench className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                    <Wrench className="w-5 h-5 text-black dark:text-white flex-shrink-0 mt-0.5" />
                                                     <div>
-                                                        <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                        <p className="font-body text-sm text-zinc-900 dark:text-white font-medium mb-1">
                                                             Tool-Free Assembly
                                                         </p>
-                                                        <p className="font-body text-sm text-[#a3a3a3]">
+                                                        <p className="font-body text-sm text-zinc-600 dark:text-gray-400">
                                                             Snaps together in seconds. No tools required.
                                                         </p>
                                                     </div>
@@ -578,12 +730,12 @@ const ProductDetailsPage = () => {
                                                 <div className="space-y-3">
                                                     {/* Light Source */}
                                                     <div className="flex items-start gap-3">
-                                                        <Zap className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                        <Zap className="w-5 h-5 text-black dark:text-white flex-shrink-0 mt-0.5" />
                                                         <div>
-                                                            <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                            <p className="font-body text-sm text-zinc-900 dark:text-white font-medium mb-1">
                                                                 Light Source
                                                             </p>
-                                                            <p className="font-body text-sm text-[#a3a3a3]">
+                                                            <p className="font-body text-sm text-zinc-600 dark:text-gray-400">
                                                                 Warm White LED (3000K)
                                                             </p>
                                                         </div>
@@ -591,12 +743,12 @@ const ProductDetailsPage = () => {
 
                                                     {/* Power */}
                                                     <div className="flex items-start gap-3">
-                                                        <Zap className="w-5 h-5 text-[#c0a060] flex-shrink-0 mt-0.5" />
+                                                        <Zap className="w-5 h-5 text-black dark:text-white flex-shrink-0 mt-0.5" />
                                                         <div>
-                                                            <p className="font-body text-sm text-[#e5e5e5] font-medium mb-1">
+                                                            <p className="font-body text-sm text-zinc-900 dark:text-white font-medium mb-1">
                                                                 Power
                                                             </p>
-                                                            <p className="font-body text-sm text-[#a3a3a3]">
+                                                            <p className="font-body text-sm text-zinc-600 dark:text-gray-400">
                                                                 USB-C Rechargeable
                                                             </p>
                                                         </div>
@@ -653,11 +805,11 @@ const ProductDetailsPage = () => {
                         )}
                     </div>
 
-                    {/* Right: Compact Add to Cart Button - Illuminated LED Design */}
+                    {/* Right: Compact Add to Cart Button */}
                     <button
                         onClick={handleAddToCart}
                         disabled={isLoading || isAdding}
-                        className="bg-brand-white hover:shadow-[0_0_15px_rgba(255,255,255,0.5)] px-6 py-3 rounded-full font-body text-sm tracking-widest text-black transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        className="bg-black dark:bg-white hover:opacity-90 px-6 py-3 rounded-full font-body text-sm tracking-widest text-white dark:text-black transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
                         {isAdding ? 'ADDING...' : 'ADD TO CART'}
                     </button>

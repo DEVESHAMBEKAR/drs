@@ -69,11 +69,11 @@ const RecommendedSection = ({ currentProductId }) => {
     };
 
     return (
-        <section className="border-t border-zinc-200 dark:border-smoke/20 bg-white dark:bg-soft-black py-16">
+        <section className="border-t border-zinc-200 dark:border-white/20 bg-white dark:bg-black py-16">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Heading */}
                 <motion.h2
-                    className="font-heading text-3xl text-antique-brass md:text-4xl mb-8"
+                    className="font-heading text-3xl text-black dark:text-white md:text-4xl mb-8"
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
@@ -95,9 +95,9 @@ const RecommendedSection = ({ currentProductId }) => {
                                 className="group block"
                             >
                                 {/* Product Card */}
-                                <div className="overflow-hidden bg-white dark:bg-soft-black transition-all duration-300 hover:shadow-2xl">
+                                <div className="overflow-hidden bg-white dark:bg-black border-2 border-zinc-200 dark:border-white/20 transition-all duration-300 hover:border-black dark:hover:border-white hover:shadow-2xl">
                                     {/* Product Image */}
-                                    <div className="relative aspect-square overflow-hidden bg-gray-200 dark:bg-deep-charcoal">
+                                    <div className="relative aspect-square overflow-hidden bg-gray-100 dark:bg-zinc-900">
                                         {product.images && product.images.length > 0 ? (
                                             <motion.img
                                                 src={product.images[0].src}
@@ -107,18 +107,18 @@ const RecommendedSection = ({ currentProductId }) => {
                                             />
                                         ) : (
                                             <div className="flex h-full w-full items-center justify-center">
-                                                <span className="font-body text-sm text-zinc-400 dark:text-smoke/50">
+                                                <span className="font-body text-sm text-zinc-400 dark:text-gray-600">
                                                     No image
                                                 </span>
                                             </div>
                                         )}
 
                                         {/* Hover Overlay */}
-                                        <div className="absolute inset-0 bg-antique-brass/0 transition-all duration-300 group-hover:bg-antique-brass/10" />
+                                        <div className="absolute inset-0 bg-black/0 dark:bg-white/0 transition-all duration-300 group-hover:bg-black/5 dark:group-hover:bg-white/5" />
 
                                         {/* Personalizable Badge */}
-                                        <div className="absolute right-2 top-2 bg-white/90 dark:bg-deep-charcoal/90 px-2 py-1 backdrop-blur-sm">
-                                            <span className="font-body text-xs tracking-widest text-antique-brass">
+                                        <div className="absolute right-2 top-2 bg-black dark:bg-white px-2 py-1">
+                                            <span className="font-body text-xs tracking-widest text-white dark:text-black">
                                                 CUSTOM
                                             </span>
                                         </div>
@@ -126,18 +126,18 @@ const RecommendedSection = ({ currentProductId }) => {
 
                                     {/* Product Info */}
                                     <div className="p-2 md:p-4">
-                                        <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-mist line-clamp-2 md:text-base">
+                                        <h3 className="font-body text-sm font-medium text-zinc-900 dark:text-white line-clamp-2 md:text-base">
                                             {product.title}
                                         </h3>
 
                                         {product.variants && product.variants.length > 0 && (
-                                            <p className="mt-2 font-body text-base text-antique-brass md:text-lg">
+                                            <p className="mt-2 font-body text-base text-zinc-900 dark:text-white md:text-lg">
                                                 ₹{parseFloat(product.variants[0].price.amount).toFixed(2)}
                                             </p>
                                         )}
 
-                                        {/* View Details Link - Secondary LED Style */}
-                                        <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-text-muted transition-colors group-hover:text-brand-white">
+                                        {/* View Details Link */}
+                                        <div className="mt-3 flex items-center gap-2 font-body text-xs tracking-widest text-zinc-600 dark:text-gray-400 transition-colors group-hover:text-black dark:group-hover:text-white">
                                             <span>VIEW DETAILS</span>
                                             <svg
                                                 className="h-3 w-3 transition-transform group-hover:translate-x-1"

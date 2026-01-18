@@ -1,31 +1,16 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Mail, Send } from 'lucide-react';
-import { useState } from 'react';
+import { Instagram, Mail } from 'lucide-react';
 
 const Footer = () => {
-    const [email, setEmail] = useState('');
-    const [isSubscribed, setIsSubscribed] = useState(false);
-
-    const handleSubscribe = (e) => {
-        e.preventDefault();
-        if (email) {
-            // TODO: Add newsletter subscription logic here
-            setIsSubscribed(true);
-            setTimeout(() => {
-                setIsSubscribed(false);
-                setEmail('');
-            }, 3000);
-        }
-    };
 
     return (
-        <footer className="bg-[#0a0a0a] text-[#e5e5e5] pt-20 pb-8">
+        <footer className="bg-[#0a0a0a] text-[#e5e5e5] pt-8 pb-4">
             {/* Main Footer Grid */}
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-6 mb-6">
 
                     {/* Column 1: Brand Identity - DRS */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <div className="h-12 w-32 overflow-hidden">
                             <img
                                 src="/drs-logo.png"
@@ -79,7 +64,7 @@ const Footer = () => {
                     </div>
 
                     {/* Column 2: Shop Navigation */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <h3 className="font-serif text-lg text-white tracking-wide">
                             The Collection
                         </h3>
@@ -106,7 +91,7 @@ const Footer = () => {
                     </div>
 
                     {/* Column 3: Contact Information */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <h3 className="font-serif text-lg text-white tracking-wide">
                             Visit Us
                         </h3>
@@ -144,45 +129,11 @@ const Footer = () => {
                         </div>
                     </div>
 
-                    {/* Column 4: Newsletter */}
-                    <div className="space-y-6">
-                        <h3 className="font-serif text-lg text-[#e5e5e5] tracking-wide">
-                            Join the Atelier
-                        </h3>
-                        <p className="text-[#a3a3a3] text-sm leading-relaxed">
-                            Exclusive access to new releases and studio stories.
-                        </p>
 
-                        <form onSubmit={handleSubscribe} className="space-y-4">
-                            <div className="relative">
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Your email address"
-                                    className="w-full bg-transparent border-0 border-b border-[#a3a3a3] text-[#e5e5e5] placeholder-[#a3a3a3] py-2 px-0 focus:outline-none focus:border-white transition-colors duration-300 text-sm"
-                                    required
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="w-full border border-white text-white hover:bg-white hover:text-[#0a0a0a] py-2.5 px-6 transition-all duration-300 text-sm font-medium tracking-wide flex items-center justify-center gap-2 group"
-                            >
-                                {isSubscribed ? (
-                                    'Subscribed!'
-                                ) : (
-                                    <>
-                                        Subscribe
-                                        <Send size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
-                                    </>
-                                )}
-                            </button>
-                        </form>
-                    </div>
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="border-t border-[#a3a3a3]/20 pt-8">
+                <div className="border-t border-[#a3a3a3]/20 pt-6">
                     <div className="flex flex-col md:flex-row justify-between items-center gap-4">
                         <p className="text-[#a3a3a3] text-xs text-center md:text-left">
                             © 2026 Deep Root Studios.

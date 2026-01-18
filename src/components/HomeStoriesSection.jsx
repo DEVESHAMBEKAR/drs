@@ -55,7 +55,7 @@ const HomeStoriesSection = () => {
     };
 
     return (
-        <section className="bg-[#0a0a0a] py-24">
+        <section className="bg-white dark:bg-black py-24">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Section Header */}
                 <motion.div
@@ -65,10 +65,10 @@ const HomeStoriesSection = () => {
                     viewport={{ once: true, margin: '-100px' }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h2 className="font-serif text-2xl md:text-4xl text-white mb-4">
-                        Stories from the Desk
+                    <h2 className="font-serif text-2xl md:text-4xl text-black dark:text-white mb-4">
+                        Customer Stories
                     </h2>
-                    <p className="font-body text-base md:text-lg text-[#a3a3a3]">
+                    <p className="font-body text-base md:text-lg text-gray-600 dark:text-gray-400">
                         See how others are carving out their space.
                     </p>
                 </motion.div>
@@ -85,32 +85,32 @@ const HomeStoriesSection = () => {
                         <motion.div
                             key={story.id}
                             variants={cardVariants}
-                            whileHover={{ y: -5 }}
-                            className="bg-[#18181b] border border-white/20 p-8 transition-all duration-300 hover:border-white/50 hover:shadow-lg hover:shadow-white/10"
+                            whileHover={{ y: -8 }}
+                            className="relative bg-white dark:bg-black border-2 border-gray-200 dark:border-white/20 p-8 transition-all duration-300 hover:border-black dark:hover:border-white hover:shadow-2xl overflow-hidden group"
                         >
                             {/* Quote Icon */}
                             <div className="mb-6">
-                                <Quote className="w-10 h-10 text-white" strokeWidth={1.5} />
+                                <Quote className="w-10 h-10 text-black dark:text-white" strokeWidth={1.5} />
                             </div>
 
                             {/* Review Text */}
                             <blockquote className="mb-8">
-                                <p className="font-serif italic text-[#e5e5e5] text-base md:text-lg leading-relaxed">
+                                <p className="font-serif italic text-gray-700 dark:text-gray-300 text-base md:text-lg leading-relaxed">
                                     "{story.quote}"
                                 </p>
                             </blockquote>
 
                             {/* User Info */}
-                            <div className="border-t border-white/10 pt-6">
+                            <div className="border-t border-gray-200 dark:border-white/20 pt-6">
                                 {/* Name and Verified Badge */}
                                 <div className="flex items-center gap-2 mb-2">
-                                    <h4 className="font-body font-medium text-[#e5e5e5]">
+                                    <h4 className="font-body font-semibold text-black dark:text-white">
                                         {story.name}
                                     </h4>
                                     {story.verified && (
-                                        <span className="inline-flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full">
+                                        <span className="inline-flex items-center gap-1 bg-black dark:bg-white px-2 py-0.5 rounded-full">
                                             <svg
-                                                className="w-3 h-3 text-white"
+                                                className="w-3 h-3 text-white dark:text-black"
                                                 fill="currentColor"
                                                 viewBox="0 0 20 20"
                                             >
@@ -120,20 +120,20 @@ const HomeStoriesSection = () => {
                                                     clipRule="evenodd"
                                                 />
                                             </svg>
-                                            <span className="font-body text-xs text-white">
-                                                Verified Buyer
+                                            <span className="font-body text-xs text-white dark:text-black font-medium">
+                                                Verified
                                             </span>
                                         </span>
                                     )}
                                 </div>
 
                                 {/* Location */}
-                                <p className="font-body text-sm text-[#737373] mb-3">
+                                <p className="font-body text-sm text-gray-500 dark:text-gray-500 mb-3">
                                     {story.location}
                                 </p>
 
                                 {/* Product Ordered */}
-                                <p className="font-body text-xs text-[#a3a3a3] italic">
+                                <p className="font-body text-xs text-gray-600 dark:text-gray-400 italic">
                                     {story.product}
                                 </p>
                             </div>
