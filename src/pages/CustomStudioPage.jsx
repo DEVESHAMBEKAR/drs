@@ -77,7 +77,7 @@ const CustomStudioPage = () => {
             const imageData = event.target.result;
             setUploadedImage(imageData);
 
-            setProcessingStep('Removing background...');
+            setProcessingStep('Processing image...');
             await removeBackgroundAuto(imageData);
 
             setIsProcessing(false);
@@ -86,39 +86,18 @@ const CustomStudioPage = () => {
         reader.readAsDataURL(file);
     };
 
-    // Auto Remove Background on Upload
+    // Auto Process Image on Upload (Client-Side Only - No API Required)
     const removeBackgroundAuto = async (imageData) => {
         try {
-            const apiKey = import.meta.env.VITE_REMOVEBG_API_KEY;
-
-            if (!apiKey || apiKey === 'your-removebg-api-key-here') {
-                setProcessedImage(imageData);
-                setContrast(200);
-                setBrightness(110);
-                return;
-            }
-
-            const response = await fetch(imageData);
-            const imageBlob = await response.blob();
-
-            const formDataApi = new FormData();
-            formDataApi.append('image_file', imageBlob);
-            formDataApi.append('size', 'auto');
-
-            const apiResponse = await fetch('https://api.remove.bg/v1.0/removebg', {
-                method: 'POST',
-                headers: { 'X-Api-Key': apiKey },
-                body: formDataApi,
-            });
-
-            if (!apiResponse.ok) throw new Error('Background removal failed');
-
-            const resultBlob = await apiResponse.blob();
-            const resultUrl = URL.createObjectURL(resultBlob);
-            setProcessedImage(resultUrl);
-            setBgRemoved(true);
+            // Simply use the uploaded image and apply high contrast/brightness
+            // This creates a silhouette effect without needing external API
+            setProcessedImage(imageData);
+            setContrast(200); // High contrast for silhouette effect
+            setBrightness(110); // Slightly bright
+            setBgRemoved(false); // Mark as not using API background removal
+            console.log('✅ Image processed client-side (no API required)');
         } catch (err) {
-            console.error('Background Removal Error:', err);
+            console.error('Image Processing Error:', err);
             setProcessedImage(imageData);
             setContrast(200);
             setBrightness(110);
@@ -326,7 +305,7 @@ const CustomStudioPage = () => {
                                 <div className="inline-flex items-center gap-2 bg-neon-gold/10 border border-neon-gold/30 px-4 py-2 rounded">
                                     <span className="text-neon-gold text-lg">✨</span>
                                     <p className="font-body text-xs text-neon-gold">
-                                        Background auto-removed on upload
+                                        Silhouette auto-processed on upload
                                     </p>
                                 </div>
                             </div>
@@ -342,7 +321,7 @@ const CustomStudioPage = () => {
                             <div className="mt-8 flex items-center justify-center gap-4">
                                 {[
                                     { icon: '📤', label: 'Upload' },
-                                    { icon: '✂️', label: 'Remove BG' },
+                                    { icon: '⚡', label: 'Process' },
                                     { icon: '🎨', label: 'Customize' },
                                     { icon: '🛒', label: 'Add to Cart' },
                                 ].map((step, i) => (
@@ -403,11 +382,6 @@ const CustomStudioPage = () => {
                                         <div className="bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded">
                                             <p className="font-body text-xs text-white uppercase tracking-wider">Wall Preview</p>
                                         </div>
-                                        {bgRemoved && (
-                                            <div className="bg-green-500/20 backdrop-blur-sm px-3 py-1.5 rounded">
-                                                <p className="font-body text-xs text-green-400 uppercase tracking-wider">✓ BG Removed</p>
-                                            </div>
-                                        )}
                                     </div>
                                     <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded">
                                         <p className="font-body text-xs text-gray-300 truncate max-w-[200px]">{fileName}</p>
