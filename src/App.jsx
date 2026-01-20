@@ -9,6 +9,7 @@ import ShopPage from './pages/ShopPage';
 import ProductDetailsPage from './pages/ProductDetailsPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import CustomStudioPage from './pages/CustomStudioPage';
 import DashboardPage from './pages/DashboardPage';
 import OrderDetailPage from './pages/OrderDetailPage';
 import CheckoutReviewPage from './pages/CheckoutReviewPage';
@@ -44,6 +45,9 @@ function AppContent() {
 
                     {/* Contact Page */}
                     <Route path="/contact" element={<ContactPage />} />
+
+                    {/* Custom Studio - Neural Silhouette Engine */}
+                    <Route path="/custom-studio" element={<CustomStudioPage />} />
 
                     {/* Account Dashboard - Command Center */}
                     <Route path="/account" element={<DashboardPage />} />

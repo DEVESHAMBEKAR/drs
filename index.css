@@ -152,3 +152,32 @@
         }
     }
 }
+
+/* View Transition API - Circular Reveal */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+/* Ensure the transition happens on top of everything */
+::view-transition-group(root) {
+    z-index: 9999;
+}
+
+/* Dark mode specific override if needed, though JS handles the clip path */
+.dark::view-transition-old(root) {
+    z-index: 1;
+}
+
+.dark::view-transition-new(root) {
+    z-index: 9999;
+}
+
+::view-transition-old(root) {
+    z-index: 1;
+}
+
+::view-transition-new(root) {
+    z-index: 9999;
+}

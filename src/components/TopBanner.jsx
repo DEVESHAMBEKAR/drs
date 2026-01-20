@@ -1,38 +1,59 @@
+import { useState, useEffect } from 'react';
+
 const TopBanner = () => {
-    // Banner text - single instance
-    const bannerText = "NEW DROP - NOW LIVE • FREE SHIPPING WORLDWIDE • THE ART OF AMBIENCE";
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    // Multiple banner messages
+    const messages = [
+        "NEW DROP - NOW LIVE",
+        "FREE SHIPPING WORLDWIDE",
+        "THE ART OF AMBIENCE",
+        "1 YEAR WARRANTY",
+        "READY TO SHIP"
+    ];
+
+    // Auto-rotate messages every 3 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentIndex((prev) => (prev + 1) % messages.length);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, [messages.length]);
 
     return (
-        <div className="sticky top-0 h-10 w-full overflow-hidden bg-gradient-to-r from-black via-[#1a1a1a] to-black z-50 pt-2">
-            {/* Infinite Scrolling Marquee - CSS Animation for Performance */}
-            <div className="absolute inset-0 flex items-center">
-                <div className="flex items-center animate-marquee whitespace-nowrap">
-                    {/* Repeat text multiple times for seamless scroll */}
-                    {[...Array(20)].map((_, index) => (
-                        <span
-                            key={index}
-                            className="font-display text-xs md:text-sm font-bold uppercase tracking-widest text-white mx-8"
-                        >
-                            {bannerText}
+        <div className="sticky top-0 h-10 w-full bg-gradient-to-r from-black via-[#1a1a1a] to-black z-50 overflow-hidden">
+            {/* Message Container with Slide & Fade Transition */}
+            <div className="relative h-full w-full flex items-center justify-center">
+                {messages.map((message, index) => (
+                    <div
+                        key={index}
+                        className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ease-in-out ${index === currentIndex
+                                ? 'opacity-100 translate-y-0'
+                                : index === (currentIndex - 1 + messages.length) % messages.length
+                                    ? 'opacity-0 -translate-y-full'
+                                    : 'opacity-0 translate-y-full'
+                            }`}
+                    >
+                        <span className="font-display text-xs md:text-sm font-bold uppercase tracking-widest text-white">
+                            {message}
                         </span>
-                    ))}
-                </div>
+                    </div>
+                ))}
             </div>
 
-            {/* CSS Animation */}
-            <style jsx>{`
-                @keyframes marquee {
-                    0% {
-                        transform: translateX(0);
-                    }
-                    100% {
-                        transform: translateX(-50%);
-                    }
-                }
-                .animate-marquee {
-                    animation: marquee 40s linear infinite;
-                }
-            `}</style>
+            {/* Progress Indicator Dots */}
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1.5">
+                {messages.map((_, index) => (
+                    <div
+                        key={index}
+                        className={`h-0.5 rounded-full transition-all duration-300 ${index === currentIndex
+                                ? 'w-4 bg-white/80'
+                                : 'w-1.5 bg-white/20'
+                            }`}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

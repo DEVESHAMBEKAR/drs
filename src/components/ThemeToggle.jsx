@@ -19,16 +19,54 @@ const ThemeToggle = () => {
         }
     }, []);
 
-    // Toggle theme
-    const toggleTheme = () => {
+    // Toggle theme with Circular Reveal Transition
+    const toggleTheme = async (e) => {
         const newTheme = theme === 'dark' ? 'light' : 'dark';
-        setTheme(newTheme);
 
-        // Update DOM
-        document.documentElement.classList.toggle('dark', newTheme === 'dark');
+        // If View Transitions are not supported, fallback to simple toggle
+        if (!document.startViewTransition) {
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.documentElement.classList.toggle('dark');
+            return;
+        }
 
-        // Save to localStorage
-        localStorage.setItem('theme', newTheme);
+        // Get click coordinates using the event object
+        const x = e?.clientX ?? window.innerWidth / 2;
+        const y = e?.clientY ?? window.innerHeight / 2;
+
+        // Calculate distance to the furthest corner
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        );
+
+        // Start the View Transition
+        const transition = document.startViewTransition(() => {
+            setTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.documentElement.classList.toggle('dark');
+        });
+
+        // Wait for the pseudo-elements to be created
+        await transition.ready;
+
+        // Animate the clip-path
+        const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`
+        ];
+
+        document.documentElement.animate(
+            {
+                clipPath: clipPath,
+            },
+            {
+                duration: 500,
+                easing: 'ease-in-out',
+                pseudoElement: '::view-transition-new(root)',
+            }
+        );
     };
 
     // Animation variants for icons

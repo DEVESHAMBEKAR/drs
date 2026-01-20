@@ -57,7 +57,7 @@ const ShopPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-white dark:bg-luxury-black pt-24 pb-20">
+        <div className="min-h-screen bg-white dark:bg-luxury-black pt-16 pb-20">
             <div className="mx-auto max-w-7xl px-6">
                 {/* Page Header */}
                 <motion.div

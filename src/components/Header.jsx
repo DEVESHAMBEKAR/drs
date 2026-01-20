@@ -147,7 +147,7 @@ const Header = () => {
 
                                         {/* Custom Collection */}
                                         <Link
-                                            to="/shop?category=custom"
+                                            to="/custom-studio"
                                             className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-[#252525] transition-colors group"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
@@ -364,7 +364,7 @@ const Header = () => {
                                         Sports
                                     </Link>
                                     <Link
-                                        to="/shop?category=custom"
+                                        to="/custom-studio"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="block font-serif text-xl text-zinc-900 dark:text-white hover:text-amber-600 dark:hover:text-neon-gold transition-colors py-2"
                                     >
