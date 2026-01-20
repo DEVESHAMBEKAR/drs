@@ -17,7 +17,7 @@ const ProductDetailsPage = () => {
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [selectedVariant, setSelectedVariant] = useState(null); // NEW: Track selected variant
+    const [selectedVariant, setSelectedVariant] = useState(null); // Track selected variant
     const [engravingText, setEngravingText] = useState('');
     const [isEngravingEnabled, setIsEngravingEnabled] = useState(false);
     const [fontStyle, setFontStyle] = useState('classic');
@@ -601,7 +601,6 @@ const ProductDetailsPage = () => {
                     </div>
 
 
-
                     {/* Action Buttons Row */}
                     <div ref={buySectionRef} className="flex flex-col gap-4 sm:flex-row">
                         {/* Add to Cart Button - Secondary Style */}
@@ -622,7 +621,7 @@ const ProductDetailsPage = () => {
                                     <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
-                                    ADD TO CART
+                                    ORDER OBJECT
                                 </>
                             )}
                         </motion.button>
@@ -773,6 +772,56 @@ const ProductDetailsPage = () => {
                             </p>
                         </AccordionItem>
                     </div>
+
+                    {/* ═══════════════════════════════════════════════════════════════ */}
+                    {/* TECHNICAL COMPOSITION GRID - THEME AWARE */}
+                    {/* ═══════════════════════════════════════════════════════════════ */}
+                    <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-charcoal">
+                        <h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-zinc-500 dark:text-stone mb-6">
+                            Technical Composition
+                        </h3>
+                        <div className="grid grid-cols-2 gap-0">
+                            {/* Material */}
+                            <div className="border-l border-zinc-300 dark:border-charcoal pl-4 py-3">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-stone mb-1">
+                                    Material
+                                </p>
+                                <p className="font-body text-sm text-zinc-900 dark:text-ash">
+                                    Premium MDF + Acrylic
+                                </p>
+                            </div>
+
+                            {/* Finish */}
+                            <div className="border-l border-zinc-300 dark:border-charcoal pl-4 py-3">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-stone mb-1">
+                                    Finish
+                                </p>
+                                <p className="font-body text-sm text-zinc-900 dark:text-ash">
+                                    Matte Black / Natural
+                                </p>
+                            </div>
+
+                            {/* Light Source */}
+                            <div className="border-l border-zinc-300 dark:border-charcoal pl-4 py-3">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-stone mb-1">
+                                    Light Source
+                                </p>
+                                <p className="font-body text-sm text-zinc-900 dark:text-ash">
+                                    LED Strip 3000K Warm
+                                </p>
+                            </div>
+
+                            {/* Power */}
+                            <div className="border-l border-zinc-300 dark:border-charcoal pl-4 py-3">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-stone mb-1">
+                                    Power
+                                </p>
+                                <p className="font-body text-sm text-zinc-900 dark:text-ash">
+                                    12V DC Adapter (Incl.)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             </div>
 
@@ -811,7 +860,7 @@ const ProductDetailsPage = () => {
                         disabled={isLoading || isAdding}
                         className="bg-black dark:bg-white hover:opacity-90 px-6 py-3 rounded-full font-body text-sm tracking-widest text-white dark:text-black transition-all duration-300 ease-out disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                     >
-                        {isAdding ? 'ADDING...' : 'ADD TO CART'}
+                        {isAdding ? 'ADDING...' : 'ORDER OBJECT'}
                     </button>
                 </div>
             </motion.div>

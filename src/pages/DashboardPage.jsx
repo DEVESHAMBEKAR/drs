@@ -517,7 +517,7 @@ const DashboardPage = () => {
                                     className="w-full flex items-center justify-center gap-2 px-4 py-3 h-12 border border-red-900/50 text-red-500/70 hover:border-red-500 hover:text-red-500 hover:bg-red-500/10 active:scale-95 transition-all duration-200 rounded-none font-display uppercase tracking-wider text-xs"
                                 >
                                     <LogOut size={14} />
-                                    TERMINATE SESSION
+                                    LOGOUT
                                 </button>
                             </div>
                         </div>

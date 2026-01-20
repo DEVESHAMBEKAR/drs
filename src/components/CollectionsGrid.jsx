@@ -5,51 +5,35 @@ const CollectionsGrid = () => {
     const collections = [
         {
             id: 1,
-            name: 'THE TRIPTYCH SERIES',
-            slug: 'triptych',
-            itemCount: 24,
-            description: '3-Piece Split LED Sets',
-            image: 'https://images.unsplash.com/photo-1618220179428-22790b461013?q=80&w=2600&auto=format&fit=crop',
+            name: 'SPORTS LEGENDS',
+            slug: 'sports',
+            itemCount: 30,
+            description: 'Athletes & Teams',
+            image: '/sports-legends.png',
         },
         {
             id: 2,
-            name: 'CINEMA & SERIES',
-            slug: 'cinema',
-            itemCount: 38,
-            description: 'Movies & TV Legends',
-            image: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=2600&auto=format&fit=crop',
+            name: 'MARVEL UNIVERSE',
+            slug: 'marvel',
+            itemCount: 40,
+            description: 'Iconic Heroes & Villains',
+            image: '/marvel-universe.png',
         },
         {
             id: 3,
-            name: 'VELOCITY',
-            slug: 'velocity',
-            itemCount: 42,
-            description: 'F1 Tracks & JDM Cars',
-            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=2600&auto=format&fit=crop',
+            name: 'NATURE ESCAPES',
+            slug: 'nature',
+            itemCount: 25,
+            description: 'Landscapes & Wildlife',
+            image: '/nature-escapes.png',
         },
         {
             id: 4,
-            name: 'SHONEN JUMP',
-            slug: 'shonen',
-            itemCount: 56,
-            description: 'Anime Action',
-            image: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2600&auto=format&fit=crop',
-        },
-        {
-            id: 5,
-            name: 'THE GRIND',
-            slug: 'motivational',
-            itemCount: 28,
-            description: 'Motivational Quotes & Gym',
-            image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2600&auto=format&fit=crop',
-        },
-        {
-            id: 6,
-            name: 'ICONS',
-            slug: 'music',
-            itemCount: 32,
-            description: 'Music Legends',
-            image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=2600&auto=format&fit=crop',
+            name: 'VELOCITY ARCHIVE',
+            slug: 'velocity',
+            itemCount: 35,
+            description: 'Cars, Bikes & Circuits',
+            image: '/velocity-archive.png',
         },
     ];
 
@@ -122,11 +106,8 @@ const CollectionCard = ({ collection, index }) => {
                         <h3 className="mb-1 font-heading text-sm font-bold uppercase tracking-tight text-white md:text-base lg:text-xl">
                             {collection.name}
                         </h3>
-                        <p className="mb-2 text-xs text-gray-400 md:text-sm">
+                        <p className="text-xs text-gray-400 md:text-sm">
                             {collection.description}
-                        </p>
-                        <p className="text-xs font-medium text-neon-gold transition-colors duration-300 group-hover:text-white">
-                            View {collection.itemCount} Designs →
                         </p>
                     </div>
                 </motion.div>

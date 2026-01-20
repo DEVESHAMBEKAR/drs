@@ -111,43 +111,9 @@ const Header = () => {
                                             View All Products →
                                         </Link>
 
-                                        {/* Anime Collection */}
-                                        <Link
-                                            to="/shop?category=anime"
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-[#252525] transition-colors group"
-                                            onClick={() => setIsShopDropdownOpen(false)}
-                                        >
-                                            <Monitor className="h-5 w-5 text-black dark:text-white" />
-                                            <div>
-                                                <span className="font-body text-sm text-zinc-900 dark:text-white transition-colors">
-                                                    Anime
-                                                </span>
-                                                <p className="font-body text-xs text-gray-600 dark:text-gray-400">
-                                                    Iconic characters, halo-lit
-                                                </p>
-                                            </div>
-                                        </Link>
-
-                                        {/* Sports Collection */}
-                                        <Link
-                                            to="/shop?category=sports"
-                                            className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-[#252525] transition-colors group"
-                                            onClick={() => setIsShopDropdownOpen(false)}
-                                        >
-                                            <PenTool className="h-5 w-5 text-black dark:text-white" />
-                                            <div>
-                                                <span className="font-body text-sm text-zinc-900 dark:text-white transition-colors">
-                                                    Sports
-                                                </span>
-                                                <p className="font-body text-xs text-gray-600 dark:text-gray-400">
-                                                    Athletes, teams, moments
-                                                </p>
-                                            </div>
-                                        </Link>
-
                                         {/* Custom Collection */}
                                         <Link
-                                            to="/custom-studio"
+                                            to="/shop?category=custom"
                                             className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-[#252525] transition-colors group"
                                             onClick={() => setIsShopDropdownOpen(false)}
                                         >
@@ -350,21 +316,7 @@ const Header = () => {
                                 </h3>
                                 <div className="space-y-3">
                                     <Link
-                                        to="/shop?category=anime"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="block font-serif text-xl text-zinc-900 dark:text-white hover:text-amber-600 dark:hover:text-neon-gold transition-colors py-2"
-                                    >
-                                        Anime
-                                    </Link>
-                                    <Link
-                                        to="/shop?category=sports"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="block font-serif text-xl text-zinc-900 dark:text-white hover:text-amber-600 dark:hover:text-neon-gold transition-colors py-2"
-                                    >
-                                        Sports
-                                    </Link>
-                                    <Link
-                                        to="/custom-studio"
+                                        to="/shop?category=custom"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                         className="block font-serif text-xl text-zinc-900 dark:text-white hover:text-amber-600 dark:hover:text-neon-gold transition-colors py-2"
                                     >
