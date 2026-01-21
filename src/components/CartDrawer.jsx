@@ -280,7 +280,7 @@ const CartDrawer = () => {
                                 <motion.button
                                     onClick={() => {
                                         setIsCartOpen(false);
-                                        navigate('/checkout');
+                                        navigate('/checkout/information');
                                     }}
                                     className="mt-4 block w-full bg-brand-white px-6 py-4 rounded-full text-center font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
                                     whileHover={{ scale: 1.05 }}

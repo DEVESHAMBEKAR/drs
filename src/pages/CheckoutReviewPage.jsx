@@ -37,7 +37,7 @@ const CheckoutReviewPage = () => {
     }, [cart, navigate]);
 
     /**
-     * Handle checkout - Associate customer and redirect
+     * Handle checkout - Redirect to our custom Razorpay checkout
      */
     const handleCheckout = async () => {
         if (!cart) return;
@@ -46,42 +46,13 @@ const CheckoutReviewPage = () => {
         setError(null);
 
         try {
-            // If logged in, prepare checkout with customer data
-            if (isLoggedIn && customerToken) {
-                console.log('📦 Preparing checkout for logged-in customer...');
+            // Small delay for UX feedback
+            await new Promise(resolve => setTimeout(resolve, 300));
 
-                const customerInfo = {
-                    email: customer?.email,
-                    firstName: customer?.firstName,
-                    lastName: customer?.lastName,
-                    phone: customer?.phone,
-                    defaultAddress: customer?.defaultAddress,
-                };
+            // Redirect to our custom Razorpay checkout page
+            // The checkout page will handle customer pre-filling if logged in
+            navigate('/checkout/information');
 
-                const result = await prepareCheckoutForCustomer(
-                    cart.id,
-                    customerToken,
-                    customerInfo
-                );
-
-                console.log('Checkout preparation result:', result);
-
-                // Use the updated checkout URL or fallback to original
-                const checkoutUrl = result.checkoutUrl || cart.webUrl;
-
-                if (checkoutUrl) {
-                    console.log('🚀 Redirecting to Shopify checkout...');
-                    window.location.href = checkoutUrl;
-                    return;
-                }
-            }
-
-            // Fallback: Use cart's webUrl directly
-            if (cart.webUrl) {
-                window.location.href = cart.webUrl;
-            } else {
-                throw new Error('Checkout URL not available. Please try again.');
-            }
         } catch (err) {
             console.error('Checkout error:', err);
             setError(err.message || 'Failed to initiate checkout. Please try again.');

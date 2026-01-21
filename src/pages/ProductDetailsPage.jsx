@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useShopify } from '../context/ShopifyContext';
 import AccordionItem from '../components/AccordionItem';
@@ -10,6 +10,7 @@ import { Truck, Wrench, Zap, Play, PenLine, Globe, Shield } from 'lucide-react';
 const ProductDetailsPage = () => {
     // Extract full product ID from URL path (handles Shopify GIDs with slashes)
     const location = useLocation();
+    const navigate = useNavigate();
     // Decode the URL-encoded product ID to restore the original GID format
     const id = decodeURIComponent(location.pathname.replace('/product/', ''));
     const { client, addItemToCart } = useShopify();
@@ -194,11 +195,9 @@ const ProductDetailsPage = () => {
         }
 
         try {
-            const checkout = await addItemToCart(variantId, quantity, customAttributes);
-            // Redirect to Shopify checkout
-            if (checkout && checkout.webUrl) {
-                window.location.href = checkout.webUrl;
-            }
+            await addItemToCart(variantId, quantity, customAttributes);
+            // Redirect to our custom Razorpay checkout instead of Shopify's hosted checkout
+            navigate('/checkout/information');
         } catch (err) {
             console.error('Error processing buy now:', err);
             // Error alert is now handled in context

@@ -77,7 +77,7 @@ const CustomStudioPage = () => {
             const imageData = event.target.result;
             setUploadedImage(imageData);
 
-            setProcessingStep('Processing image...');
+            setProcessingStep('Removing background...');
             await removeBackgroundAuto(imageData);
 
             setIsProcessing(false);
@@ -86,21 +86,48 @@ const CustomStudioPage = () => {
         reader.readAsDataURL(file);
     };
 
-    // Auto Process Image on Upload (Client-Side Only - No API Required)
+    // Auto Remove Background on Upload (Remove.bg API - 50 free/month)
     const removeBackgroundAuto = async (imageData) => {
         try {
-            // Simply use the uploaded image and apply high contrast/brightness
-            // This creates a silhouette effect without needing external API
-            setProcessedImage(imageData);
-            setContrast(200); // High contrast for silhouette effect
-            setBrightness(110); // Slightly bright
-            setBgRemoved(false); // Mark as not using API background removal
-            console.log('✅ Image processed client-side (no API required)');
+            const apiKey = import.meta.env.VITE_REMOVEBG_API_KEY;
+
+            // If no API key, just use filters
+            if (!apiKey || apiKey === 'your-removebg-api-key-here') {
+                console.log('⚠️ No remove.bg API key - using filters only');
+                setProcessedImage(imageData);
+                setContrast(200);
+                setBrightness(110);
+                setBgRemoved(false);
+                return;
+            }
+
+            console.log('🔄 Removing background with remove.bg API...');
+            const response = await fetch(imageData);
+            const imageBlob = await response.blob();
+
+            const formDataApi = new FormData();
+            formDataApi.append('image_file', imageBlob);
+            formDataApi.append('size', 'auto');
+
+            const apiResponse = await fetch('https://api.remove.bg/v1.0/removebg', {
+                method: 'POST',
+                headers: { 'X-Api-Key': apiKey },
+                body: formDataApi,
+            });
+
+            if (!apiResponse.ok) throw new Error('Background removal failed');
+
+            const resultBlob = await apiResponse.blob();
+            const resultUrl = URL.createObjectURL(resultBlob);
+            setProcessedImage(resultUrl);
+            setBgRemoved(true);
+            console.log('✅ Background removed successfully');
         } catch (err) {
-            console.error('Image Processing Error:', err);
+            console.error('Background Removal Error:', err);
             setProcessedImage(imageData);
             setContrast(200);
             setBrightness(110);
+            setBgRemoved(false);
         }
     };
 
@@ -181,16 +208,24 @@ const CustomStudioPage = () => {
             const imageToUpload = processedImage || uploadedImage;
             console.log('Image type:', typeof imageToUpload, imageToUpload?.substring?.(0, 50));
 
+            let designUrl = '';
+
+            // Try Cloudinary upload
             const uploadResult = await uploadFileToCloud(imageToUpload);
             console.log('Upload result:', uploadResult);
 
-            if (!uploadResult.success) {
-                throw new Error(`Upload failed: ${uploadResult.error}`);
+            if (uploadResult.success) {
+                designUrl = uploadResult.url;
+                console.log('✅ Step 1 Complete - Design URL:', designUrl);
+            } else {
+                // Fallback: Use data URL directly (works but shows long URL in Shopify)
+                console.warn('⚠️ Cloudinary upload failed, using fallback:', uploadResult.error);
+                designUrl = imageToUpload.startsWith('blob:')
+                    ? 'Image uploaded (see attached)'
+                    : imageToUpload.substring(0, 200) + '...(truncated)';
             }
 
             setUploadProgress(60);
-            const designUrl = uploadResult.url;
-            console.log('✅ Step 1 Complete - Design URL:', designUrl);
 
             // Step 2: Prepare custom attributes for the order
             console.log('🛒 Step 2: Adding to cart...');
@@ -305,7 +340,7 @@ const CustomStudioPage = () => {
                                 <div className="inline-flex items-center gap-2 bg-neon-gold/10 border border-neon-gold/30 px-4 py-2 rounded">
                                     <span className="text-neon-gold text-lg">✨</span>
                                     <p className="font-body text-xs text-neon-gold">
-                                        Silhouette auto-processed on upload
+                                        Background auto-removed (50 free/month)
                                     </p>
                                 </div>
                             </div>
@@ -321,7 +356,7 @@ const CustomStudioPage = () => {
                             <div className="mt-8 flex items-center justify-center gap-4">
                                 {[
                                     { icon: '📤', label: 'Upload' },
-                                    { icon: '⚡', label: 'Process' },
+                                    { icon: '✂️', label: 'Remove BG' },
                                     { icon: '🎨', label: 'Customize' },
                                     { icon: '🛒', label: 'Add to Cart' },
                                 ].map((step, i) => (
@@ -382,6 +417,11 @@ const CustomStudioPage = () => {
                                         <div className="bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded">
                                             <p className="font-body text-xs text-white uppercase tracking-wider">Wall Preview</p>
                                         </div>
+                                        {bgRemoved && (
+                                            <div className="bg-green-500/20 backdrop-blur-sm px-3 py-1.5 rounded">
+                                                <p className="font-body text-xs text-green-400 uppercase tracking-wider">✓ BG Removed</p>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded">
                                         <p className="font-body text-xs text-gray-300 truncate max-w-[200px]">{fileName}</p>

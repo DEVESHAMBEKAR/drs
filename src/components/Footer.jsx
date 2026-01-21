@@ -7,7 +7,7 @@ const Footer = () => {
         <footer className="bg-[#0a0a0a] text-[#e5e5e5] pt-8 pb-4">
             {/* Main Footer Grid */}
             <div className="max-w-7xl mx-auto px-6 lg:px-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 mb-6">
 
                     {/* Column 1: Brand Identity - DRS */}
                     <div className="space-y-4">
@@ -90,7 +90,46 @@ const Footer = () => {
                         </nav>
                     </div>
 
-                    {/* Column 3: Contact Information */}
+                    {/* Column 3: Support & Legal */}
+                    <div className="space-y-4">
+                        <h3 className="font-serif text-lg text-white tracking-wide">
+                            Support
+                        </h3>
+                        <nav className="flex flex-col space-y-3">
+                            <Link
+                                to="/contact"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
+                            >
+                                Contact Studio
+                            </Link>
+                            <Link
+                                to="/shipping-policy"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
+                            >
+                                Shipping Protocol
+                            </Link>
+                            <Link
+                                to="/refund-policy"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
+                            >
+                                Cancellations & Refunds
+                            </Link>
+                            <Link
+                                to="/privacy-policy"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
+                            >
+                                Privacy Policy
+                            </Link>
+                            <Link
+                                to="/terms"
+                                className="text-[#a3a3a3] hover:text-white transition-colors duration-300 text-sm"
+                            >
+                                Terms of Service
+                            </Link>
+                        </nav>
+                    </div>
+
+                    {/* Column 4: Contact Information */}
                     <div className="space-y-4">
                         <h3 className="font-serif text-lg text-white tracking-wide">
                             Visit Us
@@ -146,7 +185,7 @@ const Footer = () => {
                                 Contact
                             </Link>
                             <Link
-                                to="/privacy"
+                                to="/privacy-policy"
                                 className="text-[#a3a3a3] hover:text-white transition-colors duration-300"
                             >
                                 Privacy Policy

@@ -55,12 +55,12 @@ export const uploadFileToCloud = async (fileOrDataUrl, folder = 'custom-blueprin
             }
         );
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error?.message || 'Upload failed');
-        }
-
         const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Cloudinary error response:', data);
+            throw new Error(data.error?.message || `Upload failed (${response.status})`);
+        }
 
         return {
             success: true,
@@ -73,7 +73,7 @@ export const uploadFileToCloud = async (fileOrDataUrl, folder = 'custom-blueprin
         console.error('Cloud upload error:', error);
         return {
             success: false,
-            error: error.message || 'Failed to upload file',
+            error: error.message || 'Failed to upload file to cloud storage',
         };
     }
 };
