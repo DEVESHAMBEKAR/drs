@@ -147,8 +147,7 @@ const CheckoutPage = () => {
     }, 0);
 
     const shipping = 0; // Free shipping
-    const taxes = Math.round(subtotal * 0.18); // 18% GST
-    const total = subtotal + shipping + taxes;
+    const total = subtotal + shipping; // No GST
     const itemCount = cartItems.reduce((count, item) => count + item.quantity, 0);
 
     const formatPrice = (price) => {
@@ -755,10 +754,7 @@ const CheckoutPage = () => {
                                 <span className="text-[#888]">Shipping</span>
                                 <span className="text-green-400">FREE</span>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-[#888]">Taxes (GST 18%)</span>
-                                <span className="text-[#F5F5F5]">{formatPrice(taxes)}</span>
-                            </div>
+
                         </div>
 
                         {/* Divider */}
