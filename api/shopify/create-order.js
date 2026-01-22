@@ -178,6 +178,30 @@ module.exports = async function handler(req, res) {
     // ─────────────────────────────────────────────────────────────────────────
     // PARSE REQUEST BODY
     // ─────────────────────────────────────────────────────────────────────────
+    let body = req.body;
+
+    // Handle case where body might be a string (Vercel edge case)
+    if (typeof body === 'string') {
+        try {
+            body = JSON.parse(body);
+        } catch (e) {
+            console.error('❌ Failed to parse request body string:', e.message);
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid JSON in request body'
+            });
+        }
+    }
+
+    // Handle case where body might be undefined
+    if (!body || typeof body !== 'object') {
+        console.error('❌ Request body is empty or invalid');
+        return res.status(400).json({
+            success: false,
+            error: 'Request body is empty or invalid'
+        });
+    }
+
     const {
         razorpay_payment_id,
         razorpay_order_id,
@@ -187,7 +211,7 @@ module.exports = async function handler(req, res) {
         email,
         phone,
         totalAmount
-    } = req.body;
+    } = body;
 
     console.log('═══════════════════════════════════════════════════════════════');
     console.log('📦 SHOPIFY ORDER CREATION REQUEST');
