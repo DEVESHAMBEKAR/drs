@@ -67,14 +67,12 @@ function verifyRazorpaySignature(orderId, paymentId, signature, secret) {
  */
 function mapCartItemsToLineItems(cartItems) {
     return cartItems.map(item => {
+        const price = parseFloat(item.variant?.price?.amount || item.variant?.price || item.price || 0);
+
         const lineItem = {
             title: item.title || 'Product',
-            name: item.title || 'Product',
             quantity: parseInt(item.quantity) || 1,
-            price: parseFloat(item.variant?.price?.amount || item.variant?.price || item.price || 0).toFixed(2),
-            requires_shipping: true,
-            taxable: true,
-            fulfillment_status: null
+            price: price.toFixed(2)
         };
 
         // Add variant_id if available (for inventory tracking)
@@ -89,19 +87,6 @@ function mapCartItemsToLineItems(cartItems) {
             if (variantId && !isNaN(parseInt(variantId))) {
                 lineItem.variant_id = parseInt(variantId);
             }
-        }
-
-        // Add variant title
-        if (item.variant?.title && item.variant.title !== 'Default Title') {
-            lineItem.variant_title = item.variant.title;
-        }
-
-        // Add custom properties (engraving, gift wrap, etc.)
-        if (item.customAttributes && Array.isArray(item.customAttributes) && item.customAttributes.length > 0) {
-            lineItem.properties = item.customAttributes.map(attr => ({
-                name: attr.key || attr.name,
-                value: attr.value
-            }));
         }
 
         return lineItem;
@@ -296,9 +281,6 @@ module.exports = async function handler(req, res) {
                 // IMPORTANT: Mark as PAID
                 financial_status: 'paid',
 
-                // Fulfillment
-                fulfillment_status: null, // Not fulfilled yet
-
                 // Line items
                 line_items: lineItems,
 
@@ -308,28 +290,13 @@ module.exports = async function handler(req, res) {
 
                 // Notes - Include Razorpay payment info
                 note: `Paid via Razorpay (Payment ID: ${razorpay_payment_id})`,
-                note_attributes: [
-                    { name: 'razorpay_payment_id', value: razorpay_payment_id },
-                    { name: 'razorpay_order_id', value: razorpay_order_id || 'N/A' },
-                    { name: 'payment_method', value: 'Razorpay' },
-                    { name: 'payment_verified', value: 'true' }
-                ],
 
                 // Tags for easy filtering
                 tags: 'razorpay, online-payment, website-order',
 
                 // Send notifications
                 send_receipt: true,
-                send_fulfillment_receipt: true,
-
-                // Payment transaction
-                transactions: [{
-                    kind: 'sale',
-                    status: 'success',
-                    amount: totalAmount ? parseFloat(totalAmount).toFixed(2) : null,
-                    gateway: 'Razorpay',
-                    source_name: 'web'
-                }].filter(t => t.amount) // Only include if amount is provided
+                send_fulfillment_receipt: true
             }
         };
 
