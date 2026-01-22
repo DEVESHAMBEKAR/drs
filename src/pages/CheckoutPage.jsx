@@ -11,7 +11,9 @@ import {
     Shield,
     AlertCircle,
     Check,
-    X
+    X,
+    MapPin,
+    BookOpen
 } from 'lucide-react';
 import { useShopify } from '../context/ShopifyContext';
 
@@ -86,6 +88,8 @@ const CheckoutPage = () => {
     const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
     const [isMobileOrderOpen, setIsMobileOrderOpen] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
+    const [isAddressBookOpen, setIsAddressBookOpen] = useState(false);
+    const [selectedAddressId, setSelectedAddressId] = useState(null);
 
     // ─────────────────────────────────────────────────────────────────────────
     // RAZORPAY SDK LOADING
@@ -168,6 +172,24 @@ const CheckoutPage = () => {
         if (formErrors[name]) {
             setFormErrors(prev => ({ ...prev, [name]: null }));
         }
+    };
+
+    // Handle address selection from saved addresses
+    const handleSelectAddress = (address) => {
+        setSelectedAddressId(address.id);
+        setFormData(prev => ({
+            ...prev,
+            firstName: address.firstName || prev.firstName,
+            lastName: address.lastName || prev.lastName,
+            address: address.address1 || prev.address,
+            apartment: address.address2 || '',
+            city: address.city || prev.city,
+            state: address.province || address.provinceCode || prev.state,
+            zip: address.zip || prev.zip,
+            country: address.countryCodeV2 || 'IN',
+            phone: address.phone || prev.phone
+        }));
+        setIsAddressBookOpen(false);
     };
 
     const validateForm = useCallback(() => {
@@ -557,9 +579,70 @@ const CheckoutPage = () => {
 
                         {/* Shipping Address */}
                         <div className="mb-8">
-                            <h2 className="text-lg font-semibold text-[#F5F5F5] mb-4">
-                                Shipping Address
-                            </h2>
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold text-[#F5F5F5]">
+                                    Shipping Address
+                                </h2>
+
+                                {/* Address Book Button - Only show for logged in users with addresses */}
+                                {isLoggedIn && customer?.addresses?.length > 0 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsAddressBookOpen(!isAddressBookOpen)}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm text-[#888] hover:text-white border border-[#444] hover:border-[#666] rounded-lg transition-all"
+                                    >
+                                        <BookOpen className="w-4 h-4" />
+                                        <span>Saved Addresses</span>
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* Address Book Dropdown */}
+                            <AnimatePresence>
+                                {isAddressBookOpen && customer?.addresses?.length > 0 && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        className="mb-4 overflow-hidden"
+                                    >
+                                        <div className="p-4 bg-[#1A1A1A] border border-[#333] rounded-lg space-y-2">
+                                            <p className="text-xs text-[#888] mb-3">Select a saved address:</p>
+                                            {customer.addresses.map((addr, index) => (
+                                                <button
+                                                    key={addr.id || index}
+                                                    type="button"
+                                                    onClick={() => handleSelectAddress(addr)}
+                                                    className={`w-full text-left p-3 rounded-lg border transition-all ${selectedAddressId === addr.id
+                                                            ? 'border-white bg-[#2A2A2A]'
+                                                            : 'border-[#333] hover:border-[#555] hover:bg-[#222]'
+                                                        }`}
+                                                >
+                                                    <div className="flex items-start gap-3">
+                                                        <MapPin className="w-4 h-4 text-[#888] mt-0.5 flex-shrink-0" />
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm text-[#F5F5F5] font-medium">
+                                                                {addr.firstName} {addr.lastName}
+                                                            </p>
+                                                            <p className="text-xs text-[#888] truncate">
+                                                                {addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}
+                                                            </p>
+                                                            <p className="text-xs text-[#888]">
+                                                                {addr.city}, {addr.province} {addr.zip}
+                                                            </p>
+                                                        </div>
+                                                        {customer.defaultAddress?.id === addr.id && (
+                                                            <span className="text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded">
+                                                                Default
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
 
                             <div className="space-y-4">
                                 {/* Country - Fixed to India */}
