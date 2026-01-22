@@ -86,7 +86,7 @@ const CheckoutReviewPage = () => {
 
     // Calculate totals
     const subtotal = getSubtotal();
-    const shipping = subtotal > 999 ? 0 : 99; // Free shipping over ₹999
+    const shipping = 0; // Free shipping on all orders
     const total = subtotal + shipping;
 
     return (
@@ -324,11 +324,6 @@ const CheckoutReviewPage = () => {
                                         {shipping === 0 ? 'FREE' : formatPrice(shipping)}
                                     </span>
                                 </div>
-                                {shipping > 0 && (
-                                    <p className="text-xs text-gray-600 text-right">
-                                        Free shipping on orders over ₹999
-                                    </p>
-                                )}
                                 <div className="border-t border-[#333] pt-3">
                                     <div className="flex justify-between">
                                         <span className="text-gray-400 font-mono text-sm">TOTAL</span>

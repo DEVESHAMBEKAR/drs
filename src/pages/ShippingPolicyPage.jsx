@@ -97,7 +97,7 @@ const ShippingPolicyPage = () => {
 
                     {/* Footer Note */}
                     <p className="text-[#666] text-sm italic mt-8">
-                        Shipping is free on orders above ₹999. Standard shipping charges apply otherwise.
+                        Shipping is FREE on all orders. We deliver across India.
                     </p>
                 </motion.div>
             </div>

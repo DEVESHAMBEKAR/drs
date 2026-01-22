@@ -4,25 +4,26 @@
  * Serverless function to create orders after Razorpay payment
  * ═══════════════════════════════════════════════════════════════════════════
  * 
- * DEPLOYMENT OPTIONS:
- * 1. Vercel: Place in /api/create-shopify-order.js
- * 2. Netlify: Place in /netlify/functions/create-shopify-order.js
- * 3. Express Server: Mount as route handler
+ * DEPLOYMENT: Vercel (place in /api/create-shopify-order.js)
  * 
  * ENVIRONMENT VARIABLES REQUIRED:
- * - SHOPIFY_STORE_URL: your-store.myshopify.com
- * - SHOPIFY_ACCESS_TOKEN: Admin API access token (shpat_xxx)
- * - RAZORPAY_KEY_SECRET: For payment verification
+ * - SHOPIFY_STORE_URL: deep-root-studios.myshopify.com
+ * - SHOPIFY_ACCESS_TOKEN: Admin API access token (shpat_xxx) OR Client Secret
+ * - SHOPIFY_CLIENT_ID: (Optional) For OAuth token generation
+ * - SHOPIFY_CLIENT_SECRET: (Optional) Client secret for OAuth
+ * - RAZORPAY_KEY_SECRET: For payment signature verification
  */
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SHOPIFY_STORE_URL = process.env.SHOPIFY_STORE_URL;
+const SHOPIFY_STORE_URL = process.env.SHOPIFY_STORE_URL || 'deep-root-studios.myshopify.com';
 const SHOPIFY_ACCESS_TOKEN = process.env.SHOPIFY_ACCESS_TOKEN;
+const SHOPIFY_CLIENT_ID = process.env.SHOPIFY_CLIENT_ID;
+const SHOPIFY_CLIENT_SECRET = process.env.SHOPIFY_CLIENT_SECRET;
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET;
-const API_VERSION = '2024-01';
+const API_VERSION = '2024-10'; // Updated to latest stable version
 
 // ─────────────────────────────────────────────────────────────────────────────
 // RAZORPAY SIGNATURE VERIFICATION
@@ -32,12 +33,13 @@ const crypto = require('crypto');
 
 /**
  * Verify Razorpay payment signature
- * @param {string} orderId - Razorpay order ID
- * @param {string} paymentId - Razorpay payment ID  
- * @param {string} signature - Razorpay signature
- * @returns {boolean}
  */
 function verifyRazorpaySignature(orderId, paymentId, signature) {
+    if (!RAZORPAY_KEY_SECRET) {
+        console.log('⚠️ Razorpay secret not set, skipping verification');
+        return true;
+    }
+
     const body = orderId + '|' + paymentId;
     const expectedSignature = crypto
         .createHmac('sha256', RAZORPAY_KEY_SECRET)
@@ -48,13 +50,69 @@ function verifyRazorpaySignature(orderId, paymentId, signature) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// SHOPIFY ACCESS TOKEN MANAGEMENT
+// ─────────────────────────────────────────────────────────────────────────────
+
+let cachedAccessToken = null;
+let tokenExpiry = null;
+
+/**
+ * Get valid access token for Shopify API
+ * Supports both legacy shpat_ tokens and OAuth client credentials
+ */
+async function getAccessToken() {
+    // If we have a shpat_ token, use it directly
+    if (SHOPIFY_ACCESS_TOKEN && SHOPIFY_ACCESS_TOKEN.startsWith('shpat_')) {
+        return SHOPIFY_ACCESS_TOKEN;
+    }
+
+    // If we have a cached token that's not expired, use it
+    if (cachedAccessToken && tokenExpiry && Date.now() < tokenExpiry) {
+        return cachedAccessToken;
+    }
+
+    // If we have Client ID and Secret, get token via OAuth
+    if (SHOPIFY_CLIENT_ID && SHOPIFY_CLIENT_SECRET) {
+        try {
+            const tokenResponse = await fetch(
+                `https://${SHOPIFY_STORE_URL}/admin/oauth/access_token`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_id: SHOPIFY_CLIENT_ID,
+                        client_secret: SHOPIFY_CLIENT_SECRET,
+                        grant_type: 'client_credentials'
+                    })
+                }
+            );
+
+            if (tokenResponse.ok) {
+                const data = await tokenResponse.json();
+                cachedAccessToken = data.access_token;
+                // Token typically expires in 24 hours, refresh after 23 hours
+                tokenExpiry = Date.now() + (23 * 60 * 60 * 1000);
+                return cachedAccessToken;
+            }
+        } catch (error) {
+            console.error('OAuth token fetch failed:', error);
+        }
+    }
+
+    // Fall back to any provided token
+    if (SHOPIFY_ACCESS_TOKEN) {
+        return SHOPIFY_ACCESS_TOKEN;
+    }
+
+    throw new Error('No valid Shopify access token available');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SHOPIFY ORDER CREATION
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Create order in Shopify Admin API
- * @param {Object} orderData - Order details
- * @returns {Promise<Object>} - Created order
  */
 async function createShopifyOrder(orderData) {
     const {
@@ -69,13 +127,28 @@ async function createShopifyOrder(orderData) {
         discountAmount
     } = orderData;
 
+    // Get valid access token
+    const accessToken = await getAccessToken();
+
+    if (!accessToken) {
+        throw new Error('SHOPIFY_ACCESS_TOKEN not configured');
+    }
+
     // Map cart items to Shopify line_items format
     const lineItems = cartItems.map(item => {
+        const variantId = extractVariantId(item.variant?.id);
+        const price = parseFloat(item.variant?.price?.amount || item.variant?.price || 0);
+
         const lineItem = {
-            variant_id: extractVariantId(item.variant?.id),
             quantity: item.quantity,
-            price: parseFloat(item.variant?.price?.amount || item.variant?.price || 0).toFixed(2)
+            price: price.toFixed(2),
+            title: item.title || 'Product'
         };
+
+        // Only add variant_id if valid
+        if (variantId) {
+            lineItem.variant_id = variantId;
+        }
 
         // Add custom attributes (engraving, gift wrap, etc.)
         if (item.customAttributes && item.customAttributes.length > 0) {
@@ -90,15 +163,15 @@ async function createShopifyOrder(orderData) {
 
     // Build shipping address for Shopify
     const shippingAddress = {
-        first_name: customerAddress.firstName,
-        last_name: customerAddress.lastName,
-        address1: customerAddress.address,
-        address2: customerAddress.apartment || '',
-        city: customerAddress.city,
-        province: customerAddress.state,
-        country: customerAddress.country || 'IN',
-        zip: customerAddress.zip,
-        phone: phone
+        first_name: customerAddress?.firstName || 'Customer',
+        last_name: customerAddress?.lastName || '',
+        address1: customerAddress?.address || '',
+        address2: customerAddress?.apartment || '',
+        city: customerAddress?.city || '',
+        province: customerAddress?.state || '',
+        country: customerAddress?.country || 'IN',
+        zip: customerAddress?.zip || '',
+        phone: phone || ''
     };
 
     // Build the order payload
@@ -106,32 +179,32 @@ async function createShopifyOrder(orderData) {
         order: {
             email: email,
             phone: phone,
-            financial_status: 'paid', // Mark as paid since Razorpay collected payment
-            fulfillment_status: null, // Unfulfilled - ready to ship
+            financial_status: 'paid',
+            fulfillment_status: null,
 
             line_items: lineItems,
 
             shipping_address: shippingAddress,
-            billing_address: shippingAddress, // Same as shipping
+            billing_address: shippingAddress,
 
             // Payment details
             transactions: [{
                 kind: 'sale',
                 status: 'success',
-                amount: totalAmount.toFixed(2),
+                amount: parseFloat(totalAmount || 0).toFixed(2),
                 gateway: 'Razorpay',
-                authorization: paymentId
+                authorization: paymentId || 'manual'
             }],
 
             // Tags for organization
             tags: 'Web Order, Razorpay, Headless',
 
             // Notes
-            note: `Razorpay Payment ID: ${paymentId}\nRazorpay Order ID: ${orderId}`,
+            note: `Razorpay Payment ID: ${paymentId || 'N/A'}\nRazorpay Order ID: ${orderId || 'N/A'}`,
             note_attributes: [
-                { name: 'razorpay_payment_id', value: paymentId },
-                { name: 'razorpay_order_id', value: orderId },
-                { name: 'source', value: 'Deep Root Studios Headless' }
+                { name: 'razorpay_payment_id', value: paymentId || '' },
+                { name: 'razorpay_order_id', value: orderId || '' },
+                { name: 'source', value: 'Deep Root Studios Website' }
             ],
 
             // Inventory behavior
@@ -147,10 +220,14 @@ async function createShopifyOrder(orderData) {
     if (discountCode && discountAmount > 0) {
         orderPayload.order.discount_codes = [{
             code: discountCode,
-            amount: discountAmount.toFixed(2),
+            amount: parseFloat(discountAmount).toFixed(2),
             type: 'percentage'
         }];
     }
+
+    console.log('📦 Creating Shopify order...');
+    console.log('Store URL:', SHOPIFY_STORE_URL);
+    console.log('Line items:', lineItems.length);
 
     // Make API request to Shopify
     const response = await fetch(
@@ -159,58 +236,59 @@ async function createShopifyOrder(orderData) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Shopify-Access-Token': SHOPIFY_ACCESS_TOKEN
+                'X-Shopify-Access-Token': accessToken
             },
             body: JSON.stringify(orderPayload)
         }
     );
 
+    const responseText = await response.text();
+
     if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Shopify API Error:', errorData);
-        throw new Error(errorData.errors || 'Failed to create Shopify order');
+        console.error('Shopify API Error Status:', response.status);
+        console.error('Shopify API Error Response:', responseText);
+
+        let errorMessage = 'Failed to create Shopify order';
+        try {
+            const errorData = JSON.parse(responseText);
+            if (errorData.errors) {
+                if (typeof errorData.errors === 'string') {
+                    errorMessage = errorData.errors;
+                } else if (typeof errorData.errors === 'object') {
+                    errorMessage = Object.entries(errorData.errors)
+                        .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(', ') : val}`)
+                        .join('; ');
+                }
+            }
+        } catch (e) {
+            errorMessage = responseText || `HTTP ${response.status}`;
+        }
+
+        throw new Error(errorMessage);
     }
 
-    const data = await response.json();
+    const data = JSON.parse(responseText);
+    console.log('✅ Shopify order created:', data.order?.id, data.order?.name);
+
     return data.order;
 }
 
 /**
  * Extract numeric variant ID from Shopify GID
- * @param {string} gid - Shopify Global ID (gid://shopify/ProductVariant/123)
- * @returns {number}
  */
 function extractVariantId(gid) {
     if (!gid) return null;
     if (typeof gid === 'number') return gid;
 
     // Handle GID format: gid://shopify/ProductVariant/123456789
-    const match = gid.match(/\/(\d+)$/);
-    return match ? parseInt(match[1], 10) : parseInt(gid, 10);
+    const match = String(gid).match(/(\d+)$/);
+    return match ? parseInt(match[1], 10) : null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// API HANDLER (Vercel/Netlify Compatible)
+// API HANDLER (Vercel Compatible)
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Main API handler
- * POST /api/create-shopify-order
- * 
- * Request Body:
- * {
- *   razorpay_payment_id: string,
- *   razorpay_order_id: string,
- *   razorpay_signature: string,
- *   cartItems: Array,
- *   customerAddress: Object,
- *   email: string,
- *   phone: string,
- *   totalAmount: number,
- *   discountCode?: string,
- *   discountAmount?: number
- * }
- */
 module.exports = async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -224,7 +302,19 @@ module.exports = async function handler(req, res) {
 
     // Only allow POST
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({
+            success: false,
+            error: 'Method not allowed'
+        });
+    }
+
+    // Check if Shopify is configured
+    if (!SHOPIFY_ACCESS_TOKEN && !SHOPIFY_CLIENT_SECRET) {
+        console.error('❌ Shopify credentials not configured');
+        return res.status(500).json({
+            success: false,
+            error: 'Shopify API not configured. Please set SHOPIFY_ACCESS_TOKEN in environment variables.'
+        });
     }
 
     try {
@@ -239,32 +329,37 @@ module.exports = async function handler(req, res) {
             totalAmount,
             discountCode,
             discountAmount
-        } = req.body;
+        } = req.body || {};
+
+        console.log('📥 Order request received');
+        console.log('Payment ID:', razorpay_payment_id);
+        console.log('Email:', email);
+        console.log('Cart items:', cartItems?.length || 0);
 
         // Validate required fields
-        if (!razorpay_payment_id || !razorpay_order_id) {
+        if (!razorpay_payment_id) {
             return res.status(400).json({
-                error: 'Missing payment credentials',
-                success: false
+                success: false,
+                error: 'Missing payment ID'
             });
         }
 
         if (!cartItems || cartItems.length === 0) {
             return res.status(400).json({
-                error: 'Cart is empty',
-                success: false
+                success: false,
+                error: 'Cart is empty'
             });
         }
 
-        if (!customerAddress || !email) {
+        if (!email) {
             return res.status(400).json({
-                error: 'Missing customer information',
-                success: false
+                success: false,
+                error: 'Email is required'
             });
         }
 
-        // Verify Razorpay signature (skip in dev mode if secret not set)
-        if (RAZORPAY_KEY_SECRET && razorpay_signature) {
+        // Verify Razorpay signature (if signature provided)
+        if (razorpay_signature && RAZORPAY_KEY_SECRET) {
             const isValid = verifyRazorpaySignature(
                 razorpay_order_id,
                 razorpay_payment_id,
@@ -272,12 +367,13 @@ module.exports = async function handler(req, res) {
             );
 
             if (!isValid) {
-                console.error('Invalid Razorpay signature');
+                console.error('❌ Invalid Razorpay signature');
                 return res.status(400).json({
-                    error: 'Payment verification failed',
-                    success: false
+                    success: false,
+                    error: 'Payment verification failed'
                 });
             }
+            console.log('✅ Razorpay signature verified');
         }
 
         // Create order in Shopify
@@ -288,12 +384,10 @@ module.exports = async function handler(req, res) {
             phone,
             paymentId: razorpay_payment_id,
             orderId: razorpay_order_id,
-            totalAmount,
+            totalAmount: totalAmount || 0,
             discountCode,
             discountAmount
         });
-
-        console.log('✅ Shopify order created:', shopifyOrder.id, shopifyOrder.name);
 
         // Return success with order details
         return res.status(200).json({
@@ -310,7 +404,8 @@ module.exports = async function handler(req, res) {
         });
 
     } catch (error) {
-        console.error('❌ Order creation error:', error);
+        console.error('❌ Order creation error:', error.message);
+        console.error('Stack:', error.stack);
 
         return res.status(500).json({
             success: false,
@@ -318,36 +413,3 @@ module.exports = async function handler(req, res) {
         });
     }
 };
-
-// ─────────────────────────────────────────────────────────────────────────────
-// NETLIFY FUNCTIONS EXPORT (if using Netlify)
-// ─────────────────────────────────────────────────────────────────────────────
-
-// Uncomment for Netlify deployment:
-/*
-exports.handler = async (event, context) => {
-    if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 200, headers: corsHeaders, body: '' };
-    }
-    
-    if (event.httpMethod !== 'POST') {
-        return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-    }
-
-    try {
-        const body = JSON.parse(event.body);
-        // ... same logic as above
-        
-        return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json', ...corsHeaders },
-            body: JSON.stringify({ success: true, order: shopifyOrder })
-        };
-    } catch (error) {
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: error.message })
-        };
-    }
-};
-*/

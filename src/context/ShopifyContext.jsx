@@ -73,7 +73,7 @@ export const ShopifyProvider = ({ children }) => {
     };
 
     /**
-     * Fetch Customer Info
+     * Fetch Customer Info including all addresses
      */
     const fetchCustomerInfo = async () => {
         if (!customerToken) return;
@@ -88,11 +88,36 @@ export const ShopifyProvider = ({ children }) => {
                         email
                         phone
                         defaultAddress {
+                            id
+                            firstName
+                            lastName
                             address1
+                            address2
                             city
                             province
+                            provinceCode
                             country
+                            countryCodeV2
                             zip
+                            phone
+                        }
+                        addresses(first: 10) {
+                            edges {
+                                node {
+                                    id
+                                    firstName
+                                    lastName
+                                    address1
+                                    address2
+                                    city
+                                    province
+                                    provinceCode
+                                    country
+                                    countryCodeV2
+                                    zip
+                                    phone
+                                }
+                            }
                         }
                     }
                 }
@@ -110,8 +135,15 @@ export const ShopifyProvider = ({ children }) => {
             const result = await response.json();
 
             if (result.data?.customer) {
-                setCustomer(result.data.customer);
-                console.log('✅ Customer info fetched:', result.data.customer.email);
+                // Parse addresses from edges
+                const customerData = result.data.customer;
+                const addresses = customerData.addresses?.edges?.map(edge => edge.node) || [];
+
+                setCustomer({
+                    ...customerData,
+                    addresses // Replace edges with flat array
+                });
+                console.log('✅ Customer info fetched:', customerData.email, '| Addresses:', addresses.length);
             }
         } catch (error) {
             console.error('❌ Error fetching customer info:', error);

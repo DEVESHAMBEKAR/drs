@@ -2,7 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useShopify } from '../context/ShopifyContext';
-import { Lock } from 'lucide-react';
+import { Lock, ShoppingBag, X, Minus, Plus, Trash2, Gift } from 'lucide-react';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CART DRAWER - DEEP ROOT STUDIOS "DARK LUXURY" THEME
+// Fixed visibility for both light and dark modes
+// ═══════════════════════════════════════════════════════════════════════════
 
 const CartDrawer = () => {
     const navigate = useNavigate();
@@ -42,21 +47,19 @@ const CartDrawer = () => {
     // Handle gift wrap toggle
     const handleGiftWrapToggle = async () => {
         if (giftWrapEnabled && giftWrapLineItemId) {
-            // Remove gift wrap from cart
             await removeCartItem(giftWrapLineItemId);
         } else {
-            // Add gift wrap to cart
             await addItemToCart(GIFT_WRAP_VARIANT_ID, 1);
         }
     };
 
-    // Calculate subtotal (excluding gift wrap for display purposes)
+    // Calculate subtotal
     const getSubtotal = () => {
         if (!cart?.lineItems) return '0.00';
         return cart.subtotalPrice?.amount || cart.subtotalPrice || '0.00';
     };
 
-    // Get total including gift wrap
+    // Get total
     const getTotal = () => {
         if (!cart?.totalPrice) return '0.00';
         return cart.totalPrice?.amount || cart.totalPrice || '0.00';
@@ -85,140 +88,129 @@ const CartDrawer = () => {
                         onClick={() => setIsCartOpen(false)}
                     />
 
-                    {/* Cart Drawer */}
+                    {/* Cart Drawer Panel */}
                     <motion.div
-                        className="fixed right-0 top-0 z-50 h-full w-full bg-deep-charcoal shadow-2xl sm:w-[450px]"
+                        className="fixed right-0 top-0 z-50 h-full w-full sm:w-[450px] bg-[#0E0E0E] shadow-2xl flex flex-col"
                         initial={{ x: '100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
                     >
-                        {/* Cart Header */}
-                        <div className="border-b border-smoke/20 px-6 py-6">
+                        {/* ═══════════════════════════════════════════════════════
+                            HEADER
+                            ═══════════════════════════════════════════════════ */}
+                        <div className="border-b border-[#333] px-6 py-5">
                             <div className="flex items-center justify-between">
-                                <h2 className="font-heading text-3xl text-mist">Your Cart</h2>
+                                <h2 className="font-display text-2xl text-[#F5F5F5]">Your Cart</h2>
                                 <button
                                     onClick={() => setIsCartOpen(false)}
-                                    className="text-smoke transition-colors hover:text-antique-brass"
+                                    className="p-2 text-[#8E8E8E] hover:text-[#F5F5F5] transition-colors rounded-full hover:bg-[#1C1C1C]"
                                     aria-label="Close cart"
                                 >
-                                    <svg
-                                        className="h-6 w-6"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M6 18L18 6M6 6l12 12"
-                                        />
-                                    </svg>
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
-                            <p className="mt-2 font-body text-sm text-smoke">
+                            <p className="mt-1 text-sm text-[#8E8E8E]">
                                 {getItemCount()} {getItemCount() === 1 ? 'item' : 'items'}
                             </p>
                         </div>
 
-                        {/* Cart Items */}
-                        <div className="flex h-[calc(100%-280px)] flex-col overflow-y-auto px-6 py-6">
+                        {/* ═══════════════════════════════════════════════════════
+                            CART ITEMS
+                            ═══════════════════════════════════════════════════ */}
+                        <div className="flex-1 overflow-y-auto px-6 py-6 scrollbar-hide">
                             {!cart?.lineItems || cart.lineItems.length === 0 ? (
                                 // Empty Cart State
-                                <div className="flex flex-1 flex-col items-center justify-center">
-                                    <svg
-                                        className="mb-4 h-16 w-16 text-smoke/30"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={1.5}
-                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
-                                        />
-                                    </svg>
-                                    <p className="font-body text-lg text-smoke">Your cart is empty</p>
+                                <div className="flex flex-1 flex-col items-center justify-center h-full py-16">
+                                    <div className="w-20 h-20 rounded-full bg-[#1C1C1C] flex items-center justify-center mb-6">
+                                        <ShoppingBag className="w-10 h-10 text-[#555]" />
+                                    </div>
+                                    <p className="text-lg text-[#F5F5F5] font-medium mb-2">Your cart is empty</p>
+                                    <p className="text-sm text-[#8E8E8E] mb-6">Explore our collection</p>
                                     <button
                                         onClick={() => setIsCartOpen(false)}
-                                        className="mt-4 border border-luxury-border bg-transparent px-6 py-2 rounded-md font-body text-sm tracking-widest text-text-main transition-all duration-300 hover:border-brand-white"
+                                        className="px-8 py-3 border border-[#333] text-[#F5F5F5] text-sm tracking-widest uppercase hover:bg-[#1C1C1C] hover:border-[#555] transition-all duration-300 rounded-md"
                                     >
-                                        CONTINUE SHOPPING
+                                        Continue Shopping
                                     </button>
                                 </div>
                             ) : (
                                 // Cart Items List
-                                <div className="space-y-4">
+                                <div className="space-y-5">
                                     {cart.lineItems.map((item) => {
-                                        // Skip if no variant or is gift wrap
                                         if (!item?.variant?.id) return null;
                                         if (item.variant.id === GIFT_WRAP_VARIANT_ID) return null;
 
                                         return (
                                             <motion.div
                                                 key={item.id}
-                                                className="flex gap-4 border-b border-smoke/10 pb-4"
+                                                className="flex gap-4 pb-5 border-b border-[#222]"
                                                 initial={{ opacity: 0, y: 20 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                             >
                                                 {/* Product Image */}
-                                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden bg-soft-black">
+                                                <div className="w-20 h-20 flex-shrink-0 bg-[#1C1C1C] rounded-lg overflow-hidden">
                                                     <img
                                                         src={item.variant.image?.src || '/placeholder-product.jpg'}
                                                         alt={item.title}
-                                                        className="h-full w-full object-cover"
+                                                        className="w-full h-full object-cover"
                                                     />
                                                 </div>
 
                                                 {/* Product Details */}
-                                                <div className="flex flex-1 flex-col">
-                                                    <h3 className="font-body text-sm font-medium text-mist">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="text-[#F5F5F5] text-sm font-medium truncate">
                                                         {item.title}
                                                     </h3>
 
-                                                    {/* Custom Attributes (Engraving, Wood Type) */}
+                                                    {/* Variant Title */}
+                                                    {item.variant?.title && item.variant.title !== 'Default Title' && (
+                                                        <p className="text-[#8E8E8E] text-xs mt-0.5">{item.variant.title}</p>
+                                                    )}
+
+                                                    {/* Custom Attributes */}
                                                     {item.customAttributes && item.customAttributes.length > 0 && (
                                                         <div className="mt-1 space-y-0.5">
                                                             {item.customAttributes.map((attr, idx) => (
-                                                                <p key={idx} className="font-body text-xs text-smoke">
-                                                                    <span className="text-antique-brass">{attr.key}:</span> {attr.value}
+                                                                <p key={idx} className="text-xs text-[#8E8E8E]">
+                                                                    <span className="text-[#BFC2C7]">{attr.key}:</span> {attr.value}
                                                                 </p>
                                                             ))}
                                                         </div>
                                                     )}
 
-                                                    <p className="mt-2 font-body text-sm text-antique-brass">
-                                                        ₹{parseFloat(item.variant.price?.amount || item.variant.price || 0).toFixed(2)}
+                                                    {/* Price */}
+                                                    <p className="mt-2 text-[#F5F5F5] text-sm font-medium">
+                                                        ₹{parseFloat(item.variant.price?.amount || item.variant.price || 0).toLocaleString('en-IN')}
                                                     </p>
 
                                                     {/* Quantity Controls */}
-                                                    <div className="mt-3 flex items-center gap-3">
-                                                        <div className="flex items-center gap-2">
+                                                    <div className="flex items-center gap-3 mt-3">
+                                                        <div className="flex items-center border border-[#333] rounded-md overflow-hidden">
                                                             <button
                                                                 onClick={() => updateCartItem(item.id, item.quantity - 1)}
                                                                 disabled={isLoading || item.quantity <= 1}
-                                                                className="flex h-6 w-6 items-center justify-center border border-smoke/30 text-mist transition-all hover:border-antique-brass hover:text-antique-brass disabled:opacity-30"
+                                                                className="w-8 h-8 flex items-center justify-center text-[#8E8E8E] hover:bg-[#1C1C1C] hover:text-[#F5F5F5] disabled:opacity-30 transition-colors"
                                                             >
-                                                                −
+                                                                <Minus className="w-3 h-3" />
                                                             </button>
-                                                            <span className="font-body text-sm text-mist">{item.quantity}</span>
+                                                            <span className="w-10 text-center text-[#F5F5F5] text-sm">{item.quantity}</span>
                                                             <button
                                                                 onClick={() => updateCartItem(item.id, item.quantity + 1)}
                                                                 disabled={isLoading}
-                                                                className="flex h-6 w-6 items-center justify-center border border-smoke/30 text-mist transition-all hover:border-antique-brass hover:text-antique-brass disabled:opacity-30"
+                                                                className="w-8 h-8 flex items-center justify-center text-[#8E8E8E] hover:bg-[#1C1C1C] hover:text-[#F5F5F5] disabled:opacity-30 transition-colors"
                                                             >
-                                                                +
+                                                                <Plus className="w-3 h-3" />
                                                             </button>
                                                         </div>
 
                                                         <button
                                                             onClick={() => removeCartItem(item.id)}
                                                             disabled={isLoading}
-                                                            className="ml-auto font-body text-xs text-smoke transition-colors hover:text-red-400 disabled:opacity-30"
+                                                            className="p-2 text-[#666] hover:text-red-400 disabled:opacity-30 transition-colors"
+                                                            aria-label="Remove item"
                                                         >
-                                                            Remove
+                                                            <Trash2 className="w-4 h-4" />
                                                         </button>
                                                     </div>
                                                 </div>
@@ -229,29 +221,34 @@ const CartDrawer = () => {
                             )}
                         </div>
 
-                        {/* Cart Footer - Gift Options & Checkout */}
+                        {/* ═══════════════════════════════════════════════════════
+                            FOOTER - Gift Options & Checkout
+                            ═══════════════════════════════════════════════════ */}
                         {cart?.lineItems && cart.lineItems.length > 0 && (
-                            <div className="absolute bottom-0 left-0 right-0 border-t border-smoke/20 bg-soft-black px-6 py-6">
+                            <div className="border-t border-[#333] bg-[#0a0a0a] px-6 py-5">
                                 {/* Gift Wrapping Option */}
-                                <div className="mb-4 rounded border border-smoke/20 bg-deep-charcoal p-4">
-                                    <label className="flex cursor-pointer items-start gap-3">
+                                <div className="mb-4 p-4 border border-[#333] rounded-lg bg-[#1C1C1C]/50">
+                                    <label className="flex items-start gap-3 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={giftWrapEnabled}
                                             onChange={handleGiftWrapToggle}
                                             disabled={isLoading}
-                                            className="mt-1 h-4 w-4 cursor-pointer accent-antique-brass"
+                                            className="mt-0.5 w-4 h-4 rounded border-[#444] bg-transparent accent-[#F5F5F5]"
                                         />
                                         <div className="flex-1">
                                             <div className="flex items-center justify-between">
-                                                <span className="font-body text-sm font-medium text-mist">
-                                                    Add Premium Gift Wrapping
-                                                </span>
-                                                <span className="font-body text-sm text-antique-brass">
+                                                <div className="flex items-center gap-2">
+                                                    <Gift className="w-4 h-4 text-[#BFC2C7]" />
+                                                    <span className="text-[#F5F5F5] text-sm font-medium">
+                                                        Premium Gift Wrapping
+                                                    </span>
+                                                </div>
+                                                <span className="text-[#8E8E8E] text-sm">
                                                     +₹{GIFT_WRAP_PRICE}
                                                 </span>
                                             </div>
-                                            <p className="mt-1 font-body text-xs text-smoke">
+                                            <p className="mt-1 text-xs text-[#666]">
                                                 Elegant packaging with personalized card
                                             </p>
                                         </div>
@@ -259,51 +256,48 @@ const CartDrawer = () => {
                                 </div>
 
                                 {/* Subtotal & Total */}
-                                <div className="space-y-2 border-t border-smoke/20 pt-4">
-                                    <div className="flex justify-between font-body text-sm text-smoke">
-                                        <span>Subtotal</span>
-                                        <span>₹{getSubtotal()}</span>
+                                <div className="space-y-2 mb-4">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-[#8E8E8E]">Subtotal</span>
+                                        <span className="text-[#F5F5F5]">₹{parseFloat(getSubtotal()).toLocaleString('en-IN')}</span>
                                     </div>
                                     {giftWrapEnabled && (
-                                        <div className="flex justify-between font-body text-sm text-smoke">
-                                            <span>Gift Wrapping</span>
-                                            <span>₹{GIFT_WRAP_PRICE}.00</span>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-[#8E8E8E]">Gift Wrapping</span>
+                                            <span className="text-[#F5F5F5]">₹{GIFT_WRAP_PRICE}</span>
                                         </div>
                                     )}
-                                    <div className="flex justify-between border-t border-smoke/20 pt-2 font-body text-lg font-medium text-mist">
-                                        <span>Total</span>
-                                        <span className="text-antique-brass">₹{getTotal()}</span>
+                                    <div className="flex justify-between pt-3 border-t border-[#333]">
+                                        <span className="text-[#F5F5F5] font-medium">Total</span>
+                                        <span className="text-[#F5F5F5] text-lg font-semibold">
+                                            ₹{parseFloat(getTotal()).toLocaleString('en-IN')}
+                                        </span>
                                     </div>
                                 </div>
 
-                                {/* Checkout Button - Illuminated LED Design */}
+                                {/* Checkout Button */}
                                 <motion.button
                                     onClick={() => {
                                         setIsCartOpen(false);
                                         navigate('/checkout/information');
                                     }}
-                                    className="mt-4 block w-full bg-brand-white px-6 py-4 rounded-full text-center font-body text-sm tracking-widest text-black transition-all duration-300 ease-out hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]"
-                                    whileHover={{ scale: 1.05 }}
+                                    className="w-full py-4 bg-[#F5F5F5] text-[#0E0E0E] text-sm font-bold tracking-widest uppercase rounded-md hover:bg-white transition-all duration-300 hover:shadow-[0_0_20px_rgba(245,245,245,0.3)]"
+                                    whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                 >
-                                    PROCEED TO CHECKOUT
+                                    Proceed to Checkout
                                 </motion.button>
 
                                 {/* Trust Signals */}
-                                <div className="mt-4 space-y-3 border-t border-smoke/20 pt-4">
-                                    {/* Accepted Payments */}
-                                    <div>
-                                        <p className="font-body text-xs text-smoke/70 mb-2">Accepted Payments:</p>
-                                        <p className="font-body text-xs text-smoke">
-                                            UPI • GPay • PhonePe • Cards • COD Available
-                                        </p>
-                                    </div>
-
-                                    {/* Security Badge */}
-                                    <div className="flex items-center gap-2">
+                                <div className="mt-4 pt-4 border-t border-[#222] space-y-2">
+                                    <p className="text-[#666] text-xs">Accepted Payments:</p>
+                                    <p className="text-[#8E8E8E] text-xs">
+                                        UPI • GPay • PhonePe • Cards • COD Available
+                                    </p>
+                                    <div className="flex items-center gap-2 pt-2">
                                         <Lock className="w-3 h-3 text-green-500" />
-                                        <p className="font-body text-xs text-smoke/70">
-                                            Secure checkout encrypted by Shopify
+                                        <p className="text-[#666] text-xs">
+                                            Secure checkout powered by Razorpay
                                         </p>
                                     </div>
                                 </div>

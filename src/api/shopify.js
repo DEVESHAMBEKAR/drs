@@ -189,6 +189,146 @@ export const fetchCustomerDossier = async (token) => {
 };
 
 /**
+ * Fetch the most recent order for a customer
+ * Used to get real order details after checkout is complete
+ * @param {string} token - Customer access token
+ * @returns {Promise<object>} - Latest order data
+ */
+export const fetchLatestOrder = async (token) => {
+    const query = `
+        query getLatestOrder($token: String!) {
+            customer(customerAccessToken: $token) {
+                orders(first: 1, reverse: true) {
+                    edges {
+                        node {
+                            id
+                            orderNumber
+                            name
+                            processedAt
+                            fulfillmentStatus
+                            financialStatus
+                            totalPrice { 
+                                amount 
+                                currencyCode 
+                            }
+                            subtotalPrice {
+                                amount
+                                currencyCode
+                            }
+                            totalShippingPrice {
+                                amount
+                                currencyCode
+                            }
+                            totalTax {
+                                amount
+                                currencyCode
+                            }
+                            shippingAddress {
+                                firstName
+                                lastName
+                                address1
+                                address2
+                                city
+                                province
+                                zip
+                                country
+                                phone
+                            }
+                            email
+                            phone
+                            lineItems(first: 20) {
+                                edges {
+                                    node {
+                                        title
+                                        quantity
+                                        customAttributes {
+                                            key
+                                            value
+                                        }
+                                        originalTotalPrice {
+                                            amount
+                                            currencyCode
+                                        }
+                                        variant { 
+                                            title
+                                            image { 
+                                                url 
+                                            } 
+                                        }
+                                    }
+                                }
+                            }
+                            successfulFulfillments(first: 5) {
+                                trackingCompany
+                                trackingInfo(first: 3) {
+                                    number
+                                    url
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const result = await executeQuery(query, { token });
+
+    if (result.errors) {
+        console.error('GraphQL Errors:', result.errors);
+        throw new Error(result.errors[0]?.message || 'Failed to fetch order');
+    }
+
+    const orderEdge = result.data?.customer?.orders?.edges?.[0];
+    if (!orderEdge) {
+        return null;
+    }
+
+    const order = orderEdge.node;
+
+    // Extract tracking info
+    const fulfillments = order.successfulFulfillments || [];
+    const trackingInfo = [];
+    fulfillments.forEach(fulfillment => {
+        const company = fulfillment.trackingCompany;
+        fulfillment.trackingInfo?.forEach(info => {
+            if (info.number) {
+                trackingInfo.push({
+                    company: company,
+                    number: info.number,
+                    url: info.url,
+                });
+            }
+        });
+    });
+
+    return {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        name: order.name,
+        processedAt: order.processedAt,
+        email: order.email,
+        phone: order.phone,
+        financialStatus: order.financialStatus,
+        fulfillmentStatus: order.fulfillmentStatus,
+        totalPrice: order.totalPrice,
+        subtotalPrice: order.subtotalPrice,
+        shippingPrice: order.totalShippingPrice,
+        taxPrice: order.totalTax,
+        shippingAddress: order.shippingAddress,
+        trackingInfo: trackingInfo,
+        lineItems: order.lineItems?.edges?.map(item => ({
+            title: item.node.title,
+            quantity: item.node.quantity,
+            variantTitle: item.node.variant?.title || '',
+            imageUrl: item.node.variant?.image?.url || null,
+            price: item.node.originalTotalPrice,
+            customAttributes: item.node.customAttributes || [],
+        })) || [],
+    };
+};
+
+/**
  * Create a new customer address
  * @param {string} token - Customer access token
  * @param {object} address - Address data
@@ -422,6 +562,7 @@ export const formatDate = (dateString) => {
 
 export default {
     fetchCustomerDossier,
+    fetchLatestOrder,
     createCustomerAddress,
     updateCustomerAddress,
     deleteCustomerAddress,
